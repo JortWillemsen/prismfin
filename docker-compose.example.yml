@@ -1,0 +1,41 @@
+# ==============================================================================
+# Example Docker Compose Configuration for PrismFin
+# ==============================================================================
+# Usage:
+#   docker compose -f docker-compose.example.yml up -d
+#
+# Once running, open http://localhost:8080 in your browser.
+# ==============================================================================
+
+services:
+  prismfin:
+    image: prismfin:latest
+    # Or build locally:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    container_name: prismfin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      # Jellyfin Media Server address (accessible by the client's browser)
+      - DEFAULT_SERVER_URL=https://jellyfin.example.com
+
+      # Client & Branding Configuration
+      - APP_NAME=MyCinema
+      - APP_ACCENT_COLOR=#06A1DB
+
+      # Name of the playlist to highlight on the home screen hero banner
+      - FEATURED_PLAYLIST_NAME=Featured Movies
+
+      # Custom Branding Assets (relative paths or external URLs)
+      - APP_LOGO_URL=/assets/branding/Logo.png
+      - APP_ICON_URL=/assets/branding/icon.png
+      - APP_FAVICON_URL=/assets/branding/favicon.png
+
+    # Optional: Mount custom branding files directly into the container
+    # volumes:
+    #   - ./custom-branding/logo.png:/usr/share/nginx/html/assets/branding/Logo.png:ro
+    #   - ./custom-branding/icon.png:/usr/share/nginx/html/assets/branding/icon.png:ro
+    #   - ./custom-branding/favicon.png:/usr/share/nginx/html/assets/branding/favicon.png:ro

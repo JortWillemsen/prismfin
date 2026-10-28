@@ -1,0 +1,29 @@
+{
+    "name": "PrismFin",
+    "short_name": "PrismFin",
+    "description": "Apple Liquid Glass Jellyfin Client",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#06A1DB",
+    "icons": [
+        {
+            "src": "/assets/branding/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/assets/branding/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/assets/branding/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+@use "@/common/styles/variables.scss" as *;
+
+.search-page {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 48px 64px 48px;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 768px) {
+        padding: 0 16px 48px 16px;
+    }
+
+    .search-heading {
+        font-size: 28px;
+        font-family: $font-primary;
+        color: $color-text-secondary;
+        margin-bottom: 24px;
+
+        span {
+            color: $color-text-primary;
+            font-weight: 700;
+        }
+    }
+
+    .search-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+        gap: 28px 20px;
+        width: 100%;
+
+        @media (max-width: 768px) {
+            grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+            gap: 16px 12px;
+        }
+
+        .media-card {
+            width: 100%;
+        }
+    }
+
+    .search-empty {
+        width: 100%;
+        padding: 80px 20px;
+        text-align: center;
+        color: $color-text-muted;
+        font-family: $font-primary;
+        font-size: 20px;
+    }
+}

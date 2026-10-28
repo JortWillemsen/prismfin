@@ -1,0 +1,11 @@
+node_modules
+dist
+.DS_Store
+*.local
+*.key
+*.crt
+*.pem
+.env
+.env.*.local
+.env.*
+!.env.example

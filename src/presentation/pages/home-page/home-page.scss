@@ -1,0 +1,14 @@
+@use "@/common/styles/variables.scss" as *;
+
+.home-page {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 48px 64px 48px;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 768px) {
+        padding: 0 16px 48px 16px;
+    }
+}

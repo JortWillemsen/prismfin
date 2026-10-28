@@ -1,0 +1,177 @@
+@use "@/common/styles/variables.scss" as *;
+
+.account-popup {
+    position: absolute;
+    top: calc(100% + 14px);
+    right: 0;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    pointer-events: auto;
+
+    @media (max-width: 768px) {
+        top: auto;
+        bottom: calc(100% + 14px);
+        right: 0;
+        flex-direction: column-reverse;
+    }
+
+    .account-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: waveSpringDown 0.36s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+        &:nth-child(1) {
+            animation-delay: 0ms;
+        }
+
+        &:nth-child(2) {
+            animation-delay: 60ms;
+        }
+
+        &:nth-child(3) {
+            animation-delay: 120ms;
+        }
+
+        @media (max-width: 768px) {
+            animation-name: waveSpringUpFromBottom;
+        }
+    }
+
+    &.closing .account-row {
+        animation: waveSpringUp 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+        &:nth-child(1) {
+            animation-delay: 60ms;
+        }
+
+        &:nth-child(2) {
+            animation-delay: 30ms;
+        }
+
+        &:nth-child(3) {
+            animation-delay: 0ms;
+        }
+
+        @media (max-width: 768px) {
+            animation-name: waveSpringDownToBottom;
+
+            &:nth-child(1) {
+                animation-delay: 60ms;
+            }
+
+            &:nth-child(2) {
+                animation-delay: 30ms;
+            }
+
+            &:nth-child(3) {
+                animation-delay: 0ms;
+            }
+        }
+    }
+
+    .user-pill {
+        padding: 9px 24px;
+        background: rgba(0, 0, 0, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: $glass-backdrop-filter;
+        -webkit-backdrop-filter: $glass-backdrop-filter;
+        border-radius: $radius-pill;
+        color: $color-text-primary;
+        font-family: $font-primary;
+        font-size: 16px;
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.7),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        white-space: nowrap;
+    }
+
+    .action-circle-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: $glass-backdrop-filter;
+        -webkit-backdrop-filter: $glass-backdrop-filter;
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.7),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: $transition-apple;
+        cursor: pointer;
+
+        img {
+            width: 20px;
+            height: 20px;
+            opacity: 0.9;
+        }
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: scale(1.08);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        &:active {
+            transform: scale(0.96);
+        }
+    }
+}
+
+@keyframes waveSpringDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.3);
+    }
+    70% {
+        opacity: 1;
+        transform: translateY(2px) scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes waveSpringUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.4);
+    }
+}
+
+@keyframes waveSpringUpFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.3);
+    }
+    70% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes waveSpringDownToBottom {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(16px) scale(0.4);
+    }
+}

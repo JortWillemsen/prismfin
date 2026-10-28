@@ -1,0 +1,245 @@
+@use "@/common/styles/variables.scss" as *;
+
+.login-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background-color: $color-background;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: calc(24px + env(safe-area-inset-top, 0px)) 24px
+        calc(24px + env(safe-area-inset-bottom, 0px)) 24px;
+
+    .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 36px;
+        width: 100%;
+        max-width: 380px;
+
+        @media (max-width: 768px) {
+            gap: 28px;
+            max-width: 100%;
+        }
+    }
+
+    .login-logo {
+        height: auto;
+        max-height: 80px;
+        max-width: min(340px, 85vw);
+        width: auto;
+        object-fit: contain;
+        filter: drop-shadow(
+            0 8px 32px rgba(var(--color-accent-rgb, 6, 161, 219), 0.35)
+        );
+
+        @media (max-width: 768px) {
+            max-height: 52px;
+            max-width: min(240px, 75vw);
+        }
+    }
+
+    .login-btn-primary {
+        width: 100%;
+        max-width: 320px;
+        min-height: 48px;
+        padding: 14px 28px;
+        background: linear-gradient(
+            135deg,
+            rgba(var(--color-accent-rgb, 6, 161, 219), 0.92),
+            rgba(var(--color-accent-rgb, 6, 161, 219), 0.72)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: $glass-backdrop-filter;
+        border-radius: $radius-pill;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: $font-primary;
+        box-shadow: 0 6px 24px rgba(var(--color-accent-rgb, 6, 161, 219), 0.45);
+        cursor: pointer;
+        transition: $transition-apple;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        &:hover:not(:disabled) {
+            background: linear-gradient(
+                135deg,
+                rgba(var(--color-accent-rgb, 6, 161, 219), 1),
+                rgba(var(--color-accent-rgb, 6, 161, 219), 0.82)
+            );
+            transform: scale(1.02);
+            box-shadow: 0 10px 32px
+                rgba(var(--color-accent-rgb, 6, 161, 219), 0.6);
+            border-color: rgba(255, 255, 255, 0.45);
+        }
+
+        &:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        &:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+    }
+
+    .login-secondary-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        margin-top: -12px;
+    }
+
+    .login-text-link {
+        background: none;
+        border: none;
+        color: $color-text-secondary;
+        font-size: 14px;
+        font-family: $font-primary;
+        cursor: pointer;
+        padding: 6px 12px;
+        border-radius: $radius-sm;
+        transition: $transition-apple;
+        text-decoration: none;
+
+        &:hover {
+            color: $color-text-primary;
+            text-decoration: underline;
+        }
+    }
+
+    .login-quick-connect-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-family: $font-primary;
+        color: $color-text-secondary;
+        padding: 8px 16px;
+        border-radius: $radius-pill;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        cursor: pointer;
+        transition: $transition-apple;
+
+        img {
+            width: 15px;
+            height: 15px;
+            opacity: 0.85;
+        }
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.22);
+            color: $color-text-primary;
+            transform: scale(1.02);
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+
+    .login-form-glass {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid $color-glass-border;
+        backdrop-filter: $glass-backdrop-filter;
+        border-radius: $radius-xl;
+        padding: 28px 24px;
+        box-shadow: $glass-shadow, $glass-specular-highlight;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .login-input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        label {
+            font-size: 13px;
+            color: $color-text-secondary;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: $radius-md;
+            color: $color-text-primary;
+            font-size: 15px;
+            transition: $transition-apple;
+
+            &:focus {
+                background: rgba(255, 255, 255, 0.14);
+                border-color: rgba(255, 255, 255, 0.35);
+            }
+        }
+    }
+
+    .login-btn-submit {
+        width: 100%;
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid $color-glass-border;
+        backdrop-filter: $glass-backdrop-filter;
+        border-radius: $radius-pill;
+        color: $color-text-primary;
+        font-size: 16px;
+        font-weight: 500;
+        font-family: $font-primary;
+        box-shadow: $glass-shadow, $glass-specular-highlight;
+        cursor: pointer;
+        transition: $transition-apple;
+
+        &:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.28);
+            transform: scale(1.02);
+            border-color: $color-glass-border-light;
+        }
+
+        &:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        &:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+    }
+
+    .login-error {
+        color: #ff6b6b;
+        font-size: 13px;
+        text-align: center;
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.25);
+        border-radius: $radius-md;
+        padding: 8px 12px;
+    }
+
+    .login-form-secondary-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 6px;
+        gap: 12px;
+    }
+}

@@ -1,0 +1,150 @@
+@use "@/common/styles/variables.scss" as *;
+
+.media-row {
+    position: relative;
+    width: 100%;
+    margin-bottom: 48px;
+
+    @media (max-width: 768px) {
+        margin-bottom: 32px;
+    }
+
+    .row-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        padding: 0 4px;
+
+        .row-title {
+            font-size: 26px;
+            font-family: $font-primary;
+            font-weight: 700;
+            color: $color-text-primary;
+
+            @media (max-width: 768px) {
+                font-size: 20px;
+            }
+        }
+    }
+
+    .row-scroll-wrapper {
+        position: relative;
+        width: 100%;
+
+        .row-edge-fade {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 48px;
+            pointer-events: none;
+            z-index: 6;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+
+            &.visible {
+                opacity: 1;
+            }
+
+            &.left {
+                left: 0;
+                background: linear-gradient(
+                    to right,
+                    $color-background 0%,
+                    rgba(13, 13, 13, 0.7) 40%,
+                    transparent 100%
+                );
+            }
+
+            &.right {
+                right: 0;
+                background: linear-gradient(
+                    to left,
+                    $color-background 0%,
+                    rgba(13, 13, 13, 0.7) 40%,
+                    transparent 100%
+                );
+            }
+        }
+
+        .row-scroll-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            padding-bottom: 14px;
+            padding-top: 14px;
+            margin-top: -10px;
+            padding-left: 4px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        .row-nav-btn {
+            position: absolute;
+            top: 136px;
+            transform: translateY(-50%);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            opacity: 0;
+            transition: $transition-apple;
+            cursor: pointer;
+
+            img {
+                width: 20px;
+                height: 20px;
+            }
+
+            &.prev {
+                left: -16px;
+            }
+
+            &.next {
+                right: -16px;
+            }
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.18);
+                transform: translateY(-50%) scale(1.1);
+                border-color: rgba(255, 255, 255, 0.4);
+                box-shadow:
+                    0 6px 20px rgba(0, 0, 0, 0.6),
+                    $glass-specular-highlight;
+            }
+        }
+
+        &.portrait .row-nav-btn {
+            top: 136px;
+
+            @media (max-width: 768px) {
+                top: 106px;
+            }
+        }
+
+        &.landscape .row-nav-btn {
+            top: 83px;
+
+            @media (max-width: 768px) {
+                top: 66px;
+            }
+        }
+
+        &:hover .row-nav-btn {
+            opacity: 1;
+        }
+    }
+}

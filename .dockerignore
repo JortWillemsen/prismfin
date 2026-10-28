@@ -1,0 +1,14 @@
+node_modules
+.deno
+dist
+.git
+.github
+.vscode
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -1,0 +1,159 @@
+@use "@/common/styles/variables.scss" as *;
+
+.glass-dropdown {
+    position: relative;
+    user-select: none;
+    font-family: $font-primary;
+
+    &.disabled {
+        opacity: 0.45;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+
+    .dropdown-trigger {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid $color-glass-border;
+        backdrop-filter: $glass-backdrop-filter;
+        -webkit-backdrop-filter: $glass-backdrop-filter;
+        border-radius: $radius-pill;
+        color: $color-text-primary;
+        font-size: 15px;
+        box-shadow: $glass-shadow, $glass-specular-highlight;
+        transition: $transition-apple;
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: $color-glass-border-light;
+        }
+
+        &.open {
+            border-color: $color-accent;
+            box-shadow: 0 0 16px
+                rgba(var(--color-accent-rgb, 6, 161, 219), 0.25);
+
+            .dropdown-chevron {
+                transform: rotate(180deg);
+            }
+        }
+
+        .dropdown-chevron {
+            width: 12px;
+            height: 12px;
+            opacity: 0.7;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        min-width: 180px;
+        max-height: 280px;
+        overflow-y: auto;
+        background: rgba(18, 18, 18, 0.88);
+        border: 1px solid $color-glass-border;
+        backdrop-filter: $glass-backdrop-filter;
+        -webkit-backdrop-filter: $glass-backdrop-filter;
+        border-radius: $radius-lg;
+        padding: 8px;
+        box-shadow: $glass-shadow, $glass-specular-highlight;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        animation: dropdownAppear 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+        &.closing {
+            animation: dropdownDisappear 0.18s cubic-bezier(0.16, 1, 0.3, 1)
+                forwards;
+        }
+
+        .dropdown-item {
+            padding: 8px 14px;
+            border-radius: $radius-sm;
+            font-size: 14px;
+            color: $color-text-secondary;
+            transition: $transition-apple;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.08);
+                color: $color-text-primary;
+            }
+
+            &.selected {
+                background: rgba(var(--color-accent-rgb, 6, 161, 219), 0.16);
+                color: $color-accent;
+                font-weight: 700;
+            }
+        }
+    }
+
+    &.direction-up {
+        .dropdown-menu {
+            top: auto;
+            bottom: calc(100% + 8px);
+            animation: dropdownAppearUp 0.22s cubic-bezier(0.16, 1, 0.3, 1)
+                forwards;
+
+            &.closing {
+                animation: dropdownDisappearUp 0.18s
+                    cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+        }
+    }
+}
+
+@keyframes dropdownAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dropdownDisappear {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+    }
+}
+
+@keyframes dropdownAppearUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dropdownDisappearUp {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(8px) scale(0.96);
+    }
+}
