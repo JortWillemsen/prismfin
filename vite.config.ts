@@ -137,10 +137,6 @@ export default defineConfig(({ mode }) => {
         server: {
             port: 5173,
             host: true,
-            cors: true,
-            fs: {
-                strict: false,
-            },
             https: hasCert
                 ? {
                       key: fs.readFileSync(keyPath),
@@ -173,8 +169,7 @@ export default defineConfig(({ mode }) => {
                 "^/api/sso-validate/[a-zA-Z0-9_-]+(?:\\?.*)?$": {
                     target: jellyfinServer,
                     changeOrigin: false,
-                    rewrite: (p) =>
-                        p.replace(/^\/api\/sso-validate\//, "/sso/OID/redirect/"),
+                    rewrite: (p) => p.replace(/^\/api\/sso-validate\//, "/sso/OID/redirect/"),
                     configure: (proxy) => {
                         proxy.on("proxyReq", (proxyReq, req) => {
                             const host = req.headers.host || "localhost:5173";
