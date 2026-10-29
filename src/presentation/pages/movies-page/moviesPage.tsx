@@ -19,18 +19,30 @@ export const MoviesPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [loadError, setLoadError] = useState(false);
 
     const startIndexRef = useRef(0);
+    const requestIdRef = useRef(0);
+    const loadingMoreRef = useRef(false);
     const PAGE_SIZE = 36;
 
     const loadMovies = useCallback(
         async (reset: boolean = false) => {
+            if (!reset && loadingMoreRef.current) return;
+            const requestId = reset
+                ? ++requestIdRef.current
+                : requestIdRef.current;
             const nextIndex = reset ? 0 : startIndexRef.current;
             if (reset) {
+                loadingMoreRef.current = false;
                 setLoading(true);
+                setLoadError(false);
+                setMovies([]);
                 startIndexRef.current = 0;
             } else {
+                loadingMoreRef.current = true;
                 setLoadingMore(true);
+                setLoadError(false);
             }
 
             try {
@@ -46,6 +58,8 @@ export const MoviesPage: React.FC = () => {
                     limit: PAGE_SIZE,
                 });
 
+                if (requestId !== requestIdRef.current) return;
+
                 if (reset) {
                     setMovies(batch);
                 } else {
@@ -54,9 +68,14 @@ export const MoviesPage: React.FC = () => {
 
                 startIndexRef.current = nextIndex + batch.length;
                 setHasMore(batch.length === PAGE_SIZE);
+            } catch {
+                if (requestId === requestIdRef.current) setLoadError(true);
             } finally {
-                setLoading(false);
-                setLoadingMore(false);
+                if (requestId === requestIdRef.current) {
+                    loadingMoreRef.current = false;
+                    setLoading(false);
+                    setLoadingMore(false);
+                }
             }
         },
         [
@@ -78,8 +97,9 @@ export const MoviesPage: React.FC = () => {
     const observerRef = useRef<IntersectionObserver | null>(null);
     const sentinelRef = useCallback(
         (node: HTMLDivElement | null) => {
-            if (loading || loadingMore) return;
             if (observerRef.current) observerRef.current.disconnect();
+            if (!node || loading || loadingMore || loadError || !hasMore)
+                return;
 
             observerRef.current = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting && hasMore) {
@@ -87,9 +107,9 @@ export const MoviesPage: React.FC = () => {
                 }
             });
 
-            if (node) observerRef.current.observe(node);
+            observerRef.current.observe(node);
         },
-        [loading, loadingMore, hasMore, loadMovies]
+        [loading, loadingMore, loadError, hasMore, loadMovies]
     );
 
     const handleResetFilters = () => {
@@ -153,6 +173,13 @@ export const MoviesPage: React.FC = () => {
                         </div>
                     ))}
                 </div>
+            ) : loadError && movies.length === 0 ? (
+                <div className="movies-empty" role="alert">
+                    Could not load movies.{" "}
+                    <button type="button" onClick={() => loadMovies(true)}>
+                        Retry
+                    </button>
+                </div>
             ) : movies.length === 0 ? (
                 <div className="movies-empty">No movies found</div>
             ) : (
@@ -179,6 +206,14 @@ export const MoviesPage: React.FC = () => {
                                     margin: "24px auto",
                                 }}
                             />
+                        )}
+                        {loadError && (
+                            <button
+                                type="button"
+                                onClick={() => loadMovies(false)}
+                            >
+                                Retry loading movies
+                            </button>
                         )}
                     </div>
                 </>
