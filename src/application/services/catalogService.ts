@@ -69,9 +69,7 @@ export class CatalogService {
             }
 
             if (!targetPlaylist) {
-                const preferredNames = [
-                    "Featured"
-                ];
+                const preferredNames = ["Featured"];
                 targetPlaylist = playlists.find((p) =>
                     preferredNames.some(
                         (name) => name.toLowerCase() === p.name.toLowerCase()

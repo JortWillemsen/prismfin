@@ -3,29 +3,69 @@ import react from "@vitejs/plugin-react";
 import path from "node:path";
 import fs from "node:fs";
 
-export default defineConfig(({ mode }) => {
+function getResolvedConfig(mode: string) {
     const env = loadEnv(mode, process.cwd(), "");
-    const jellyfinServer =
-        env.VITE_JELLYFIN_SERVER_URL || "http://jellyfin.local:8096:30013";
+    return {
+        appName: env.APP_NAME || env.VITE_APP_NAME || "PrismFin",
+        appLogoUrl:
+            env.APP_LOGO_URL ||
+            env.VITE_APP_LOGO_URL ||
+            "/assets/branding/Logo.png",
+        appIconUrl:
+            env.APP_ICON_URL ||
+            env.VITE_APP_ICON_URL ||
+            "/assets/branding/icon.png",
+        appFaviconUrl:
+            env.APP_FAVICON_URL ||
+            env.VITE_APP_FAVICON_URL ||
+            "/assets/branding/favicon.png",
+        accentColor:
+            env.APP_ACCENT_COLOR || env.VITE_APP_ACCENT_COLOR || "#06A1DB",
+        featuredPlaylist:
+            env.FEATURED_PLAYLIST_NAME ||
+            env.VITE_FEATURED_PLAYLIST_NAME ||
+            "Featured",
+        defaultServerUrl:
+            env.DEFAULT_SERVER_URL ||
+            env.VITE_JELLYFIN_SERVER_URL ||
+            "http://jellyfin.local:8096",
+    };
+}
 
-    const appName = env.APP_NAME || env.VITE_APP_NAME || "PrismFin";
-    const accentColor =
-        env.APP_ACCENT_COLOR || env.VITE_APP_ACCENT_COLOR || "#06A1DB";
-    const appIconUrl =
-        env.APP_ICON_URL ||
-        env.VITE_APP_ICON_URL ||
-        "/assets/branding/icon.png";
-    const appFaviconUrl =
-        env.APP_FAVICON_URL ||
-        env.VITE_APP_FAVICON_URL ||
-        "/assets/branding/favicon.png";
+export default defineConfig(({ mode }) => {
+    const initialConfig = getResolvedConfig(mode);
+    const jellyfinServer = initialConfig.defaultServerUrl;
+    const { appName, accentColor, appIconUrl, appFaviconUrl } = initialConfig;
 
-    const pwaBrandingPlugin: Plugin = {
-        name: "pwa-branding",
+    const runtimeBrandingPlugin: Plugin = {
+        name: "runtime-branding",
         configureServer(server) {
             server.middlewares.use((req, res, next) => {
                 const url = req.url ? req.url.split("?")[0] : "";
-                if (url === "/manifest.webmanifest" || url === "/manifest.json") {
+                if (url === "/config.js") {
+                    const currentConfig = getResolvedConfig(mode);
+                    res.setHeader(
+                        "Content-Type",
+                        "application/javascript; charset=utf-8"
+                    );
+                    res.setHeader(
+                        "Cache-Control",
+                        "no-cache, no-store, must-revalidate"
+                    );
+                    res.end(
+                        `window.__PRISMFIN_CONFIG__ = ${JSON.stringify(
+                            currentConfig,
+                            null,
+                            4
+                        )};`
+                    );
+                    return;
+                }
+                if (
+                    url === "/manifest.webmanifest" ||
+                    url === "/manifest.json"
+                ) {
+                    const currentConfig = getResolvedConfig(mode);
                     res.setHeader(
                         "Content-Type",
                         "application/manifest+json; charset=utf-8"
@@ -37,28 +77,28 @@ export default defineConfig(({ mode }) => {
                     res.end(
                         JSON.stringify(
                             {
-                                name: appName,
-                                short_name: appName,
-                                description: `${appName} - Apple Liquid Glass Jellyfin Client`,
+                                name: currentConfig.appName,
+                                short_name: currentConfig.appName,
+                                description: `${currentConfig.appName} - Apple Liquid Glass Jellyfin Client`,
                                 start_url: "/",
                                 display: "standalone",
                                 background_color: "#000000",
-                                theme_color: accentColor,
+                                theme_color: currentConfig.accentColor,
                                 icons: [
                                     {
-                                        src: appFaviconUrl,
+                                        src: currentConfig.appFaviconUrl,
                                         sizes: "192x192",
                                         type: "image/png",
                                         purpose: "any",
                                     },
                                     {
-                                        src: appIconUrl,
+                                        src: currentConfig.appIconUrl,
                                         sizes: "512x512",
                                         type: "image/png",
                                         purpose: "any",
                                     },
                                     {
-                                        src: appIconUrl,
+                                        src: currentConfig.appIconUrl,
                                         sizes: "512x512",
                                         type: "image/png",
                                         purpose: "maskable",
@@ -110,7 +150,7 @@ export default defineConfig(({ mode }) => {
     const hasCert = fs.existsSync(keyPath) && fs.existsSync(certPath);
 
     return {
-        plugins: [react(), pwaBrandingPlugin],
+        plugins: [react(), runtimeBrandingPlugin],
         css: {
             preprocessorOptions: {
                 scss: {
@@ -137,10 +177,6 @@ export default defineConfig(({ mode }) => {
         server: {
             port: 5173,
             host: true,
-            cors: true,
-            fs: {
-                strict: false,
-            },
             https: hasCert
                 ? {
                       key: fs.readFileSync(keyPath),
@@ -151,6 +187,7 @@ export default defineConfig(({ mode }) => {
                 "/jellyfin-proxy": {
                     target: jellyfinServer,
                     changeOrigin: true,
+                    secure: false,
                     ws: true,
                     rewrite: (p) => p.replace(/^\/jellyfin-proxy/, ""),
                 },
