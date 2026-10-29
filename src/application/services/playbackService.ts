@@ -100,13 +100,17 @@ export class PlaybackService {
         return this.currentItem;
     }
 
+    updatePosition(positionSeconds: number): void {
+        this.lastReportedSeconds = positionSeconds;
+    }
+
     startReporting(positionSeconds: number): void {
         const session = authService.getCurrentSession();
         if (!session || !this.currentStreamInfo) {
             return;
         }
 
-        this.lastReportedSeconds = positionSeconds;
+        this.updatePosition(positionSeconds);
         const positionTicks = Math.floor(positionSeconds * 10000000);
 
         this.playbackApi.reportPlaybackStart(
@@ -136,7 +140,7 @@ export class PlaybackService {
     }
 
     reportProgress(positionSeconds: number, isPaused: boolean): void {
-        this.lastReportedSeconds = positionSeconds;
+        this.updatePosition(positionSeconds);
         const session = authService.getCurrentSession();
         if (!session || !this.currentStreamInfo) {
             return;

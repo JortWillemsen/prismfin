@@ -556,11 +556,8 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                 .play()
                 .then(() => setIsPlaying(true))
                 .catch(() => {});
-            playbackService.startReporting(videoRef.current.currentTime);
         } else {
             videoRef.current.pause();
-            setIsPlaying(false);
-            playbackService.reportProgress(videoRef.current.currentTime, true);
         }
         resetInactivityTimer();
     };
@@ -944,13 +941,27 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                 playsInline
                 {...({ "webkit-playsinline": "true" } as any)}
                 onClick={handlePlayerClick}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
+                onPlay={() => {
+                    setIsPlaying(true);
+                    playbackService.startReporting(
+                        videoRef.current?.currentTime ?? 0
+                    );
+                }}
+                onPause={() => {
+                    setIsPlaying(false);
+                    if (videoRef.current) {
+                        playbackService.reportProgress(
+                            videoRef.current.currentTime,
+                            true
+                        );
+                    }
+                }}
                 onTimeUpdate={() => {
                     if (videoRef.current) {
                         const time = videoRef.current.currentTime;
                         setCurrentTime(time);
                         currentTimeRef.current = time;
+                        playbackService.updatePosition(time);
                     }
                 }}
                 onLoadedMetadata={() => {
