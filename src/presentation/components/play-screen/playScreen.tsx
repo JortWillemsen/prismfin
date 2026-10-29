@@ -870,7 +870,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
         selectedSubIndex >= 0 &&
         session?.serverUrl &&
         streamInfo
-            ? `${session.serverUrl}/Videos/${item.id}/${streamInfo.mediaSourceId}/Subtitles/${selectedSubIndex}/Stream.vtt?ApiKey=${session.accessToken}`
+            ? `${session.serverUrl}/Videos/${encodeURIComponent(item.id)}/${encodeURIComponent(streamInfo.mediaSourceId || item.id)}/Subtitles/${selectedSubIndex}/Stream.vtt?ApiKey=${encodeURIComponent(session.accessToken)}`
             : "";
 
     useEffect(() => {

@@ -250,19 +250,42 @@ export class PlaybackApi {
         const requiresTranscode = !canDirectPlay;
 
         let isHls = false;
-        let streamUrl = `${server}/Videos/${itemId}/stream?static=true&mediaSourceId=${mediaSourceId}&deviceId=${deviceId}&ApiKey=${token}`;
+        const staticStreamUrl = new URL(
+            `${server}/Videos/${encodeURIComponent(itemId)}/stream`
+        );
+        staticStreamUrl.search = new URLSearchParams({
+            static: "true",
+            mediaSourceId,
+            deviceId,
+            ApiKey: token,
+        }).toString();
+        let streamUrl = staticStreamUrl.toString();
 
         if (requiresTranscode && mediaSource?.TranscodingUrl) {
             const rawTranscode = mediaSource.TranscodingUrl;
-            streamUrl = rawTranscode.startsWith("http")
-                ? rawTranscode
-                : `${server}${rawTranscode}`;
-            if (
-                !streamUrl.includes("ApiKey=") &&
-                !streamUrl.includes("api_key=")
+            const serverUrl = new URL(server);
+            const transcodeUrl = new URL(rawTranscode, `${server}/`);
+
+            if (serverUrl.pathname.endsWith("/jellyfin-proxy")) {
+                transcodeUrl.pathname = `/jellyfin-proxy${transcodeUrl.pathname}`;
+                transcodeUrl.protocol = serverUrl.protocol;
+                transcodeUrl.host = serverUrl.host;
+            } else if (
+                serverUrl.protocol === "https:" &&
+                transcodeUrl.protocol === "http:"
             ) {
-                streamUrl += `${streamUrl.includes("?") ? "&" : "?"}ApiKey=${token}`;
+                transcodeUrl.protocol = serverUrl.protocol;
+                transcodeUrl.host = serverUrl.host;
             }
+
+            if (
+                !transcodeUrl.searchParams.has("ApiKey") &&
+                !transcodeUrl.searchParams.has("api_key")
+            ) {
+                transcodeUrl.searchParams.set("ApiKey", token);
+            }
+
+            streamUrl = transcodeUrl.toString();
             isHls = true;
         }
 
