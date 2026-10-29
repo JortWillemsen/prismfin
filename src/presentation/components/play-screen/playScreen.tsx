@@ -304,9 +304,6 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
             const video = videoRef.current;
             if (!video) return;
 
-            video.volume = volume;
-            video.muted = isMuted;
-
             if (hlsRef.current) {
                 hlsRef.current.destroy();
                 hlsRef.current = null;
@@ -337,7 +334,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                 video.play().catch(() => {});
             }
         },
-        [volume, isMuted]
+        []
     );
 
     // Initial stream preparation
