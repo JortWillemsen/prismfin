@@ -1,4 +1,5 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
+import deno from "@deno/vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import fs from "node:fs";
@@ -150,7 +151,7 @@ export default defineConfig(({ mode }) => {
     const hasCert = fs.existsSync(keyPath) && fs.existsSync(certPath);
 
     return {
-        plugins: [react(), runtimeBrandingPlugin],
+        plugins: [deno(), react(), runtimeBrandingPlugin],
         css: {
             preprocessorOptions: {
                 scss: {

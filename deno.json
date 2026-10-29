@@ -1,9 +1,22 @@
 {
     "tasks": {
         "dev": "deno run -A --node-modules-dir npm:vite",
-        "build": "deno run -A --node-modules-dir npm:typescript/bin/tsc --noEmit && deno run -A --node-modules-dir npm:vite build",
+        "check": "deno check src/main.tsx vite.config.ts",
+        "build": "deno check src/main.tsx vite.config.ts && deno run -A --node-modules-dir npm:vite build",
         "preview": "deno run -A --node-modules-dir npm:vite preview",
         "format": "deno run -A --node-modules-dir npm:prettier --write \"src/**/*.{ts,tsx,scss,html,json}\""
     },
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "jsxImportSource": "react",
+        "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"],
+        "strict": true
+    },
+    "imports": {
+        "@/": "./src/"
+    },
+    "unstable": [
+        "sloppy-imports"
+    ],
     "nodeModulesDir": "auto"
 }
