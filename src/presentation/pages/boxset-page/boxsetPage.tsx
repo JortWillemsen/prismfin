@@ -7,6 +7,7 @@ import { MediaItem } from "@/common/types/media";
 import { useApp } from "@/application/state/appContext";
 import { getImageUrl } from "@/common/utils/image";
 import { MediaCard } from "@/presentation/components/media-card/mediaCard";
+import { DetailsError } from "@/presentation/components/details-error/detailsError";
 import "./boxset-page.scss";
 
 interface BoxsetPageProps {
@@ -17,6 +18,7 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
     const { session, navigate } = useApp();
     const [details, setDetails] = useState<BoxsetDetailsData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState(false);
     const [hoveredMovie, setHoveredMovie] = useState<MediaItem | null>(null);
 
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -29,6 +31,7 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
     useEffect(() => {
         let isMounted = true;
         setLoading(true);
+        setLoadError(false);
         setHoveredMovie(null);
 
         detailsService
@@ -41,7 +44,10 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
                 }
             })
             .catch(() => {
-                if (isMounted) setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                    setLoadError(true);
+                }
             });
 
         return () => {
@@ -77,7 +83,7 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
         setTimeout(updateScrollButtons, 350);
     };
 
-    if (loading || !details) {
+    if (loading) {
         return (
             <div className="boxset-page">
                 <div className="boxset-backdrop-container skeleton-shimmer" />
@@ -109,6 +115,10 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
                 </div>
             </div>
         );
+    }
+
+    if (loadError || !details) {
+        return <DetailsError onReturnHome={() => navigate({ name: "home" })} />;
     }
 
     const { boxset, items } = details;

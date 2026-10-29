@@ -13,6 +13,7 @@ import {
 import { MediaRow } from "@/presentation/components/media-row/mediaRow";
 import { PersonRow } from "@/presentation/components/person-row/personRow";
 import { DetailsSkeleton } from "@/presentation/components/details-skeleton/detailsSkeleton";
+import { DetailsError } from "@/presentation/components/details-error/detailsError";
 import "./movie-details-page.scss";
 
 interface MovieDetailsPageProps {
@@ -26,10 +27,12 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
     const [details, setDetails] = useState<MovieDetailsData | null>(null);
     const [isFavorite, setIsFavorite] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
         setLoading(true);
+        setLoadError(false);
 
         detailsService
             .getMovieDetails(movieId)
@@ -41,7 +44,10 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
                 }
             })
             .catch(() => {
-                if (isMounted) setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                    setLoadError(true);
+                }
             });
 
         return () => {
@@ -49,12 +55,16 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
         };
     }, [movieId]);
 
-    if (loading || !details) {
+    if (loading) {
         return (
             <div className="movie-details-page">
                 <DetailsSkeleton />
             </div>
         );
+    }
+
+    if (loadError || !details) {
+        return <DetailsError onReturnHome={() => navigate({ name: "home" })} />;
     }
 
     const { movie, similar, collection } = details;

@@ -8,6 +8,7 @@ import { getImageUrl } from "@/common/utils/image";
 import { formatDurationTicks, formatScore } from "@/common/utils/formatters";
 import { PersonRow } from "@/presentation/components/person-row/personRow";
 import { DetailsSkeleton } from "@/presentation/components/details-skeleton/detailsSkeleton";
+import { DetailsError } from "@/presentation/components/details-error/detailsError";
 import "./season-details-page.scss";
 
 interface SeasonDetailsPageProps {
@@ -23,10 +24,12 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
     const [details, setDetails] = useState<SeasonDetailsData | null>(null);
     const [isFavorite, setIsFavorite] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
         setLoading(true);
+        setLoadError(false);
 
         detailsService
             .getSeasonDetails(seriesId, seasonId)
@@ -38,7 +41,10 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
                 }
             })
             .catch(() => {
-                if (isMounted) setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                    setLoadError(true);
+                }
             });
 
         return () => {
@@ -59,12 +65,16 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
         }
     };
 
-    if (loading || !details) {
+    if (loading) {
         return (
             <div className="season-details-page">
                 <DetailsSkeleton />
             </div>
         );
+    }
+
+    if (loadError || !details) {
+        return <DetailsError onReturnHome={() => navigate({ name: "home" })} />;
     }
 
     const { series, season, episodes } = details;
