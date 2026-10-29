@@ -5,6 +5,7 @@ dist
 *.key
 *.crt
 *.pem
+public/config.js
 .env
 .env.*.local
 .env.*
