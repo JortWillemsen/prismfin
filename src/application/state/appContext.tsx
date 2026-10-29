@@ -204,7 +204,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
                 })
                 .catch(() => {
                     if (!isMounted) return;
-                    setSession(null);
                     setIsLoading(false);
                 });
         }

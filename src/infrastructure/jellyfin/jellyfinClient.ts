@@ -10,6 +10,16 @@ export interface RequestOptions extends RequestInit {
     token?: string;
 }
 
+export class JellyfinApiError extends Error {
+    constructor(
+        readonly status: number,
+        message: string
+    ) {
+        super(message);
+        this.name = "JellyfinApiError";
+    }
+}
+
 export class JellyfinClient {
     private serverUrl: string;
 
@@ -93,7 +103,8 @@ export class JellyfinClient {
                 }
             }
             const errorText = await response.text().catch(() => "");
-            throw new Error(
+            throw new JellyfinApiError(
+                response.status,
                 `Jellyfin API error (${response.status}): ${errorText || response.statusText}`
             );
         }

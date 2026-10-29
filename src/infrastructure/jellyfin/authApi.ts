@@ -1,4 +1,4 @@
-import { JellyfinClient } from "./jellyfinClient";
+import { JellyfinApiError, JellyfinClient } from "./jellyfinClient";
 import {
     AuthSession,
     UserProfile,
@@ -213,8 +213,14 @@ export class AuthApi {
         try {
             await this.client.request(`/Users/${userId}`, { token });
             return true;
-        } catch {
-            return false;
+        } catch (error) {
+            if (
+                error instanceof JellyfinApiError &&
+                (error.status === 401 || error.status === 404)
+            ) {
+                return false;
+            }
+            throw error;
         }
     }
 }
