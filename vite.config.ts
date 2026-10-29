@@ -137,10 +137,6 @@ export default defineConfig(({ mode }) => {
         server: {
             port: 5173,
             host: true,
-            cors: true,
-            fs: {
-                strict: false,
-            },
             https: hasCert
                 ? {
                       key: fs.readFileSync(keyPath),
