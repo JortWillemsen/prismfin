@@ -69,7 +69,7 @@ export function getDefaultServerUrl(): string {
     return (
         window.__PRISMFIN_CONFIG__?.defaultServerUrl ||
         import.meta.env?.VITE_JELLYFIN_SERVER_URL ||
-        "http://jellyfin.local:8096:30013"
+        "http://jellyfin.local:8096"
     );
 }
 

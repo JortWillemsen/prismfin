@@ -6,7 +6,7 @@ import fs from "node:fs";
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), "");
     const jellyfinServer =
-        env.VITE_JELLYFIN_SERVER_URL || "http://jellyfin.local:8096:30013";
+        env.VITE_JELLYFIN_SERVER_URL || "http://jellyfin.local:8096";
 
     const appName = env.APP_NAME || env.VITE_APP_NAME || "PrismFin";
     const accentColor =
