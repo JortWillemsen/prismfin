@@ -6,7 +6,7 @@
     "license": "GPL-3.0-only",
     "scripts": {
         "dev": "vite",
-        "build": "tsc && vite build",
+        "build": "vite build",
         "preview": "vite preview",
         "format": "prettier --write \"src/**/*.{ts,tsx,scss,html,json}\"",
         "certs": "openssl req -x509 -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -keyout localhost.key -out localhost.crt -days 365"
@@ -17,12 +17,12 @@
         "react-dom": "^18.3.1"
     },
     "devDependencies": {
+        "@deno/vite-plugin": "^2.0.4",
         "@types/react": "^18.3.12",
         "@types/react-dom": "^18.3.1",
         "@vitejs/plugin-react": "^4.3.3",
         "prettier": "^3.3.3",
         "sass": "^1.80.6",
-        "typescript": "^5.6.3",
         "vite": "^5.4.10"
     }
 }
