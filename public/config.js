@@ -8,5 +8,5 @@ window.__PRISMFIN_CONFIG__ = window.__PRISMFIN_CONFIG__ || {
     appFaviconUrl: "/assets/branding/favicon.png",
     accentColor: "#06A1DB",
     featuredPlaylist: "Featured",
-    defaultServerUrl: "http://jellyfin.local:8096:30013"
+    defaultServerUrl: "http://jellyfin.local:8096"
 };
