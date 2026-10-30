@@ -3,10 +3,9 @@ import deno from "@deno/vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import fs from "node:fs";
-import { createRequire } from "node:module";
 
-const require = createRequire(import.meta.url);
-const { version: appVersion } = require("./package.json");
+const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
+const appVersion: string = packageJson.version;
 
 function getResolvedConfig(mode: string) {
     const env = loadEnv(mode, process.cwd(), "");
