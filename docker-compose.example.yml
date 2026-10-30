@@ -30,12 +30,12 @@ services:
       - FEATURED_PLAYLIST_NAME=Featured Movies
 
       # Custom Branding Assets (relative paths or external URLs)
-      - APP_LOGO_URL=/assets/branding/Logo.png
+      - APP_LOGO_URL=/assets/branding/logo.png
       - APP_ICON_URL=/assets/branding/icon.png
       - APP_FAVICON_URL=/assets/branding/favicon.png
 
     # Optional: Mount custom branding files directly into the container
     # volumes:
-    #   - ./custom-branding/logo.png:/usr/share/nginx/html/assets/branding/Logo.png:ro
+    #   - ./custom-branding/logo.png:/usr/share/nginx/html/assets/branding/logo.png:ro
     #   - ./custom-branding/icon.png:/usr/share/nginx/html/assets/branding/icon.png:ro
     #   - ./custom-branding/favicon.png:/usr/share/nginx/html/assets/branding/favicon.png:ro

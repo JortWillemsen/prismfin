@@ -29,7 +29,7 @@ export function getAppLogoUrl(): string {
     return (
         window.__PRISMFIN_CONFIG__?.appLogoUrl ||
         import.meta.env?.VITE_APP_LOGO_URL ||
-        "/assets/branding/Logo.png"
+        "/assets/branding/logo.png"
     );
 }
 

@@ -11,7 +11,7 @@ function getResolvedConfig(mode: string) {
         appLogoUrl:
             env.APP_LOGO_URL ||
             env.VITE_APP_LOGO_URL ||
-            "/assets/branding/Logo.png",
+            "/assets/branding/logo.png",
         appIconUrl:
             env.APP_ICON_URL ||
             env.VITE_APP_ICON_URL ||
@@ -146,22 +146,22 @@ export default defineConfig(({ mode }) => {
         },
     };
 
-    const keyPath = path.resolve(__dirname, "./localhost.key");
-    const certPath = path.resolve(__dirname, "./localhost.crt");
+    // check if dirname exists
+    if (!import.meta.dirname) {
+        throw new Error("Unable to determine current directory");
+    }
+
+    path.resolve(import.meta.dirname, './src');
+
+    const keyPath = path.resolve(import.meta.dirname, "./localhost.key");
+    const certPath = path.resolve(import.meta.dirname, "./localhost.crt");
     const hasCert = fs.existsSync(keyPath) && fs.existsSync(certPath);
 
     return {
         plugins: [deno(), react(), runtimeBrandingPlugin],
-        css: {
-            preprocessorOptions: {
-                scss: {
-                    api: "modern-compiler",
-                },
-            },
-        },
         resolve: {
             alias: {
-                "@": path.resolve(__dirname, "./src"),
+                "@": path.resolve(import.meta.dirname, "./src"),
             },
         },
         build: {
