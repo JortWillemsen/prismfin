@@ -3,6 +3,10 @@ import deno from "@deno/vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import fs from "node:fs";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const { version: appVersion } = require("./package.json");
 
 function getResolvedConfig(mode: string) {
     const env = loadEnv(mode, process.cwd(), "");
@@ -157,8 +161,46 @@ export default defineConfig(({ mode }) => {
     const certPath = path.resolve(import.meta.dirname, "./localhost.crt");
     const hasCert = fs.existsSync(keyPath) && fs.existsSync(certPath);
 
+    const serviceWorkerVersionPlugin: Plugin = {
+        name: "sw-version",
+        configureServer(server) {
+            server.middlewares.use((req, res, next) => {
+                if (req.url === "/sw.js") {
+                    const swPath = path.resolve(
+                        import.meta.dirname,
+                        "./public/sw.js"
+                    );
+                    const content = fs.readFileSync(swPath, "utf-8");
+                    res.setHeader("Content-Type", "application/javascript");
+                    res.setHeader(
+                        "Cache-Control",
+                        "no-cache, no-store, must-revalidate"
+                    );
+                    res.end(
+                        content.replace("__APP_VERSION__", appVersion)
+                    );
+                    return;
+                }
+                next();
+            });
+        },
+        writeBundle() {
+            const swPath = path.resolve(
+                import.meta.dirname,
+                "./dist/sw.js"
+            );
+            if (fs.existsSync(swPath)) {
+                const content = fs.readFileSync(swPath, "utf-8");
+                fs.writeFileSync(
+                    swPath,
+                    content.replace("__APP_VERSION__", appVersion)
+                );
+            }
+        },
+    };
+
     return {
-        plugins: [deno(), react(), runtimeBrandingPlugin],
+        plugins: [deno(), react(), runtimeBrandingPlugin, serviceWorkerVersionPlugin],
         resolve: {
             alias: {
                 "@": path.resolve(import.meta.dirname, "./src"),
