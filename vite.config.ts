@@ -1,7 +1,11 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
+import deno from "@deno/vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import fs from "node:fs";
+
+const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
+const appVersion: string = packageJson.version;
 
 function getResolvedConfig(mode: string) {
     const env = loadEnv(mode, process.cwd(), "");
@@ -10,7 +14,7 @@ function getResolvedConfig(mode: string) {
         appLogoUrl:
             env.APP_LOGO_URL ||
             env.VITE_APP_LOGO_URL ||
-            "/assets/branding/Logo.png",
+            "/assets/branding/logo.png",
         appIconUrl:
             env.APP_ICON_URL ||
             env.VITE_APP_ICON_URL ||
@@ -145,22 +149,60 @@ export default defineConfig(({ mode }) => {
         },
     };
 
-    const keyPath = path.resolve(__dirname, "./localhost.key");
-    const certPath = path.resolve(__dirname, "./localhost.crt");
+    // check if dirname exists
+    if (!import.meta.dirname) {
+        throw new Error("Unable to determine current directory");
+    }
+
+    const rootDir = import.meta.dirname;
+
+    const keyPath = path.resolve(rootDir, "./localhost.key");
+    const certPath = path.resolve(rootDir, "./localhost.crt");
     const hasCert = fs.existsSync(keyPath) && fs.existsSync(certPath);
 
-    return {
-        plugins: [react(), runtimeBrandingPlugin],
-        css: {
-            preprocessorOptions: {
-                scss: {
-                    api: "modern-compiler",
-                },
-            },
+    const serviceWorkerVersionPlugin: Plugin = {
+        name: "sw-version",
+        configureServer(server) {
+            server.middlewares.use((req, res, next) => {
+                if (req.url === "/sw.js") {
+                    const swPath = path.resolve(
+                        rootDir,
+                        "./public/sw.js"
+                    );
+                    const content = fs.readFileSync(swPath, "utf-8");
+                    res.setHeader("Content-Type", "application/javascript");
+                    res.setHeader(
+                        "Cache-Control",
+                        "no-cache, no-store, must-revalidate"
+                    );
+                    res.end(
+                        content.replace("__APP_VERSION__", appVersion)
+                    );
+                    return;
+                }
+                next();
+            });
         },
+        writeBundle() {
+            const swPath = path.resolve(
+                rootDir,
+                "./dist/sw.js"
+            );
+            if (fs.existsSync(swPath)) {
+                const content = fs.readFileSync(swPath, "utf-8");
+                fs.writeFileSync(
+                    swPath,
+                    content.replace("__APP_VERSION__", appVersion)
+                );
+            }
+        },
+    };
+
+    return {
+        plugins: [deno(), react(), runtimeBrandingPlugin, serviceWorkerVersionPlugin],
         resolve: {
             alias: {
-                "@": path.resolve(__dirname, "./src"),
+                "@": path.resolve(rootDir, "./src"),
             },
         },
         build: {

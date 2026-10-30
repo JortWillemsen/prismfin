@@ -1,5 +1,5 @@
 
-![logo](public/assets/branding/Logo.png)
+![logo](public/assets/branding/logo.png)
 
 **Prismfin is a whitelabel Jellyfin web client based on Apple's Liquid Glass design language. It offers a full desktop- and a Progressive Web App (PWA) mobile experience.**
 

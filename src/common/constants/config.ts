@@ -14,7 +14,7 @@ declare global {
     }
 }
 
-export const CLIENT_VERSION = "0.7.0";
+export const CLIENT_VERSION = "0.7.1";
 export const DEVICE_NAME = "Web Client";
 
 export function getAppName(): string {
@@ -29,7 +29,7 @@ export function getAppLogoUrl(): string {
     return (
         window.__PRISMFIN_CONFIG__?.appLogoUrl ||
         import.meta.env?.VITE_APP_LOGO_URL ||
-        "/assets/branding/Logo.png"
+        "/assets/branding/logo.png"
     );
 }
 
