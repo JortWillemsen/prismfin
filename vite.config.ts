@@ -152,13 +152,6 @@ export default defineConfig(({ mode }) => {
 
     return {
         plugins: [deno(), react(), runtimeBrandingPlugin],
-        css: {
-            preprocessorOptions: {
-                scss: {
-                    api: "modern-compiler",
-                },
-            },
-        },
         resolve: {
             alias: {
                 "@": path.resolve(__dirname, "./src"),
