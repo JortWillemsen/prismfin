@@ -10,7 +10,7 @@ clean_val() {
 
 # Resolve environment variables, prioritizing direct names then VITE_* prefixes
 RAW_APP_NAME="${APP_NAME:-${VITE_APP_NAME:-PrismFin}}"
-RAW_LOGO_URL="${APP_LOGO_URL:-${VITE_APP_LOGO_URL:-/assets/branding/Logo.png}}"
+RAW_LOGO_URL="${APP_LOGO_URL:-${VITE_APP_LOGO_URL:-/assets/branding/logo.png}}"
 RAW_ICON_URL="${APP_ICON_URL:-${VITE_APP_ICON_URL:-/assets/branding/icon.png}}"
 RAW_FAVICON_URL="${APP_FAVICON_URL:-${VITE_APP_FAVICON_URL:-/assets/branding/favicon.png}}"
 RAW_ACCENT_COLOR="${APP_ACCENT_COLOR:-${VITE_APP_ACCENT_COLOR:-#06A1DB}}"

@@ -11,7 +11,7 @@ function getResolvedConfig(mode: string) {
         appLogoUrl:
             env.APP_LOGO_URL ||
             env.VITE_APP_LOGO_URL ||
-            "/assets/branding/Logo.png",
+            "/assets/branding/logo.png",
         appIconUrl:
             env.APP_ICON_URL ||
             env.VITE_APP_ICON_URL ||
