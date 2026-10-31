@@ -3,10 +3,9 @@ import deno from "@deno/vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
 import fs from "node:fs";
-import { createRequire } from "node:module";
 
-const require = createRequire(import.meta.url);
-const { version: appVersion } = require("./package.json");
+const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
+const appVersion: string = packageJson.version;
 
 function getResolvedConfig(mode: string) {
     const env = loadEnv(mode, process.cwd(), "");
@@ -155,10 +154,10 @@ export default defineConfig(({ mode }) => {
         throw new Error("Unable to determine current directory");
     }
 
-    path.resolve(import.meta.dirname, './src');
+    const rootDir = import.meta.dirname;
 
-    const keyPath = path.resolve(import.meta.dirname, "./localhost.key");
-    const certPath = path.resolve(import.meta.dirname, "./localhost.crt");
+    const keyPath = path.resolve(rootDir, "./localhost.key");
+    const certPath = path.resolve(rootDir, "./localhost.crt");
     const hasCert = fs.existsSync(keyPath) && fs.existsSync(certPath);
 
     const serviceWorkerVersionPlugin: Plugin = {
@@ -167,7 +166,7 @@ export default defineConfig(({ mode }) => {
             server.middlewares.use((req, res, next) => {
                 if (req.url === "/sw.js") {
                     const swPath = path.resolve(
-                        import.meta.dirname,
+                        rootDir,
                         "./public/sw.js"
                     );
                     const content = fs.readFileSync(swPath, "utf-8");
@@ -186,7 +185,7 @@ export default defineConfig(({ mode }) => {
         },
         writeBundle() {
             const swPath = path.resolve(
-                import.meta.dirname,
+                rootDir,
                 "./dist/sw.js"
             );
             if (fs.existsSync(swPath)) {
@@ -203,7 +202,7 @@ export default defineConfig(({ mode }) => {
         plugins: [deno(), react(), runtimeBrandingPlugin, serviceWorkerVersionPlugin],
         resolve: {
             alias: {
-                "@": path.resolve(import.meta.dirname, "./src"),
+                "@": path.resolve(rootDir, "./src"),
             },
         },
         build: {
