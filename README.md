@@ -1,5 +1,5 @@
 
-![logo](public/assets/branding/Logo.png)
+![logo](public/assets/branding/logo.png)
 
 **Prismfin is a whitelabel Jellyfin web client based on Apple's Liquid Glass design language. It offers a full desktop- and a Progressive Web App (PWA) mobile experience.**
 
@@ -82,7 +82,7 @@ docker run -d \
   -p 8080:80 \
   -e APP_NAME="Prismfin" \
   -e DEFAULT_SERVER_URL="https://jellyfin.example.com" \
-  -e JELLYFIN_INTERNAL_URL="http://jellyfin.local:8096:30013" \
+  -e JELLYFIN_INTERNAL_URL="http://jellyfin.local:8096" \
   -e APP_ACCENT_COLOR="#06A1DB" \
   ghcr.io/your-username/prismfin:latest
 ```

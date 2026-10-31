@@ -3,18 +3,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: prismfin:0.7.0
+    image: prismfin:0.7.1
     container_name: prismfin
     restart: unless-stopped
     ports:
       - "8080:80"
     environment:
-      - DEFAULT_SERVER_URL=http://jellyfin.local:8096:30013
+      - DEFAULT_SERVER_URL=http://jellyfin.local:8096
       - APP_NAME=PrismFin
       - APP_ACCENT_COLOR=#06A1DB
       - FEATURED_PLAYLIST_NAME=Featured
       # Optional: custom branding asset paths or external URLs
-      - APP_LOGO_URL=/assets/branding/Logo.png
+      - APP_LOGO_URL=/assets/branding/logo.png
       - APP_ICON_URL=/assets/branding/icon.png
       - APP_FAVICON_URL=/assets/branding/favicon.png
     # Optional: mount custom branding assets without rebuilding the image

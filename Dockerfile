@@ -1,7 +1,7 @@
 # ==============================================================================
 # Stage 1: Build Application with Deno
 # ==============================================================================
-FROM denoland/deno:alpine AS builder
+FROM denoland/deno:debian AS builder
 
 WORKDIR /app
 
