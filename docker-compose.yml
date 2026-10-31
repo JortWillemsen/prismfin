@@ -9,7 +9,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      - DEFAULT_SERVER_URL=http://jellyfin.local:8096:30013
+      - DEFAULT_SERVER_URL=http://jellyfin.local:8096
       - APP_NAME=PrismFin
       - APP_ACCENT_COLOR=#06A1DB
       - FEATURED_PLAYLIST_NAME=Featured

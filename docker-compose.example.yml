@@ -20,7 +20,7 @@ services:
       - "8080:80"
     environment:
       # Jellyfin Media Server address (accessible by the client's browser)
-      - DEFAULT_SERVER_URL=https://jellyfin.example.com
+      - DEFAULT_SERVER_URL=http://jellyfin.local:8096
 
       # Client & Branding Configuration
       - APP_NAME=MyCinema

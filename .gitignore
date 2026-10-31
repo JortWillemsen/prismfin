@@ -10,3 +10,5 @@ public/config.js
 .env.*.local
 .env.*
 !.env.example
+docker-compose.yml
+docker-compose.yaml
