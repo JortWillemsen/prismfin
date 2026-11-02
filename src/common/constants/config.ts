@@ -3,6 +3,7 @@ export interface PrismFinRuntimeConfig {
     appLogoUrl?: string;
     appIconUrl?: string;
     appFaviconUrl?: string;
+    appPwaIconUrl?: string;
     accentColor?: string;
     featuredPlaylist?: string;
     defaultServerUrl?: string;
@@ -46,6 +47,14 @@ export function getAppFaviconUrl(): string {
         window.__PRISMFIN_CONFIG__?.appFaviconUrl ||
         import.meta.env?.VITE_APP_FAVICON_URL ||
         "/assets/branding/favicon.png"
+    );
+}
+
+export function getAppPwaIconUrl(): string {
+    return (
+        window.__PRISMFIN_CONFIG__?.appPwaIconUrl ||
+        import.meta.env?.VITE_APP_PWA_ICON_URL ||
+        "/assets/branding/pwa-icon-maskable-512.png"
     );
 }
 
