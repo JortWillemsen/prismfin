@@ -13,6 +13,7 @@ RAW_APP_NAME="${APP_NAME:-${VITE_APP_NAME:-PrismFin}}"
 RAW_LOGO_URL="${APP_LOGO_URL:-${VITE_APP_LOGO_URL:-/assets/branding/logo.png}}"
 RAW_ICON_URL="${APP_ICON_URL:-${VITE_APP_ICON_URL:-/assets/branding/icon.png}}"
 RAW_FAVICON_URL="${APP_FAVICON_URL:-${VITE_APP_FAVICON_URL:-/assets/branding/favicon.png}}"
+RAW_PWA_ICON_URL="${APP_PWA_ICON_URL:-${VITE_APP_PWA_ICON_URL:-/assets/branding/pwa-icon-maskable-512.png}}"
 RAW_ACCENT_COLOR="${APP_ACCENT_COLOR:-${VITE_APP_ACCENT_COLOR:-#06A1DB}}"
 RAW_FEATURED_PLAYLIST="${FEATURED_PLAYLIST_NAME:-${VITE_FEATURED_PLAYLIST_NAME:-Featured}}"
 RAW_SERVER_URL="${DEFAULT_SERVER_URL:-${VITE_JELLYFIN_SERVER_URL:-http://jellyfin.local:8096}}"
@@ -22,6 +23,7 @@ CLEAN_APP_NAME="$(clean_val "$RAW_APP_NAME")"
 CLEAN_LOGO_URL="$(clean_val "$RAW_LOGO_URL")"
 CLEAN_ICON_URL="$(clean_val "$RAW_ICON_URL")"
 CLEAN_FAVICON_URL="$(clean_val "$RAW_FAVICON_URL")"
+CLEAN_PWA_ICON_URL="$(clean_val "$RAW_PWA_ICON_URL")"
 CLEAN_ACCENT_COLOR="$(clean_val "$RAW_ACCENT_COLOR")"
 CLEAN_FEATURED_PLAYLIST="$(clean_val "$RAW_FEATURED_PLAYLIST")"
 CLEAN_SERVER_URL="$(clean_val "$RAW_SERVER_URL")"
@@ -40,6 +42,7 @@ window.__PRISMFIN_CONFIG__ = {
     appLogoUrl: "${CLEAN_LOGO_URL}",
     appIconUrl: "${CLEAN_ICON_URL}",
     appFaviconUrl: "${CLEAN_FAVICON_URL}",
+    appPwaIconUrl: "${CLEAN_PWA_ICON_URL}",
     accentColor: "${CLEAN_ACCENT_COLOR}",
     featuredPlaylist: "${CLEAN_FEATURED_PLAYLIST}",
     defaultServerUrl: "${CLEAN_SERVER_URL}"
@@ -75,7 +78,7 @@ if [ -d "/usr/share/nginx/html" ]; then
             "purpose": "any"
         },
         {
-            "src": "${CLEAN_ICON_URL}",
+            "src": "${CLEAN_PWA_ICON_URL}",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
@@ -106,10 +109,12 @@ if [ -f "$INDEX_FILE" ]; then
     fi
 fi
 
-# Substitute Jellyfin Server URL in Nginx configuration if present
+# Substitute placeholders in Nginx configuration
 if [ -f /etc/nginx/conf.d/default.conf ]; then
     echo "[PrismFin] Configuring Nginx SSO reverse proxy to ${CLEAN_INTERNAL_URL}..."
     sed -i "s|__JELLYFIN_SERVER_URL__|${CLEAN_INTERNAL_URL}|g" /etc/nginx/conf.d/default.conf
+    sed -i "s|__FAVICON_URL__|${CLEAN_FAVICON_URL}|g" /etc/nginx/conf.d/default.conf
+    sed -i "s|__ICON_URL__|${CLEAN_ICON_URL}|g" /etc/nginx/conf.d/default.conf
 fi
 
 exec "$@"

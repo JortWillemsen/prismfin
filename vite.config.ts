@@ -23,6 +23,10 @@ function getResolvedConfig(mode: string) {
             env.APP_FAVICON_URL ||
             env.VITE_APP_FAVICON_URL ||
             "/assets/branding/favicon.png",
+        appPwaIconUrl:
+            env.APP_PWA_ICON_URL ||
+            env.VITE_APP_PWA_ICON_URL ||
+            "/assets/branding/pwa-icon-maskable-512.png",
         accentColor:
             env.APP_ACCENT_COLOR || env.VITE_APP_ACCENT_COLOR || "#06A1DB",
         featuredPlaylist:
@@ -102,7 +106,7 @@ export default defineConfig(({ mode }) => {
                                         purpose: "any",
                                     },
                                     {
-                                        src: currentConfig.appIconUrl,
+                                        src: currentConfig.appPwaIconUrl,
                                         sizes: "512x512",
                                         type: "image/png",
                                         purpose: "maskable",
