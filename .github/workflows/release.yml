@@ -1,0 +1,22 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  verify-vite:
+    uses: ./.github/workflows/vite-build.yml
+
+  verify-docker:
+    needs: verify-vite
+    uses: ./.github/workflows/docker-build.yml
+    with:
+      save-artifact: true
+
+  publish-docker:
+    needs: verify-docker
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/docker-publish.yml
