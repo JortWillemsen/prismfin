@@ -1,13 +1,13 @@
 import { JellyfinClient } from "./jellyfinClient";
 import {
     AuthSession,
-    UserProfile,
     QuickConnectState,
+    UserProfile,
 } from "@/common/types/user";
 import {
-    getAppName,
     CLIENT_VERSION,
     DEVICE_NAME,
+    getAppName,
 } from "@/common/constants/config";
 import { StorageService } from "../storage/storageService";
 
@@ -45,7 +45,7 @@ export class AuthApi {
 
     async authenticateByName(
         username: string,
-        pw: string
+        pw: string,
     ): Promise<AuthSession> {
         const body = JSON.stringify({ Username: username, Pw: pw });
         const res = await this.client.request<AuthenticateResponse>(
@@ -53,7 +53,7 @@ export class AuthApi {
             {
                 method: "POST",
                 body,
-            }
+            },
         );
 
         return {
@@ -70,8 +70,9 @@ export class AuthApi {
     }
 
     async getPublicUsers(): Promise<UserProfile[]> {
-        const list =
-            await this.client.request<PublicUserResponse[]>("/Users/Public");
+        const list = await this.client.request<PublicUserResponse[]>(
+            "/Users/Public",
+        );
         return (list || []).map((u) => ({
             id: u.Id,
             name: u.Name,
@@ -95,9 +96,11 @@ export class AuthApi {
      */
     async validateSsoCallback(
         provider: string,
-        paramsString: string
+        paramsString: string,
     ): Promise<void> {
-        const validateUrl = `/api/sso-validate/${encodeURIComponent(provider)}?${paramsString}`;
+        const validateUrl = `/api/sso-validate/${
+            encodeURIComponent(provider)
+        }?${paramsString}`;
         const response = await fetch(validateUrl, {
             method: "GET",
             credentials: "same-origin",
@@ -109,7 +112,9 @@ export class AuthApi {
         if (!response.ok) {
             const errorText = await response.text().catch(() => "");
             throw new Error(
-                `Failed to validate OIDC callback (${response.status}): ${errorText || response.statusText}`
+                `Failed to validate OIDC callback (${response.status}): ${
+                    errorText || response.statusText
+                }`,
             );
         }
     }
@@ -135,13 +140,15 @@ export class AuthApi {
                     appVersion: CLIENT_VERSION,
                     data: state,
                 }),
-            }
+            },
         );
 
         if (!response.ok) {
             const errorText = await response.text().catch(() => "");
             throw new Error(
-                `Failed to exchange SSO state for Jellyfin token (${response.status}): ${errorText || response.statusText}`
+                `Failed to exchange SSO state for Jellyfin token (${response.status}): ${
+                    errorText || response.statusText
+                }`,
             );
         }
 
@@ -168,7 +175,7 @@ export class AuthApi {
                     "Content-Type": "application/json",
                 },
                 body: "{}",
-            }
+            },
         );
 
         return {
@@ -183,7 +190,7 @@ export class AuthApi {
             "/QuickConnect/Connect",
             {
                 params: { secret },
-            }
+            },
         );
         return !!res.Authenticated;
     }
@@ -193,7 +200,7 @@ export class AuthApi {
             "/Users/AuthenticateWithQuickConnect",
             {
                 params: { secret },
-            }
+            },
         );
 
         return {

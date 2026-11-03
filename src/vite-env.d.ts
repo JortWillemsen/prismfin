@@ -6,6 +6,7 @@ interface ImportMetaEnv {
     readonly VITE_APP_LOGO_URL?: string;
     readonly VITE_APP_ICON_URL?: string;
     readonly VITE_APP_FAVICON_URL?: string;
+    readonly VITE_APP_PWA_ICON_URL?: string;
     readonly VITE_APP_ACCENT_COLOR?: string;
     readonly VITE_FEATURED_PLAYLIST_NAME?: string;
 }

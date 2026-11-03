@@ -3,6 +3,7 @@ export interface PrismFinRuntimeConfig {
     appLogoUrl?: string;
     appIconUrl?: string;
     appFaviconUrl?: string;
+    appPwaIconUrl?: string;
     accentColor?: string;
     featuredPlaylist?: string;
     defaultServerUrl?: string;
@@ -14,7 +15,7 @@ declare global {
     }
 }
 
-export const CLIENT_VERSION = "0.7.1";
+export const CLIENT_VERSION = "0.7.2";
 export const DEVICE_NAME = "Web Client";
 
 export function getAppName(): string {
@@ -46,6 +47,14 @@ export function getAppFaviconUrl(): string {
         window.__PRISMFIN_CONFIG__?.appFaviconUrl ||
         import.meta.env?.VITE_APP_FAVICON_URL ||
         "/assets/branding/favicon.png"
+    );
+}
+
+export function getAppPwaIconUrl(): string {
+    return (
+        window.__PRISMFIN_CONFIG__?.appPwaIconUrl ||
+        import.meta.env?.VITE_APP_PWA_ICON_URL ||
+        "/assets/branding/pwa-icon-maskable-512.png"
     );
 }
 
@@ -120,14 +129,14 @@ export function applyAppBranding(): void {
         document.title = appName;
 
         const appleTitleMeta = document.querySelector(
-            'meta[name="apple-mobile-web-app-title"]'
+            'meta[name="apple-mobile-web-app-title"]',
         );
         if (appleTitleMeta) {
             appleTitleMeta.setAttribute("content", appName);
         }
 
         const appNameMeta = document.querySelector(
-            'meta[name="application-name"]'
+            'meta[name="application-name"]',
         );
         if (appNameMeta) {
             appNameMeta.setAttribute("content", appName);
@@ -142,7 +151,7 @@ export function applyAppBranding(): void {
     const favicon = getAppFaviconUrl();
     if (favicon) {
         const favicons = document.querySelectorAll(
-            "link[rel*='icon']:not([rel='apple-touch-icon'])"
+            "link[rel*='icon']:not([rel='apple-touch-icon'])",
         );
         favicons.forEach((l) => ((l as HTMLLinkElement).href = favicon));
     }
@@ -150,7 +159,7 @@ export function applyAppBranding(): void {
     const iconUrl = getAppIconUrl();
     if (iconUrl && iconUrl !== "/assets/branding/icon.png") {
         const appleIcons = document.querySelectorAll(
-            "link[rel='apple-touch-icon']"
+            "link[rel='apple-touch-icon']",
         );
         appleIcons.forEach((l) => ((l as HTMLLinkElement).href = iconUrl));
     }

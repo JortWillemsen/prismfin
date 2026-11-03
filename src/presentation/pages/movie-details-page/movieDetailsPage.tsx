@@ -62,40 +62,40 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
 
     const backdropUrl = movie.backdropImageTag
         ? getImageUrl(serverUrl, movie.id, "Backdrop", {
-              tag: movie.backdropImageTag,
-              maxWidth: 1920,
-              quality: 90,
-          })
+            tag: movie.backdropImageTag,
+            maxWidth: 1920,
+            quality: 90,
+        })
         : "";
 
     const logoUrl = movie.logoImageTag
         ? getImageUrl(serverUrl, movie.id, "Logo", {
-              tag: movie.logoImageTag,
-              maxWidth: 500,
-          })
+            tag: movie.logoImageTag,
+            maxWidth: 500,
+        })
         : "";
 
     const posterUrl = movie.primaryImageTag
         ? getImageUrl(serverUrl, movie.id, "Primary", {
-              tag: movie.primaryImageTag,
-              maxWidth: 600,
-              quality: 90,
-          })
+            tag: movie.primaryImageTag,
+            maxWidth: 600,
+            quality: 90,
+        })
         : "";
 
     const collectionPosterUrl = collection?.primaryImageTag
         ? getImageUrl(serverUrl, collection.id, "Primary", {
-              tag: collection.primaryImageTag,
-              maxWidth: 320,
-              quality: 85,
-          })
+            tag: collection.primaryImageTag,
+            maxWidth: 320,
+            quality: 85,
+        })
         : "";
 
     const handleToggleFavorite = async () => {
         try {
             const next = await detailsService.toggleFavorite(
                 movie.id,
-                isFavorite
+                isFavorite,
             );
             setIsFavorite(next);
         } catch {
@@ -136,13 +136,15 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
                 <div className="hero-gradient-overlay" />
 
                 <div className="hero-content-left">
-                    {logoUrl ? (
-                        <img
-                            src={logoUrl}
-                            alt={movie.name}
-                            className="details-logo"
-                        />
-                    ) : null}
+                    {logoUrl
+                        ? (
+                            <img
+                                src={logoUrl}
+                                alt={movie.name}
+                                className="details-logo"
+                            />
+                        )
+                        : null}
 
                     <h1 className="details-title-heading">
                         {movie.name}
@@ -154,41 +156,52 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
                     </h1>
 
                     <div className="details-metadata-line">
-                        {movie.criticRating ? (
-                            <>
-                                <span>
-                                    Rotten Tomatoes {movie.criticRating}%
-                                </span>
-                                <span className="meta-separator">•</span>
-                            </>
-                        ) : null}
+                        {movie.criticRating
+                            ? (
+                                <>
+                                    <span>
+                                        Rotten Tomatoes {movie.criticRating}%
+                                    </span>
+                                    <span className="meta-separator">•</span>
+                                </>
+                            )
+                            : null}
 
-                        {movie.communityRating ? (
-                            <>
-                                <span className="badge-accent">
-                                    IMDb {formatScore(movie.communityRating)}
-                                </span>
-                                <span className="meta-separator">•</span>
-                            </>
-                        ) : null}
+                        {movie.communityRating
+                            ? (
+                                <>
+                                    <span className="badge-accent">
+                                        IMDb{" "}
+                                        {formatScore(movie.communityRating)}
+                                    </span>
+                                    <span className="meta-separator">•</span>
+                                </>
+                            )
+                            : null}
 
-                        {movie.productionYear ? (
-                            <>
-                                <span>{movie.productionYear}</span>
-                                <span className="meta-separator desktop-only-meta">
-                                    •
-                                </span>
-                            </>
-                        ) : null}
+                        {movie.productionYear
+                            ? (
+                                <>
+                                    <span>{movie.productionYear}</span>
+                                    <span className="meta-separator desktop-only-meta">
+                                        •
+                                    </span>
+                                </>
+                            )
+                            : null}
 
-                        {movie.runTimeTicks ? (
-                            <span className="desktop-only-meta">
-                                <span>
-                                    {formatDurationTicks(movie.runTimeTicks)}
+                        {movie.runTimeTicks
+                            ? (
+                                <span className="desktop-only-meta">
+                                    <span>
+                                        {formatDurationTicks(
+                                            movie.runTimeTicks,
+                                        )}
+                                    </span>
+                                    <span className="meta-separator">•</span>
                                 </span>
-                                <span className="meta-separator">•</span>
-                            </span>
-                        ) : null}
+                            )
+                            : null}
 
                         {movie.videoResolution && (
                             <span className="badge-pill desktop-only-meta">
@@ -232,21 +245,19 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
 
                         <button
                             type="button"
-                            className={`btn-favorite-circle ${isFavorite ? "favorited" : ""}`}
+                            className={`btn-favorite-circle ${
+                                isFavorite ? "favorited" : ""
+                            }`}
                             onClick={handleToggleFavorite}
-                            title={
-                                isFavorite
-                                    ? "Remove from favorites"
-                                    : "Add to favorites"
-                            }
+                            title={isFavorite
+                                ? "Remove from favorites"
+                                : "Add to favorites"}
                             aria-label="Toggle Favorite"
                         >
                             <img
-                                src={
-                                    isFavorite
-                                        ? "/assets/images/heart-check.svg"
-                                        : "/assets/images/heart-plus.svg"
-                                }
+                                src={isFavorite
+                                    ? "/assets/images/heart-check.svg"
+                                    : "/assets/images/heart-plus.svg"}
                                 alt="Favorite"
                             />
                         </button>
@@ -269,7 +280,9 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
 
                         <button
                             type="button"
-                            className={`mobile-circle-hero-btn ${!collection ? "disabled" : ""}`}
+                            className={`mobile-circle-hero-btn ${
+                                !collection ? "disabled" : ""
+                            }`}
                             onClick={() => {
                                 if (collection) {
                                     navigate({
@@ -289,21 +302,19 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
 
                         <button
                             type="button"
-                            className={`mobile-circle-hero-btn ${isFavorite ? "favorited" : ""}`}
+                            className={`mobile-circle-hero-btn ${
+                                isFavorite ? "favorited" : ""
+                            }`}
                             onClick={handleToggleFavorite}
-                            title={
-                                isFavorite
-                                    ? "Remove from favorites"
-                                    : "Add to favorites"
-                            }
+                            title={isFavorite
+                                ? "Remove from favorites"
+                                : "Add to favorites"}
                             aria-label="Toggle favorite"
                         >
                             <img
-                                src={
-                                    isFavorite
-                                        ? "/assets/images/heart-check.svg"
-                                        : "/assets/images/heart.svg"
-                                }
+                                src={isFavorite
+                                    ? "/assets/images/heart-check.svg"
+                                    : "/assets/images/heart.svg"}
                                 alt="Favorite"
                             />
                         </button>
@@ -312,15 +323,15 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
 
                 <div className="hero-poster-right">
                     <div className="poster-boxart-card">
-                        {posterUrl ? (
-                            <img
-                                src={posterUrl}
-                                alt={movie.name}
-                                className="main-boxart-img"
-                            />
-                        ) : (
-                            <div style={{ padding: 20 }}>{movie.name}</div>
-                        )}
+                        {posterUrl
+                            ? (
+                                <img
+                                    src={posterUrl}
+                                    alt={movie.name}
+                                    className="main-boxart-img"
+                                />
+                            )
+                            : <div style={{ padding: 20 }}>{movie.name}</div>}
 
                         {collection && (
                             <div
@@ -329,27 +340,29 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
                                     navigate({
                                         name: "boxset",
                                         id: collection.id,
-                                    })
-                                }
+                                    })}
                                 title={`Part of ${collection.name}`}
                             >
-                                {collectionPosterUrl ? (
-                                    <img
-                                        src={collectionPosterUrl}
-                                        alt={collection.name}
-                                    />
-                                ) : (
-                                    <div
-                                        style={{
-                                            position: "absolute",
-                                            top: 0,
-                                            left: 0,
-                                            width: "100%",
-                                            height: "100%",
-                                            background: "rgba(30,30,30,0.85)",
-                                        }}
-                                    />
-                                )}
+                                {collectionPosterUrl
+                                    ? (
+                                        <img
+                                            src={collectionPosterUrl}
+                                            alt={collection.name}
+                                        />
+                                    )
+                                    : (
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                top: 0,
+                                                left: 0,
+                                                width: "100%",
+                                                height: "100%",
+                                                background:
+                                                    "rgba(30,30,30,0.85)",
+                                            }}
+                                        />
+                                    )}
                             </div>
                         )}
                     </div>
@@ -425,17 +438,17 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
                             const tileIndex = Math.max(
                                 0,
                                 Math.floor(
-                                    scene.startPositionSeconds / intervalSec
-                                )
+                                    scene.startPositionSeconds / intervalSec,
+                                ),
                             );
                             const tilesPerRow = trickplay?.tileWidth || 10;
                             const tilesPerCol = trickplay?.tileHeight || 10;
                             const tilesPerSheet = Math.max(
                                 1,
-                                tilesPerRow * tilesPerCol
+                                tilesPerRow * tilesPerCol,
                             );
                             const sheetIndex = Math.floor(
-                                tileIndex / tilesPerSheet
+                                tileIndex / tilesPerSheet,
                             );
                             const tileInSheet = tileIndex % tilesPerSheet;
                             const col = tileInSheet % tilesPerRow;
@@ -445,7 +458,11 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
                             const resolutionWidth = trickplay?.width || 320;
                             const trickplayUrl =
                                 session?.serverUrl && session?.accessToken
-                                    ? `${session.serverUrl}/Videos/${movie.id}/Trickplay/${resolutionWidth}/${sheetIndex}.jpg?api_key=${encodeURIComponent(session.accessToken)}&ApiKey=${encodeURIComponent(session.accessToken)}`
+                                    ? `${session.serverUrl}/Videos/${movie.id}/Trickplay/${resolutionWidth}/${sheetIndex}.jpg?api_key=${
+                                        encodeURIComponent(session.accessToken)
+                                    }&ApiKey=${
+                                        encodeURIComponent(session.accessToken)
+                                    }`
                                     : "";
 
                             return (
@@ -454,44 +471,56 @@ export const MovieDetailsPage: React.FC<MovieDetailsPageProps> = ({
                                     className="scene-card-item"
                                     onClick={() =>
                                         handlePlayScene(
-                                            scene.startPositionSeconds
-                                        )
-                                    }
+                                            scene.startPositionSeconds,
+                                        )}
                                 >
                                     <div className="scene-img-wrapper">
-                                        {scene.imageTag ? (
-                                            <img
-                                                src={getImageUrl(
-                                                    serverUrl,
-                                                    movie.id,
-                                                    "Primary",
-                                                    {
-                                                        tag: scene.imageTag,
-                                                        maxWidth: 400,
-                                                    }
-                                                )}
-                                                alt={scene.name}
-                                            />
-                                        ) : trickplayUrl ? (
-                                            <div
-                                                className="scene-trickplay-tile"
-                                                style={{
-                                                    backgroundImage: `url(${trickplayUrl})`,
-                                                    backgroundSize: `${tilesPerRow * 100}% ${tilesPerCol * 100}%`,
-                                                    backgroundPosition: `${(col / denomX) * 100}% ${(row / denomY) * 100}%`,
-                                                }}
-                                            />
-                                        ) : (
-                                            <img
-                                                src={backdropUrl || posterUrl}
-                                                alt={scene.name}
-                                            />
-                                        )}
+                                        {scene.imageTag
+                                            ? (
+                                                <img
+                                                    src={getImageUrl(
+                                                        serverUrl,
+                                                        movie.id,
+                                                        "Primary",
+                                                        {
+                                                            tag: scene.imageTag,
+                                                            maxWidth: 400,
+                                                        },
+                                                    )}
+                                                    alt={scene.name}
+                                                />
+                                            )
+                                            : trickplayUrl
+                                            ? (
+                                                <div
+                                                    className="scene-trickplay-tile"
+                                                    style={{
+                                                        backgroundImage:
+                                                            `url(${trickplayUrl})`,
+                                                        backgroundSize: `${
+                                                            tilesPerRow * 100
+                                                        }% ${
+                                                            tilesPerCol * 100
+                                                        }%`,
+                                                        backgroundPosition: `${
+                                                            (col / denomX) * 100
+                                                        }% ${
+                                                            (row / denomY) * 100
+                                                        }%`,
+                                                    }}
+                                                />
+                                            )
+                                            : (
+                                                <img
+                                                    src={backdropUrl ||
+                                                        posterUrl}
+                                                    alt={scene.name}
+                                                />
+                                            )}
                                     </div>
                                     <div className="scene-meta-label">
-                                        {scene.name} •{" "}
-                                        {formatTimeSeconds(
-                                            scene.startPositionSeconds
+                                        {scene.name} • {formatTimeSeconds(
+                                            scene.startPositionSeconds,
                                         )}
                                     </div>
                                 </div>

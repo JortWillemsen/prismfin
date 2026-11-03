@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { GlassDropdown } from "../glass-dropdown/glassDropdown";
 import "./filter-bar.scss";
@@ -146,16 +146,16 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
     const genresList = genreOptions
         ? [
-              { label: "All Genres", value: "All Genres" },
-              ...genreOptions.map((g) => ({ label: g, value: g })),
-          ]
+            { label: "All Genres", value: "All Genres" },
+            ...genreOptions.map((g) => ({ label: g, value: g })),
+        ]
         : DEFAULT_GENRES;
 
     const studiosList = studioOptions
         ? [
-              { label: "All Studios", value: "All Studios" },
-              ...studioOptions.map((s) => ({ label: s, value: s })),
-          ]
+            { label: "All Studios", value: "All Studios" },
+            ...studioOptions.map((s) => ({ label: s, value: s })),
+        ]
         : DEFAULT_STUDIOS;
 
     const currentMin = minYear ?? MIN_ALLOWED_YEAR;
@@ -169,8 +169,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         ? `${currentMin} - ${currentMax}`
         : "Release Year";
 
-    const isFilterApplied =
-        isCollectionsActive ||
+    const isFilterApplied = isCollectionsActive ||
         (selectedGenres && selectedGenres.length > 0) ||
         (selectedGenre && selectedGenre !== "All Genres") ||
         (selectedStudios && selectedStudios.length > 0) ||
@@ -180,13 +179,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
     const effectiveSortOptions = sortOptions || DEFAULT_SORT_OPTIONS;
 
-    const minPercent =
-        ((currentMin - MIN_ALLOWED_YEAR) /
-            (MAX_ALLOWED_YEAR - MIN_ALLOWED_YEAR)) *
+    const minPercent = ((currentMin - MIN_ALLOWED_YEAR) /
+        (MAX_ALLOWED_YEAR - MIN_ALLOWED_YEAR)) *
         100;
-    const maxPercent =
-        ((currentMax - MIN_ALLOWED_YEAR) /
-            (MAX_ALLOWED_YEAR - MIN_ALLOWED_YEAR)) *
+    const maxPercent = ((currentMax - MIN_ALLOWED_YEAR) /
+        (MAX_ALLOWED_YEAR - MIN_ALLOWED_YEAR)) *
         100;
 
     return (
@@ -200,7 +197,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                     {showCollectionsOption && onToggleCollections && (
                         <button
                             type="button"
-                            className={`filter-pill ${isCollectionsActive ? "active" : ""}`}
+                            className={`filter-pill ${
+                                isCollectionsActive ? "active" : ""
+                            }`}
                             onClick={onToggleCollections}
                         >
                             Collections
@@ -248,10 +247,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                         >
                             <button
                                 type="button"
-                                className={`filter-pill ${hasYearFilter ? "active" : ""}`}
+                                className={`filter-pill ${
+                                    hasYearFilter ? "active" : ""
+                                }`}
                                 onClick={() =>
-                                    setIsYearPopoverOpen(!isYearPopoverOpen)
-                                }
+                                    setIsYearPopoverOpen(!isYearPopoverOpen)}
                                 aria-label="Filter by release year"
                             >
                                 <span>{yearLabel}</span>
@@ -274,7 +274,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                             className="dual-range-highlight"
                                             style={{
                                                 left: `${minPercent}%`,
-                                                width: `${Math.max(0, maxPercent - minPercent)}%`,
+                                                width: `${
+                                                    Math.max(
+                                                        0,
+                                                        maxPercent - minPercent,
+                                                    )
+                                                }%`,
                                             }}
                                         />
                                         <input
@@ -286,17 +291,17 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                             onChange={(e) => {
                                                 const val = parseInt(
                                                     e.target.value,
-                                                    10
+                                                    10,
                                                 );
                                                 const clamped = Math.min(
                                                     val,
-                                                    currentMax
+                                                    currentMax,
                                                 );
                                                 onYearChange(
                                                     clamped <= MIN_ALLOWED_YEAR
                                                         ? undefined
                                                         : clamped,
-                                                    maxYear
+                                                    maxYear,
                                                 );
                                             }}
                                             className="range-slider range-slider-min"
@@ -311,17 +316,17 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                             onChange={(e) => {
                                                 const val = parseInt(
                                                     e.target.value,
-                                                    10
+                                                    10,
                                                 );
                                                 const clamped = Math.max(
                                                     val,
-                                                    currentMin
+                                                    currentMin,
                                                 );
                                                 onYearChange(
                                                     minYear,
                                                     clamped >= MAX_ALLOWED_YEAR
                                                         ? undefined
-                                                        : clamped
+                                                        : clamped,
                                                 );
                                             }}
                                             className="range-slider range-slider-max"
@@ -340,9 +345,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                             onClick={() =>
                                                 onYearChange(
                                                     undefined,
-                                                    undefined
-                                                )
-                                            }
+                                                    undefined,
+                                                )}
                                         >
                                             Reset Year Range
                                         </span>
@@ -375,23 +379,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                             type="button"
                             className="icon-action-pill"
                             onClick={onToggleSortOrder}
-                            title={
-                                sortOrder === "Ascending"
-                                    ? "Sort Ascending"
-                                    : "Sort Descending"
-                            }
+                            title={sortOrder === "Ascending"
+                                ? "Sort Ascending"
+                                : "Sort Descending"}
                             aria-label="Toggle sort order"
                         >
                             <img
-                                src={
-                                    (
+                                src={(
                                         selectedSort === "SortName"
                                             ? sortOrder === "Descending"
                                             : sortOrder === "Ascending"
                                     )
-                                        ? "/assets/images/arrow-up.svg"
-                                        : "/assets/images/arrow-down.svg"
-                                }
+                                    ? "/assets/images/arrow-up.svg"
+                                    : "/assets/images/arrow-down.svg"}
                                 alt={sortOrder}
                             />
                         </button>
@@ -402,7 +402,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 {onResetFilters && (
                     <button
                         type="button"
-                        className={`icon-action-pill reset-btn ${isFilterApplied ? "visible" : ""}`}
+                        className={`icon-action-pill reset-btn ${
+                            isFilterApplied ? "visible" : ""
+                        }`}
                         onClick={onResetFilters}
                         title="Reset all filters and sort"
                         aria-label="Reset all filters and sort"
@@ -437,7 +439,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                                 onClick={() => {
                                                     onResetFilters();
                                                     setIsMobileFilterOpen(
-                                                        false
+                                                        false,
                                                     );
                                                 }}
                                             >
@@ -449,23 +451,25 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                     <div className="flyout-content-scroll">
                                         {showCollectionsOption &&
                                             onToggleCollections && (
-                                                <div className="flyout-section">
-                                                    <span className="flyout-section-label">
-                                                        View
-                                                    </span>
-                                                    <div className="flyout-chips-wrap">
-                                                        <button
-                                                            type="button"
-                                                            className={`flyout-chip ${isCollectionsActive ? "active" : ""}`}
-                                                            onClick={
-                                                                onToggleCollections
-                                                            }
-                                                        >
-                                                            Collections
-                                                        </button>
-                                                    </div>
+                                            <div className="flyout-section">
+                                                <span className="flyout-section-label">
+                                                    View
+                                                </span>
+                                                <div className="flyout-chips-wrap">
+                                                    <button
+                                                        type="button"
+                                                        className={`flyout-chip ${
+                                                            isCollectionsActive
+                                                                ? "active"
+                                                                : ""
+                                                        }`}
+                                                        onClick={onToggleCollections}
+                                                    >
+                                                        Collections
+                                                    </button>
                                                 </div>
-                                            )}
+                                            </div>
+                                        )}
 
                                         {(onSelectGenres || onSelectGenre) && (
                                             <div className="flyout-section">
@@ -480,39 +484,47 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                                             g.value === "";
                                                         const isSelected = isAll
                                                             ? (!selectedGenres ||
-                                                                  selectedGenres.length ===
-                                                                      0) &&
-                                                              (!selectedGenre ||
-                                                                  selectedGenre ===
-                                                                      "All Genres")
-                                                            : selectedGenres?.includes(
-                                                                  String(
-                                                                      g.value
-                                                                  )
-                                                              ) ||
-                                                              selectedGenre ===
-                                                                  g.value;
+                                                                selectedGenres
+                                                                        .length ===
+                                                                    0) &&
+                                                                (!selectedGenre ||
+                                                                    selectedGenre ===
+                                                                        "All Genres")
+                                                            : selectedGenres
+                                                                ?.includes(
+                                                                    String(
+                                                                        g.value,
+                                                                    ),
+                                                                ) ||
+                                                                selectedGenre ===
+                                                                    g.value;
                                                         return (
                                                             <button
                                                                 key={String(
-                                                                    g.value
+                                                                    g.value,
                                                                 )}
                                                                 type="button"
-                                                                className={`flyout-chip ${isSelected ? "active" : ""}`}
+                                                                className={`flyout-chip ${
+                                                                    isSelected
+                                                                        ? "active"
+                                                                        : ""
+                                                                }`}
                                                                 onClick={() => {
                                                                     if (isAll) {
                                                                         if (
                                                                             onSelectGenres
-                                                                        )
+                                                                        ) {
                                                                             onSelectGenres(
-                                                                                []
+                                                                                [],
                                                                             );
+                                                                        }
                                                                         if (
                                                                             onSelectGenre
-                                                                        )
+                                                                        ) {
                                                                             onSelectGenre(
-                                                                                "All Genres"
+                                                                                "All Genres",
                                                                             );
+                                                                        }
                                                                     } else if (
                                                                         onSelectGenres
                                                                     ) {
@@ -520,34 +532,35 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                                                             selectedGenres ||
                                                                             [];
                                                                         const next =
-                                                                            current.includes(
-                                                                                String(
-                                                                                    g.value
-                                                                                )
-                                                                            )
-                                                                                ? current.filter(
-                                                                                      (
-                                                                                          v
-                                                                                      ) =>
-                                                                                          v !==
-                                                                                          g.value
-                                                                                  )
+                                                                            current
+                                                                                    .includes(
+                                                                                        String(
+                                                                                            g.value,
+                                                                                        ),
+                                                                                    )
+                                                                                ? current
+                                                                                    .filter(
+                                                                                        (
+                                                                                            v,
+                                                                                        ) => v !==
+                                                                                            g.value,
+                                                                                    )
                                                                                 : [
-                                                                                      ...current,
-                                                                                      String(
-                                                                                          g.value
-                                                                                      ),
-                                                                                  ];
+                                                                                    ...current,
+                                                                                    String(
+                                                                                        g.value,
+                                                                                    ),
+                                                                                ];
                                                                         onSelectGenres(
-                                                                            next
+                                                                            next,
                                                                         );
                                                                     } else if (
                                                                         onSelectGenre
                                                                     ) {
                                                                         onSelectGenre(
                                                                             String(
-                                                                                g.value
-                                                                            )
+                                                                                g.value,
+                                                                            ),
                                                                         );
                                                                     }
                                                                 }}
@@ -573,50 +586,57 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                                             s.value === "";
                                                         const isSelected = isAll
                                                             ? !selectedStudios ||
-                                                              selectedStudios.length ===
-                                                                  0
-                                                            : selectedStudios?.includes(
-                                                                  String(
-                                                                      s.value
-                                                                  )
-                                                              );
+                                                                selectedStudios
+                                                                        .length ===
+                                                                    0
+                                                            : selectedStudios
+                                                                ?.includes(
+                                                                    String(
+                                                                        s.value,
+                                                                    ),
+                                                                );
                                                         return (
                                                             <button
                                                                 key={String(
-                                                                    s.value
+                                                                    s.value,
                                                                 )}
                                                                 type="button"
-                                                                className={`flyout-chip ${isSelected ? "active" : ""}`}
+                                                                className={`flyout-chip ${
+                                                                    isSelected
+                                                                        ? "active"
+                                                                        : ""
+                                                                }`}
                                                                 onClick={() => {
                                                                     if (isAll) {
                                                                         onSelectStudios(
-                                                                            []
+                                                                            [],
                                                                         );
                                                                     } else {
                                                                         const current =
                                                                             selectedStudios ||
                                                                             [];
                                                                         const next =
-                                                                            current.includes(
-                                                                                String(
-                                                                                    s.value
-                                                                                )
-                                                                            )
-                                                                                ? current.filter(
-                                                                                      (
-                                                                                          v
-                                                                                      ) =>
-                                                                                          v !==
-                                                                                          s.value
-                                                                                  )
+                                                                            current
+                                                                                    .includes(
+                                                                                        String(
+                                                                                            s.value,
+                                                                                        ),
+                                                                                    )
+                                                                                ? current
+                                                                                    .filter(
+                                                                                        (
+                                                                                            v,
+                                                                                        ) => v !==
+                                                                                            s.value,
+                                                                                    )
                                                                                 : [
-                                                                                      ...current,
-                                                                                      String(
-                                                                                          s.value
-                                                                                      ),
-                                                                                  ];
+                                                                                    ...current,
+                                                                                    String(
+                                                                                        s.value,
+                                                                                    ),
+                                                                                ];
                                                                         onSelectStudios(
-                                                                            next
+                                                                            next,
                                                                         );
                                                                     }
                                                                 }}
@@ -646,8 +666,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                                     <div
                                                         className="dual-range-highlight"
                                                         style={{
-                                                            left: `${minPercent}%`,
-                                                            width: `${Math.max(0, maxPercent - minPercent)}%`,
+                                                            left:
+                                                                `${minPercent}%`,
+                                                            width: `${
+                                                                Math.max(
+                                                                    0,
+                                                                    maxPercent -
+                                                                        minPercent,
+                                                                )
+                                                            }%`,
                                                         }}
                                                     />
                                                     <input
@@ -661,19 +688,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                                                 parseInt(
                                                                     e.target
                                                                         .value,
-                                                                    10
+                                                                    10,
                                                                 );
-                                                            const clamped =
-                                                                Math.min(
+                                                            const clamped = Math
+                                                                .min(
                                                                     val,
-                                                                    currentMax
+                                                                    currentMax,
                                                                 );
                                                             onYearChange(
                                                                 clamped <=
-                                                                    MIN_ALLOWED_YEAR
+                                                                        MIN_ALLOWED_YEAR
                                                                     ? undefined
                                                                     : clamped,
-                                                                maxYear
+                                                                maxYear,
                                                             );
                                                         }}
                                                         className="range-slider range-slider-min"
@@ -689,19 +716,19 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                                                 parseInt(
                                                                     e.target
                                                                         .value,
-                                                                    10
+                                                                    10,
                                                                 );
-                                                            const clamped =
-                                                                Math.max(
+                                                            const clamped = Math
+                                                                .max(
                                                                     val,
-                                                                    currentMin
+                                                                    currentMin,
                                                                 );
                                                             onYearChange(
                                                                 minYear,
                                                                 clamped >=
-                                                                    MAX_ALLOWED_YEAR
+                                                                        MAX_ALLOWED_YEAR
                                                                     ? undefined
-                                                                    : clamped
+                                                                    : clamped,
                                                             );
                                                         }}
                                                         className="range-slider range-slider-max"
@@ -714,7 +741,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                             )}
                             <button
                                 type="button"
-                                className={`mobile-floating-btn ${isMobileFilterOpen || isFilterApplied ? "active" : ""}`}
+                                className={`mobile-floating-btn ${
+                                    isMobileFilterOpen || isFilterApplied
+                                        ? "active"
+                                        : ""
+                                }`}
                                 onClick={() => {
                                     setIsMobileFilterOpen(!isMobileFilterOpen);
                                     setIsMobileSortOpen(false);
@@ -749,18 +780,16 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                                     title={sortOrder}
                                                 >
                                                     <img
-                                                        src={
-                                                            (
+                                                        src={(
                                                                 selectedSort ===
-                                                                "SortName"
+                                                                        "SortName"
                                                                     ? sortOrder ===
-                                                                      "Descending"
+                                                                        "Descending"
                                                                     : sortOrder ===
-                                                                      "Ascending"
+                                                                        "Ascending"
                                                             )
-                                                                ? "/assets/images/arrow-up.svg"
-                                                                : "/assets/images/arrow-down.svg"
-                                                        }
+                                                            ? "/assets/images/arrow-up.svg"
+                                                            : "/assets/images/arrow-down.svg"}
                                                         alt={sortOrder}
                                                     />
                                                     <span>{sortOrder}</span>
@@ -772,17 +801,22 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                                 <button
                                                     key={opt.value}
                                                     type="button"
-                                                    className={`flyout-option-pill ${selectedSort === opt.value ? "active" : ""}`}
+                                                    className={`flyout-option-pill ${
+                                                        selectedSort ===
+                                                                opt.value
+                                                            ? "active"
+                                                            : ""
+                                                    }`}
                                                     onClick={() => {
                                                         onSelectSort(opt.value);
                                                         setIsMobileSortOpen(
-                                                            false
+                                                            false,
                                                         );
                                                     }}
                                                 >
                                                     <span>{opt.label}</span>
                                                     {selectedSort ===
-                                                        opt.value && (
+                                                            opt.value && (
                                                         <span className="active-dot">
                                                             •
                                                         </span>
@@ -796,8 +830,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                                     type="button"
                                     className={`mobile-floating-btn ${
                                         isMobileSortOpen ||
-                                        selectedSort !== defaultSort ||
-                                        sortOrder !== "Ascending"
+                                            selectedSort !== defaultSort ||
+                                            sortOrder !== "Ascending"
                                             ? "active"
                                             : ""
                                     }`}
@@ -816,7 +850,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                             </div>
                         )}
                     </div>,
-                    document.body
+                    document.body,
                 )}
         </>
     );

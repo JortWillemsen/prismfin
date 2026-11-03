@@ -53,7 +53,7 @@ export const QuickConnectModal: React.FC = () => {
                     pollTimer = window.setInterval(async () => {
                         try {
                             const session = await authService.pollQuickConnect(
-                                state.secret
+                                state.secret,
                             );
                             if (session && isMounted) {
                                 if (pollTimer) clearInterval(pollTimer);
@@ -69,7 +69,7 @@ export const QuickConnectModal: React.FC = () => {
                     setError(
                         err instanceof Error
                             ? err.message
-                            : "Failed to initiate QuickConnect"
+                            : "Failed to initiate QuickConnect",
                     );
                     setLoading(false);
                 });
@@ -104,22 +104,30 @@ export const QuickConnectModal: React.FC = () => {
                     to this device instantly:
                 </p>
 
-                {loading ? (
-                    <div className="qc-status">
-                        <div className="qc-spinner" />
-                        <span>Generating code...</span>
-                    </div>
-                ) : error ? (
-                    <p style={{ color: "#ff6b6b" }}>{error}</p>
-                ) : qcState ? (
-                    <>
-                        <div className="qc-code-container">{qcState.code}</div>
+                {loading
+                    ? (
                         <div className="qc-status">
                             <div className="qc-spinner" />
-                            <span>Waiting for approval on your device...</span>
+                            <span>Generating code...</span>
                         </div>
-                    </>
-                ) : null}
+                    )
+                    : error
+                    ? <p style={{ color: "#ff6b6b" }}>{error}</p>
+                    : qcState
+                    ? (
+                        <>
+                            <div className="qc-code-container">
+                                {qcState.code}
+                            </div>
+                            <div className="qc-status">
+                                <div className="qc-spinner" />
+                                <span>
+                                    Waiting for approval on your device...
+                                </span>
+                            </div>
+                        </>
+                    )
+                    : null}
 
                 <button
                     type="button"

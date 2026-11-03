@@ -1,7 +1,7 @@
 import { JellyfinClient } from "./jellyfinClient";
 import {
-    PlaybackStreamInfo,
     AudioStreamTrack,
+    PlaybackStreamInfo,
     SubtitleTrack,
 } from "@/common/types/media";
 import { StorageService } from "../storage/storageService";
@@ -61,12 +61,13 @@ export class PlaybackApi {
         title: string,
         maxBitrate?: number,
         audioIndex?: number,
-        subtitleIndex?: number
+        subtitleIndex?: number,
     ): Promise<PlaybackStreamInfo> {
         const deviceId = StorageService.getOrCreateDeviceId();
         const server = this.client.getServerUrl();
-        const streamingBitrate =
-            maxBitrate && maxBitrate > 0 ? maxBitrate : 100000000;
+        const streamingBitrate = maxBitrate && maxBitrate > 0
+            ? maxBitrate
+            : 100000000;
 
         const params: Record<string, string | number | boolean | undefined> = {
             userId,
@@ -167,7 +168,7 @@ export class PlaybackApi {
                         ],
                     },
                 }),
-            }
+            },
         );
 
         const mediaSource = res.MediaSources?.[0];
@@ -184,8 +185,8 @@ export class PlaybackApi {
             if (st.Type === "Audio") {
                 audioStreams.push({
                     index: st.Index,
-                    displayTitle:
-                        st.DisplayTitle || st.Language || `Track ${st.Index}`,
+                    displayTitle: st.DisplayTitle || st.Language ||
+                        `Track ${st.Index}`,
                     language: st.Language,
                     codec: st.Codec,
                     isDefault: !!st.IsDefault,
@@ -193,8 +194,7 @@ export class PlaybackApi {
             } else if (st.Type === "Subtitle") {
                 subtitleStreams.push({
                     index: st.Index,
-                    displayTitle:
-                        st.DisplayTitle ||
+                    displayTitle: st.DisplayTitle ||
                         st.Language ||
                         `Subtitle ${st.Index}`,
                     language: st.Language,
@@ -207,40 +207,38 @@ export class PlaybackApi {
             }
         });
 
-        const defaultAudio =
-            audioStreams.find((a) => a.isDefault)?.index ??
+        const defaultAudio = audioStreams.find((a) => a.isDefault)?.index ??
             audioStreams[0]?.index ??
             0;
-        const defaultSub =
-            subtitleStreams.find((s) => s.isDefault)?.index ?? -1;
+        const defaultSub = subtitleStreams.find((s) => s.isDefault)?.index ??
+            -1;
 
-        const activeAudioIndex =
-            audioIndex !== undefined ? audioIndex : defaultAudio;
+        const activeAudioIndex = audioIndex !== undefined
+            ? audioIndex
+            : defaultAudio;
         const activeAudioTrack = audioStreams.find(
-            (a) => a.index === activeAudioIndex
+            (a) => a.index === activeAudioIndex,
         );
         const audioCodec = activeAudioTrack?.codec?.toLowerCase() || "";
-        const audioNeedsTranscode =
-            audioCodec !== "" &&
+        const audioNeedsTranscode = audioCodec !== "" &&
             !supportedAudioList.includes(audioCodec) &&
             !supportedAudioList.includes(audioCodec.replace(".", ""));
 
         const videoStream = (mediaSource?.MediaStreams || []).find(
-            (s) => s.Type === "Video"
+            (s) => s.Type === "Video",
         );
         const videoCodec = videoStream?.Codec?.toLowerCase() || "";
-        const videoNeedsTranscode =
-            videoCodec !== "" && !supportedVideoList.includes(videoCodec);
+        const videoNeedsTranscode = videoCodec !== "" &&
+            !supportedVideoList.includes(videoCodec);
 
         const container = (mediaSource?.Container || "").toLowerCase();
         const directPlayContainers = ["mp4", "m4v", "mov", "webm"];
         const isContainerDirectPlayable = directPlayContainers.some(
-            (c) => container === c || container.includes(c)
+            (c) => container === c || container.includes(c),
         );
 
         // Check whether direct play of the static file is possible in this browser
-        const canDirectPlay =
-            (!maxBitrate || maxBitrate === 0) &&
+        const canDirectPlay = (!maxBitrate || maxBitrate === 0) &&
             mediaSource?.SupportsDirectPlay === true &&
             isContainerDirectPlayable &&
             !videoNeedsTranscode &&
@@ -250,7 +248,8 @@ export class PlaybackApi {
         const requiresTranscode = !canDirectPlay;
 
         let isHls = false;
-        let streamUrl = `${server}/Videos/${itemId}/stream?static=true&mediaSourceId=${mediaSourceId}&deviceId=${deviceId}&ApiKey=${token}`;
+        let streamUrl =
+            `${server}/Videos/${itemId}/stream?static=true&mediaSourceId=${mediaSourceId}&deviceId=${deviceId}&ApiKey=${token}`;
 
         if (requiresTranscode && mediaSource?.TranscodingUrl) {
             const rawTranscode = mediaSource.TranscodingUrl;
@@ -261,18 +260,21 @@ export class PlaybackApi {
                 !streamUrl.includes("ApiKey=") &&
                 !streamUrl.includes("api_key=")
             ) {
-                streamUrl += `${streamUrl.includes("?") ? "&" : "?"}ApiKey=${token}`;
+                streamUrl += `${
+                    streamUrl.includes("?") ? "&" : "?"
+                }ApiKey=${token}`;
             }
             isHls = true;
         }
 
         const selectedAudioStream = (mediaSource?.MediaStreams || []).find(
-            (s) => s.Index === activeAudioIndex && s.Type === "Audio"
+            (s) => s.Index === activeAudioIndex && s.Type === "Audio",
         );
-        const activeSubtitleIndex =
-            subtitleIndex !== undefined ? subtitleIndex : defaultSub;
+        const activeSubtitleIndex = subtitleIndex !== undefined
+            ? subtitleIndex
+            : defaultSub;
         const selectedSubtitleStream = (mediaSource?.MediaStreams || []).find(
-            (s) => s.Index === activeSubtitleIndex && s.Type === "Subtitle"
+            (s) => s.Index === activeSubtitleIndex && s.Type === "Subtitle",
         );
 
         const transUrl = mediaSource?.TranscodingUrl || "";
@@ -280,14 +282,13 @@ export class PlaybackApi {
         const streamUrlLower = streamUrl.toLowerCase();
 
         const subIndexMatch = (transUrl + " " + streamUrl).match(
-            /[?&]subtitlestreamindex=(\d+)/i
+            /[?&]subtitlestreamindex=(\d+)/i,
         );
         const embeddedTrackIndex = subIndexMatch
             ? parseInt(subIndexMatch[1], 10)
             : undefined;
 
-        const hasEmbeddedSubtitles =
-            isHls &&
+        const hasEmbeddedSubtitles = isHls &&
             (mediaSource?.TranscodingSubtitles === "BurnIn" ||
                 mediaSource?.TranscodingSubtitles === "Encode" ||
                 transUrlLower.includes("burnin") ||
@@ -305,23 +306,23 @@ export class PlaybackApi {
         const transReasons = mediaSource?.TranscodingReasons || [];
 
         // Determine if video is copied directly (Direct Stream / Remux) vs re-encoded (Transcode)
-        const isVideoDirect =
-            transUrlLower.includes("videocodec=copy") ||
+        const isVideoDirect = transUrlLower.includes("videocodec=copy") ||
             (!transReasons.includes("VideoCodecNotSupported") &&
                 !transReasons.includes("VideoProfileNotSupported") &&
                 !transReasons.includes("SecondaryAudioNotSupported") &&
                 !videoNeedsTranscode &&
                 (!maxBitrate || maxBitrate === 0));
 
-        const isAudioDirect =
-            transUrlLower.includes("audiocodec=copy") ||
+        const isAudioDirect = transUrlLower.includes("audiocodec=copy") ||
             (!transReasons.includes("AudioCodecNotSupported") &&
                 !transReasons.includes("AudioChannelsNotSupported") &&
                 !audioNeedsTranscode);
 
         let streamType:
-            "Direct Play" | "Direct Stream" | "Remux" | "Transcoding" =
-            "Direct Play";
+            | "Direct Play"
+            | "Direct Stream"
+            | "Remux"
+            | "Transcoding" = "Direct Play";
 
         if (isHls) {
             if (isVideoDirect && isAudioDirect) {
@@ -349,17 +350,25 @@ export class PlaybackApi {
         if (streamType === "Direct Play") {
             transcodeReasonText = "Direct Play: Native browser playback";
         } else if (streamType === "Remux") {
-            transcodeReasonText = `Remux: Container (${(container || "mkv").toUpperCase()}) repacked to HLS; Video & Audio copied without re-encoding`;
+            transcodeReasonText = `Remux: Container (${
+                (container || "mkv").toUpperCase()
+            }) repacked to HLS; Video & Audio copied without re-encoding`;
         } else if (streamType === "Direct Stream") {
-            transcodeReasonText = `Direct Stream: Video copied directly; Audio (${audioCodec.toUpperCase() || "Audio"}) converted to AAC for browser`;
+            transcodeReasonText =
+                `Direct Stream: Video copied directly; Audio (${
+                    audioCodec.toUpperCase() || "Audio"
+                }) converted to AAC for browser`;
         } else if (maxBitrate && maxBitrate > 0) {
-            transcodeReasonText = `Video transcoded: Bitrate capped to ${Math.round(maxBitrate / 1000000)} Mbps by user quality setting`;
+            transcodeReasonText = `Video transcoded: Bitrate capped to ${
+                Math.round(maxBitrate / 1000000)
+            } Mbps by user quality setting`;
         } else if (transReasons.length > 0) {
             transcodeReasonText = transReasons
                 .map((r) => reasonMap[r] || r)
                 .join(", ");
         } else if (videoNeedsTranscode) {
-            transcodeReasonText = `Video transcoded: Codec ${videoCodec.toUpperCase()} not supported natively by browser`;
+            transcodeReasonText =
+                `Video transcoded: Codec ${videoCodec.toUpperCase()} not supported natively by browser`;
         } else {
             transcodeReasonText = "Video transcoded for browser playback";
         }
@@ -394,11 +403,10 @@ export class PlaybackApi {
             videoWidth: videoStream?.Width,
             videoHeight: videoStream?.Height,
             videoBitrate: videoStream?.BitRate || mediaSource?.Bitrate,
-            videoFps:
-                videoStream?.RealFrameRate || videoStream?.AverageFrameRate,
+            videoFps: videoStream?.RealFrameRate ||
+                videoStream?.AverageFrameRate,
             videoHdr,
-            soundCodec:
-                selectedAudioStream?.Codec?.toUpperCase() ||
+            soundCodec: selectedAudioStream?.Codec?.toUpperCase() ||
                 activeAudioTrack?.codec?.toUpperCase(),
             soundChannels: selectedAudioStream?.Channels,
             soundBitrate: selectedAudioStream?.BitRate,
@@ -416,8 +424,9 @@ export class PlaybackApi {
             playSessionId,
             availableAudioStreams: audioStreams,
             availableSubtitles: subtitleStreams,
-            selectedAudioIndex:
-                audioIndex !== undefined ? audioIndex : defaultAudio,
+            selectedAudioIndex: audioIndex !== undefined
+                ? audioIndex
+                : defaultAudio,
             selectedSubtitleIndex:
                 hasEmbeddedSubtitles && embeddedTrackIndex !== undefined
                     ? embeddedTrackIndex
@@ -431,7 +440,7 @@ export class PlaybackApi {
         itemId: string,
         playSessionId: string | undefined,
         positionTicks: number,
-        token: string
+        token: string,
     ): Promise<void> {
         try {
             await this.client.request("/Sessions/Playing", {
@@ -454,7 +463,7 @@ export class PlaybackApi {
         playSessionId: string | undefined,
         positionTicks: number,
         isPaused: boolean,
-        token: string
+        token: string,
     ): Promise<void> {
         try {
             await this.client.request("/Sessions/Playing/Progress", {
@@ -477,7 +486,7 @@ export class PlaybackApi {
         itemId: string,
         playSessionId: string | undefined,
         positionTicks: number,
-        token: string
+        token: string,
     ): Promise<void> {
         try {
             await this.client.request("/Sessions/Playing/Stopped", {

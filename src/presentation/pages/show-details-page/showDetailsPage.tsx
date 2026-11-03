@@ -56,32 +56,32 @@ export const ShowDetailsPage: React.FC<ShowDetailsPageProps> = ({ showId }) => {
 
     const backdropUrl = show.backdropImageTag
         ? getImageUrl(serverUrl, show.id, "Backdrop", {
-              tag: show.backdropImageTag,
-              maxWidth: 1920,
-              quality: 90,
-          })
+            tag: show.backdropImageTag,
+            maxWidth: 1920,
+            quality: 90,
+        })
         : "";
 
     const logoUrl = show.logoImageTag
         ? getImageUrl(serverUrl, show.id, "Logo", {
-              tag: show.logoImageTag,
-              maxWidth: 500,
-          })
+            tag: show.logoImageTag,
+            maxWidth: 500,
+        })
         : "";
 
     const posterUrl = show.primaryImageTag
         ? getImageUrl(serverUrl, show.id, "Primary", {
-              tag: show.primaryImageTag,
-              maxWidth: 600,
-              quality: 90,
-          })
+            tag: show.primaryImageTag,
+            maxWidth: 600,
+            quality: 90,
+        })
         : "";
 
     const handleToggleFavorite = async () => {
         try {
             const next = await detailsService.toggleFavorite(
                 show.id,
-                isFavorite
+                isFavorite,
             );
             setIsFavorite(next);
         } catch {
@@ -104,11 +104,12 @@ export const ShowDetailsPage: React.FC<ShowDetailsPageProps> = ({ showId }) => {
             try {
                 const seasonData = await detailsService.getSeasonDetails(
                     show.id,
-                    firstSeason.id
+                    firstSeason.id,
                 );
                 if (seasonData.episodes.length > 0) {
-                    const unplayed =
-                        seasonData.episodes.find((e) => !e.played) ||
+                    const unplayed = seasonData.episodes.find((e) =>
+                        !e.played
+                    ) ||
                         seasonData.episodes[0];
                     startPlayback(unplayed);
                     return;
@@ -146,43 +147,51 @@ export const ShowDetailsPage: React.FC<ShowDetailsPageProps> = ({ showId }) => {
                 <div className="hero-gradient-overlay" />
 
                 <div className="hero-content-left">
-                    {logoUrl ? (
-                        <img
-                            src={logoUrl}
-                            alt={show.name}
-                            className="details-logo"
-                        />
-                    ) : null}
+                    {logoUrl
+                        ? (
+                            <img
+                                src={logoUrl}
+                                alt={show.name}
+                                className="details-logo"
+                            />
+                        )
+                        : null}
 
                     <h1 className="details-title-heading">{show.name}</h1>
 
                     <div className="details-metadata-line">
-                        {show.criticRating ? (
-                            <>
-                                <span>
-                                    Rotten Tomatoes {show.criticRating}%
-                                </span>
-                                <span className="meta-separator">•</span>
-                            </>
-                        ) : null}
+                        {show.criticRating
+                            ? (
+                                <>
+                                    <span>
+                                        Rotten Tomatoes {show.criticRating}%
+                                    </span>
+                                    <span className="meta-separator">•</span>
+                                </>
+                            )
+                            : null}
 
-                        {show.communityRating ? (
-                            <>
-                                <span className="badge-accent">
-                                    IMDb {formatScore(show.communityRating)}
-                                </span>
-                                <span className="meta-separator">•</span>
-                            </>
-                        ) : null}
+                        {show.communityRating
+                            ? (
+                                <>
+                                    <span className="badge-accent">
+                                        IMDb {formatScore(show.communityRating)}
+                                    </span>
+                                    <span className="meta-separator">•</span>
+                                </>
+                            )
+                            : null}
 
-                        {show.productionYear ? (
-                            <>
-                                <span>{show.productionYear}</span>
-                                <span className="meta-separator desktop-only-meta">
-                                    •
-                                </span>
-                            </>
-                        ) : null}
+                        {show.productionYear
+                            ? (
+                                <>
+                                    <span>{show.productionYear}</span>
+                                    <span className="meta-separator desktop-only-meta">
+                                        •
+                                    </span>
+                                </>
+                            )
+                            : null}
 
                         {show.videoResolution && (
                             <span className="badge-pill desktop-only-meta">
@@ -225,21 +234,19 @@ export const ShowDetailsPage: React.FC<ShowDetailsPageProps> = ({ showId }) => {
 
                         <button
                             type="button"
-                            className={`btn-favorite-circle ${isFavorite ? "favorited" : ""}`}
+                            className={`btn-favorite-circle ${
+                                isFavorite ? "favorited" : ""
+                            }`}
                             onClick={handleToggleFavorite}
-                            title={
-                                isFavorite
-                                    ? "Remove from favorites"
-                                    : "Add to favorites"
-                            }
+                            title={isFavorite
+                                ? "Remove from favorites"
+                                : "Add to favorites"}
                             aria-label="Toggle Favorite"
                         >
                             <img
-                                src={
-                                    isFavorite
-                                        ? "/assets/images/heart-check.svg"
-                                        : "/assets/images/heart-plus.svg"
-                                }
+                                src={isFavorite
+                                    ? "/assets/images/heart-check.svg"
+                                    : "/assets/images/heart-plus.svg"}
                                 alt="Favorite"
                             />
                         </button>
@@ -262,7 +269,9 @@ export const ShowDetailsPage: React.FC<ShowDetailsPageProps> = ({ showId }) => {
 
                         <button
                             type="button"
-                            className={`mobile-circle-hero-btn ${!show.collectionId ? "disabled" : ""}`}
+                            className={`mobile-circle-hero-btn ${
+                                !show.collectionId ? "disabled" : ""
+                            }`}
                             onClick={() => {
                                 if (show.collectionId) {
                                     navigate({
@@ -282,21 +291,19 @@ export const ShowDetailsPage: React.FC<ShowDetailsPageProps> = ({ showId }) => {
 
                         <button
                             type="button"
-                            className={`mobile-circle-hero-btn ${isFavorite ? "favorited" : ""}`}
+                            className={`mobile-circle-hero-btn ${
+                                isFavorite ? "favorited" : ""
+                            }`}
                             onClick={handleToggleFavorite}
-                            title={
-                                isFavorite
-                                    ? "Remove from favorites"
-                                    : "Add to favorites"
-                            }
+                            title={isFavorite
+                                ? "Remove from favorites"
+                                : "Add to favorites"}
                             aria-label="Toggle favorite"
                         >
                             <img
-                                src={
-                                    isFavorite
-                                        ? "/assets/images/heart-check.svg"
-                                        : "/assets/images/heart.svg"
-                                }
+                                src={isFavorite
+                                    ? "/assets/images/heart-check.svg"
+                                    : "/assets/images/heart.svg"}
                                 alt="Favorite"
                             />
                         </button>
@@ -305,11 +312,9 @@ export const ShowDetailsPage: React.FC<ShowDetailsPageProps> = ({ showId }) => {
 
                 <div className="hero-poster-right">
                     <div className="poster-boxart-card">
-                        {posterUrl ? (
-                            <img src={posterUrl} alt={show.name} />
-                        ) : (
-                            <div style={{ padding: 20 }}>{show.name}</div>
-                        )}
+                        {posterUrl
+                            ? <img src={posterUrl} alt={show.name} />
+                            : <div style={{ padding: 20 }}>{show.name}</div>}
                     </div>
                 </div>
             </section>
@@ -322,7 +327,9 @@ export const ShowDetailsPage: React.FC<ShowDetailsPageProps> = ({ showId }) => {
                     show.audioCodec,
                     show.hdrType,
                     seasons.length > 0
-                        ? `${seasons.length} Season${seasons.length > 1 ? "s" : ""}`
+                        ? `${seasons.length} Season${
+                            seasons.length > 1 ? "s" : ""
+                        }`
                         : null,
                     show.officialRating,
                 ].filter(Boolean);
@@ -360,8 +367,7 @@ export const ShowDetailsPage: React.FC<ShowDetailsPageProps> = ({ showId }) => {
                             name: "season-details",
                             seriesId: show.id,
                             seasonId: seasonItem.id,
-                        })
-                    }
+                        })}
                 />
             )}
 

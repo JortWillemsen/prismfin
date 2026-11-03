@@ -16,7 +16,7 @@ export class JellyfinClient {
     constructor(serverUrl?: string) {
         this.serverUrl = (serverUrl || StorageService.getServerUrl()).replace(
             /\/+$/,
-            ""
+            "",
         );
     }
 
@@ -37,7 +37,8 @@ export class JellyfinClient {
 
     private buildAuthHeader(token?: string): string {
         const deviceId = StorageService.getOrCreateDeviceId();
-        let header = `MediaBrowser Client="${CLIENT_NAME}", Device="${DEVICE_NAME}", DeviceId="${deviceId}", Version="${CLIENT_VERSION}"`;
+        let header =
+            `MediaBrowser Client="${CLIENT_NAME}", Device="${DEVICE_NAME}", DeviceId="${deviceId}", Version="${CLIENT_VERSION}"`;
         if (token) {
             header += `, Token="${token}"`;
         }
@@ -46,7 +47,7 @@ export class JellyfinClient {
 
     async request<T>(
         endpoint: string,
-        options: RequestOptions = {}
+        options: RequestOptions = {},
     ): Promise<T> {
         const { params, token, headers = {}, ...rest } = options;
         const normalizedEndpoint = endpoint.startsWith("/")
@@ -88,13 +89,15 @@ export class JellyfinClient {
                 StorageService.clearSession();
                 if (typeof window !== "undefined") {
                     window.dispatchEvent(
-                        new CustomEvent("prismfin:unauthorized")
+                        new CustomEvent("prismfin:unauthorized"),
                     );
                 }
             }
             const errorText = await response.text().catch(() => "");
             throw new Error(
-                `Jellyfin API error (${response.status}): ${errorText || response.statusText}`
+                `Jellyfin API error (${response.status}): ${
+                    errorText || response.statusText
+                }`,
             );
         }
 

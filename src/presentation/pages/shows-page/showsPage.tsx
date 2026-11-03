@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { MediaItem } from "@/common/types/media";
 import { catalogService } from "@/application/services/catalogService";
 import { MediaCard } from "@/presentation/components/media-card/mediaCard";
@@ -13,7 +13,7 @@ export const ShowsPage: React.FC = () => {
     const [maxYear, setMaxYear] = useState<number | undefined>(undefined);
     const [selectedSort, setSelectedSort] = useState("SortName");
     const [sortOrder, setSortOrder] = useState<"Ascending" | "Descending">(
-        "Ascending"
+        "Ascending",
     );
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
@@ -64,7 +64,7 @@ export const ShowsPage: React.FC = () => {
             maxYear,
             selectedSort,
             sortOrder,
-        ]
+        ],
     );
 
     useEffect(() => {
@@ -85,7 +85,7 @@ export const ShowsPage: React.FC = () => {
 
             if (node) observerRef.current.observe(node);
         },
-        [loading, loadingMore, hasMore, loadShows]
+        [loading, loadingMore, hasMore, loadShows],
     );
 
     const handleResetFilters = () => {
@@ -123,59 +123,60 @@ export const ShowsPage: React.FC = () => {
                 sortOrder={sortOrder}
                 onToggleSortOrder={() =>
                     setSortOrder(
-                        sortOrder === "Ascending" ? "Descending" : "Ascending"
-                    )
-                }
+                        sortOrder === "Ascending" ? "Descending" : "Ascending",
+                    )}
                 onResetFilters={handleResetFilters}
             />
 
-            {loading ? (
-                <div className="shows-grid">
-                    {Array.from({ length: 18 }).map((_, idx) => (
-                        <div key={idx} className="media-card portrait">
-                            <div className="card-poster-wrapper portrait skeleton-shimmer" />
-                            <div
-                                style={{
-                                    height: 16,
-                                    width: "70%",
-                                    margin: "10px auto 0 auto",
-                                    borderRadius: 4,
-                                    background: "rgba(255,255,255,0.06)",
-                                }}
-                            />
-                        </div>
-                    ))}
-                </div>
-            ) : shows.length === 0 ? (
-                <div className="shows-empty">No shows found</div>
-            ) : (
-                <>
+            {loading
+                ? (
                     <div className="shows-grid">
-                        {shows.map((s) => (
-                            <MediaCard
-                                key={s.id}
-                                item={s}
-                                viewMode="Portrait"
-                                showSubtitle
-                            />
+                        {Array.from({ length: 18 }).map((_, idx) => (
+                            <div key={idx} className="media-card portrait">
+                                <div className="card-poster-wrapper portrait skeleton-shimmer" />
+                                <div
+                                    style={{
+                                        height: 16,
+                                        width: "70%",
+                                        margin: "10px auto 0 auto",
+                                        borderRadius: 4,
+                                        background: "rgba(255,255,255,0.06)",
+                                    }}
+                                />
+                            </div>
                         ))}
                     </div>
+                )
+                : shows.length === 0
+                ? <div className="shows-empty">No shows found</div>
+                : (
+                    <>
+                        <div className="shows-grid">
+                            {shows.map((s) => (
+                                <MediaCard
+                                    key={s.id}
+                                    item={s}
+                                    viewMode="Portrait"
+                                    showSubtitle
+                                />
+                            ))}
+                        </div>
 
-                    <div ref={sentinelRef} className="scroll-loader-status">
-                        {loadingMore && (
-                            <div
-                                className="skeleton-shimmer"
-                                style={{
-                                    width: 120,
-                                    height: 6,
-                                    borderRadius: 3,
-                                    margin: "24px auto",
-                                }}
-                            />
-                        )}
-                    </div>
-                </>
-            )}
+                        <div ref={sentinelRef} className="scroll-loader-status">
+                            {loadingMore && (
+                                <div
+                                    className="skeleton-shimmer"
+                                    style={{
+                                        width: 120,
+                                        height: 6,
+                                        borderRadius: 3,
+                                        margin: "24px auto",
+                                    }}
+                                />
+                            )}
+                        </div>
+                    </>
+                )}
         </div>
     );
 };

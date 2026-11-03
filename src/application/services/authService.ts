@@ -3,8 +3,8 @@ import { AuthApi } from "@/infrastructure/jellyfin/authApi";
 import { StorageService } from "@/infrastructure/storage/storageService";
 import {
     AuthSession,
-    UserProfile,
     QuickConnectState,
+    UserProfile,
 } from "@/common/types/user";
 
 export class AuthService {
@@ -35,7 +35,7 @@ export class AuthService {
         }
         const isValid = await this.authApi.validateSession(
             this.currentSession.user.id,
-            this.currentSession.accessToken
+            this.currentSession.accessToken,
         );
         if (!isValid) {
             this.logout();
@@ -49,7 +49,7 @@ export class AuthService {
 
     async loginWithCredentials(
         username: string,
-        pw: string
+        pw: string,
     ): Promise<AuthSession> {
         const session = await this.authApi.authenticateByName(username, pw);
         this.currentSession = session;
@@ -72,7 +72,7 @@ export class AuthService {
 
     async completeSsoCallback(
         provider: string = "keycloak",
-        searchParamsString: string = window.location.search
+        searchParamsString: string = window.location.search,
     ): Promise<AuthSession> {
         const params = new URLSearchParams(searchParamsString);
         const state = params.get("state");
@@ -86,7 +86,7 @@ export class AuthService {
 
         if (!state || !code) {
             throw new Error(
-                'Missing OIDC "state" or "code" query parameters in callback URL.'
+                'Missing OIDC "state" or "code" query parameters in callback URL.',
             );
         }
 

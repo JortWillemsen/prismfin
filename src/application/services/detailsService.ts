@@ -50,12 +50,12 @@ export class DetailsService {
         const movie = await this.mediaApi.getItem(
             user.id,
             movieId,
-            accessToken
+            accessToken,
         );
         const similar = await this.mediaApi.getSimilar(
             user.id,
             movieId,
-            accessToken
+            accessToken,
         );
 
         let collection: MediaItem | undefined;
@@ -63,7 +63,7 @@ export class DetailsService {
             const collections = await this.mediaApi.getItemCollections(
                 user.id,
                 movieId,
-                accessToken
+                accessToken,
             );
             if (collections.length > 0) {
                 collection = collections[0];
@@ -71,7 +71,7 @@ export class DetailsService {
                 collection = await this.mediaApi.getItem(
                     user.id,
                     movie.collectionId,
-                    accessToken
+                    accessToken,
                 );
             }
         } catch {
@@ -99,8 +99,8 @@ export class DetailsService {
         const seasonsWithLogo = seasons.map((season) => ({
             ...season,
             logoImageTag: season.logoImageTag || show.logoImageTag,
-            logoItemId:
-                season.logoItemId || (show.logoImageTag ? show.id : undefined),
+            logoItemId: season.logoItemId ||
+                (show.logoImageTag ? show.id : undefined),
         }));
 
         return {
@@ -113,7 +113,7 @@ export class DetailsService {
 
     async getSeasonDetails(
         seriesId: string,
-        seasonId: string
+        seasonId: string,
     ): Promise<SeasonDetailsData> {
         const { user, accessToken } = this.getSession();
 
@@ -135,7 +135,7 @@ export class DetailsService {
         const boxset = await this.mediaApi.getItem(
             user.id,
             boxsetId,
-            accessToken
+            accessToken,
         );
         const items = await this.mediaApi.getItems(user.id, accessToken, {
             ParentId: boxsetId,
@@ -151,7 +151,7 @@ export class DetailsService {
 
     async toggleFavorite(
         itemId: string,
-        currentIsFavorite: boolean
+        currentIsFavorite: boolean,
     ): Promise<boolean> {
         const { user, accessToken } = this.getSession();
         const nextState = !currentIsFavorite;
@@ -159,7 +159,7 @@ export class DetailsService {
             user.id,
             itemId,
             nextState,
-            accessToken
+            accessToken,
         );
         return nextState;
     }

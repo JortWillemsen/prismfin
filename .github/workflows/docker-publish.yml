@@ -1,0 +1,47 @@
+name: Publish Docker Image
+
+on:
+    workflow_call:
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        steps:
+            - name: Download Docker Image Artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: docker-image
+                  path: /tmp
+
+            - name: Load Docker Image
+              run: docker load --input /tmp/image.tar
+
+            - name: Log in To Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Extract Docker Metadata
+              id: meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ghcr.io/${{ github.repository }}
+                  tags: |
+                      type=semver,pattern={{version}}
+                      type=semver,pattern={{major}}.{{minor}}
+                      type=raw,value=latest
+                      type=sha
+
+            - name: Tag And Push To GHCR
+              env:
+                  TAGS: ${{ steps.meta.outputs.tags }}
+              run: |
+                  for tag in $TAGS; do
+                    docker tag app:built "$tag"
+                    docker push "$tag"
+                  done

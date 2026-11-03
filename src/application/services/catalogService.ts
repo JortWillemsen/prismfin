@@ -2,7 +2,7 @@ import { JellyfinClient } from "@/infrastructure/jellyfin/jellyfinClient";
 import { MediaApi } from "@/infrastructure/jellyfin/mediaApi";
 import { HomeSectionsApi } from "@/infrastructure/jellyfin/homeSectionsApi";
 import { StorageService } from "@/infrastructure/storage/storageService";
-import { MediaItem, HomeSection } from "@/common/types/media";
+import { HomeSection, MediaItem } from "@/common/types/media";
 import { getFeaturedPlaylistName } from "@/common/constants/config";
 import { authService } from "./authService";
 
@@ -40,7 +40,7 @@ export class CatalogService {
         return this.homeSectionsApi.getSingleSection(
             descriptor,
             user.id,
-            accessToken
+            accessToken,
         );
     }
 
@@ -51,13 +51,14 @@ export class CatalogService {
         try {
             const playlists = await this.mediaApi.getPlaylists(
                 user.id,
-                accessToken
+                accessToken,
             );
 
             let targetPlaylist: MediaItem | undefined;
             if (configuredName) {
                 targetPlaylist = playlists.find(
-                    (p) => p.name.toLowerCase() === configuredName.toLowerCase()
+                    (p) =>
+                        p.name.toLowerCase() === configuredName.toLowerCase(),
                 );
             }
 
@@ -72,7 +73,7 @@ export class CatalogService {
                 const preferredNames = ["Featured"];
                 targetPlaylist = playlists.find((p) =>
                     preferredNames.some(
-                        (name) => name.toLowerCase() === p.name.toLowerCase()
+                        (name) => name.toLowerCase() === p.name.toLowerCase(),
                     )
                 );
             }
@@ -86,7 +87,7 @@ export class CatalogService {
                 const items = await this.mediaApi.getPlaylistItems(
                     user.id,
                     targetPlaylist.id,
-                    accessToken
+                    accessToken,
                 );
                 if (items.length > 0) {
                     return items;
@@ -118,7 +119,7 @@ export class CatalogService {
             isCollection?: boolean;
             startIndex?: number;
             limit?: number;
-        } = {}
+        } = {},
     ): Promise<MediaItem[]> {
         const { user, accessToken } = this.getSession();
         const params: Record<string, string | number | boolean | undefined> = {
@@ -130,22 +131,20 @@ export class CatalogService {
             Limit: options.limit ?? 36,
         };
 
-        const allGenres =
-            options.genres && options.genres.length > 0
-                ? options.genres
-                : options.genre && options.genre !== "All Genres"
-                  ? [options.genre]
-                  : [];
+        const allGenres = options.genres && options.genres.length > 0
+            ? options.genres
+            : options.genre && options.genre !== "All Genres"
+            ? [options.genre]
+            : [];
         if (allGenres.length > 0) {
             params.Genres = allGenres.join("|");
         }
 
-        const allStudios =
-            options.studios && options.studios.length > 0
-                ? options.studios
-                : options.studio && options.studio !== "All Studios"
-                  ? [options.studio]
-                  : [];
+        const allStudios = options.studios && options.studios.length > 0
+            ? options.studios
+            : options.studio && options.studio !== "All Studios"
+            ? [options.studio]
+            : [];
         if (allStudios.length > 0) {
             params.Studios = allStudios.join("|");
         }
@@ -172,7 +171,7 @@ export class CatalogService {
             sortOrder?: "Ascending" | "Descending";
             startIndex?: number;
             limit?: number;
-        } = {}
+        } = {},
     ): Promise<MediaItem[]> {
         const { user, accessToken } = this.getSession();
         const params: Record<string, string | number | boolean | undefined> = {
@@ -184,22 +183,20 @@ export class CatalogService {
             Limit: options.limit ?? 36,
         };
 
-        const allGenres =
-            options.genres && options.genres.length > 0
-                ? options.genres
-                : options.genre && options.genre !== "All Genres"
-                  ? [options.genre]
-                  : [];
+        const allGenres = options.genres && options.genres.length > 0
+            ? options.genres
+            : options.genre && options.genre !== "All Genres"
+            ? [options.genre]
+            : [];
         if (allGenres.length > 0) {
             params.Genres = allGenres.join("|");
         }
 
-        const allStudios =
-            options.studios && options.studios.length > 0
-                ? options.studios
-                : options.studio && options.studio !== "All Studios"
-                  ? [options.studio]
-                  : [];
+        const allStudios = options.studios && options.studios.length > 0
+            ? options.studios
+            : options.studio && options.studio !== "All Studios"
+            ? [options.studio]
+            : [];
         if (allStudios.length > 0) {
             params.Studios = allStudios.join("|");
         }
