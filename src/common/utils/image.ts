@@ -19,7 +19,7 @@ export function getImageUrl(
         maxHeight?: number;
         quality?: number;
         tag?: string;
-    }
+    },
 ): string {
     const cleanServer = normalizeImageServerUrl(serverUrl);
     const params = new URLSearchParams();
@@ -51,7 +51,7 @@ export function getImageUrl(
 export function getUserAvatarUrl(
     serverUrl: string,
     userId: string,
-    tag?: string
+    tag?: string,
 ): string {
     const cleanServer = normalizeImageServerUrl(serverUrl);
     const tagPart = tag ? `?tag=${tag}` : "";

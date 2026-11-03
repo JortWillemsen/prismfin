@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useApp } from "@/application/state/appContext";
 import "./account-popup.scss";
 

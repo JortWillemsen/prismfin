@@ -129,14 +129,14 @@ export function applyAppBranding(): void {
         document.title = appName;
 
         const appleTitleMeta = document.querySelector(
-            'meta[name="apple-mobile-web-app-title"]'
+            'meta[name="apple-mobile-web-app-title"]',
         );
         if (appleTitleMeta) {
             appleTitleMeta.setAttribute("content", appName);
         }
 
         const appNameMeta = document.querySelector(
-            'meta[name="application-name"]'
+            'meta[name="application-name"]',
         );
         if (appNameMeta) {
             appNameMeta.setAttribute("content", appName);
@@ -151,7 +151,7 @@ export function applyAppBranding(): void {
     const favicon = getAppFaviconUrl();
     if (favicon) {
         const favicons = document.querySelectorAll(
-            "link[rel*='icon']:not([rel='apple-touch-icon'])"
+            "link[rel*='icon']:not([rel='apple-touch-icon'])",
         );
         favicons.forEach((l) => ((l as HTMLLinkElement).href = favicon));
     }
@@ -159,7 +159,7 @@ export function applyAppBranding(): void {
     const iconUrl = getAppIconUrl();
     if (iconUrl && iconUrl !== "/assets/branding/icon.png") {
         const appleIcons = document.querySelectorAll(
-            "link[rel='apple-touch-icon']"
+            "link[rel='apple-touch-icon']",
         );
         appleIcons.forEach((l) => ((l as HTMLLinkElement).href = iconUrl));
     }

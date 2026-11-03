@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MediaItem } from "@/common/types/media";
 import { useApp } from "@/application/state/appContext";
 import { getImageUrl } from "@/common/utils/image";
@@ -34,11 +34,11 @@ export const MediaCard: React.FC<MediaCardProps> = ({
         ? item.thumbImageTag
             ? "Thumb"
             : item.backdropImageTag
-              ? "Backdrop"
-              : "Primary"
+            ? "Backdrop"
+            : "Primary"
         : item.primaryImageTag
-          ? "Primary"
-          : "Backdrop";
+        ? "Primary"
+        : "Backdrop";
 
     const imageTag = isLandscape
         ? item.thumbImageTag || item.backdropImageTag || item.primaryImageTag
@@ -46,32 +46,30 @@ export const MediaCard: React.FC<MediaCardProps> = ({
 
     const imageUrl = imageTag
         ? getImageUrl(serverUrl, item.id, imageType, {
-              tag: imageTag,
-              maxWidth: isLandscape ? 600 : 400,
-              quality: 85,
-          })
+            tag: imageTag,
+            maxWidth: isLandscape ? 600 : 400,
+            quality: 85,
+        })
         : "";
 
-    const logoUrl =
-        !logoError && serverUrl && item.logoImageTag
-            ? getImageUrl(serverUrl, item.logoItemId || item.id, "Logo", {
-                  tag: item.logoImageTag,
-                  maxWidth: 320,
-              })
-            : "";
+    const logoUrl = !logoError && serverUrl && item.logoImageTag
+        ? getImageUrl(serverUrl, item.logoItemId || item.id, "Logo", {
+            tag: item.logoImageTag,
+            maxWidth: 320,
+        })
+        : "";
 
     const progressPercentage =
         item.playbackPositionTicks && item.runTimeTicks && item.runTimeTicks > 0
             ? Math.min(
-                  100,
-                  (item.playbackPositionTicks / item.runTimeTicks) * 100
-              )
+                100,
+                (item.playbackPositionTicks / item.runTimeTicks) * 100,
+            )
             : item.played
-              ? 100
-              : 0;
+            ? 100
+            : 0;
 
-    const showProgressBar =
-        isLandscape &&
+    const showProgressBar = isLandscape &&
         !item.played &&
         progressPercentage > 0 &&
         progressPercentage < 100;
@@ -100,10 +98,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({
         }
     };
 
-    const displayTitle =
-        item.seriesName && item.seriesName !== item.name
-            ? `${item.seriesName} - ${item.name}`
-            : item.name;
+    const displayTitle = item.seriesName && item.seriesName !== item.name
+        ? `${item.seriesName} - ${item.name}`
+        : item.name;
 
     return (
         <div
@@ -114,37 +111,41 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             aria-label={displayTitle}
         >
             <div
-                className={`card-poster-wrapper ${isLandscape ? "landscape" : "portrait"}`}
+                className={`card-poster-wrapper ${
+                    isLandscape ? "landscape" : "portrait"
+                }`}
             >
                 {!imageLoaded && (
                     <div className="card-skeleton-placeholder skeleton-shimmer" />
                 )}
 
-                {imageUrl ? (
-                    <img
-                        src={imageUrl}
-                        alt={displayTitle}
-                        loading="lazy"
-                        className={imageLoaded ? "loaded" : ""}
-                        onLoad={() => setImageLoaded(true)}
-                    />
-                ) : (
-                    <div
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "rgba(255,255,255,0.35)",
-                            fontSize: "14px",
-                            padding: 12,
-                            textAlign: "center",
-                        }}
-                    >
-                        {displayTitle}
-                    </div>
-                )}
+                {imageUrl
+                    ? (
+                        <img
+                            src={imageUrl}
+                            alt={displayTitle}
+                            loading="lazy"
+                            className={imageLoaded ? "loaded" : ""}
+                            onLoad={() => setImageLoaded(true)}
+                        />
+                    )
+                    : (
+                        <div
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: "rgba(255,255,255,0.35)",
+                                fontSize: "14px",
+                                padding: 12,
+                                textAlign: "center",
+                            }}
+                        >
+                            {displayTitle}
+                        </div>
+                    )}
 
                 {isDirectPlay && (
                     <div className="card-play-overlay">
@@ -153,16 +154,16 @@ export const MediaCard: React.FC<MediaCardProps> = ({
                 )}
 
                 <div className="card-hover-overlay">
-                    {logoUrl ? (
-                        <img
-                            src={logoUrl}
-                            alt={item.name}
-                            className="card-hover-logo"
-                            onError={() => setLogoError(true)}
-                        />
-                    ) : (
-                        <span className="card-hover-title">{item.name}</span>
-                    )}
+                    {logoUrl
+                        ? (
+                            <img
+                                src={logoUrl}
+                                alt={item.name}
+                                className="card-hover-logo"
+                                onError={() => setLogoError(true)}
+                            />
+                        )
+                        : <span className="card-hover-title">{item.name}</span>}
                     {isDirectPlay && (
                         <div className="hover-play-badge">
                             <img
@@ -184,9 +185,9 @@ export const MediaCard: React.FC<MediaCardProps> = ({
             </div>
 
             <div className="card-title">{displayTitle}</div>
-            {showSubtitle && item.productionYear ? (
-                <div className="card-subtitle">{item.productionYear}</div>
-            ) : null}
+            {showSubtitle && item.productionYear
+                ? <div className="card-subtitle">{item.productionYear}</div>
+                : null}
         </div>
     );
 };

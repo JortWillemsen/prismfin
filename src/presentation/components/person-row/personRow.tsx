@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { PersonItem } from "@/common/types/media";
 import { PersonCard } from "../person-card/personCard";
 import "./person-row.scss";
@@ -54,10 +54,14 @@ export const PersonRow: React.FC<PersonRowProps> = ({
 
             <div className="row-scroll-wrapper">
                 <div
-                    className={`row-edge-fade left ${canScrollLeft ? "visible" : ""}`}
+                    className={`row-edge-fade left ${
+                        canScrollLeft ? "visible" : ""
+                    }`}
                 />
                 <div
-                    className={`row-edge-fade right ${canScrollRight ? "visible" : ""}`}
+                    className={`row-edge-fade right ${
+                        canScrollRight ? "visible" : ""
+                    }`}
                 />
 
                 {canScrollLeft && (

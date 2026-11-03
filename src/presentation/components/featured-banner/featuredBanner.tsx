@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MediaItem } from "@/common/types/media";
 import { useApp } from "@/application/state/appContext";
 import { detailsService } from "@/application/services/detailsService";
@@ -18,7 +18,7 @@ export const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
     const { session, navigate, startPlayback } = useApp();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [favoritesMap, setFavoritesMap] = useState<Record<string, boolean>>(
-        {}
+        {},
     );
 
     const touchStartXRef = useRef<number | null>(null);
@@ -58,14 +58,14 @@ export const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
 
     const handleToggleFavorite = async (
         e: React.MouseEvent,
-        item: MediaItem
+        item: MediaItem,
     ) => {
         e.stopPropagation();
         const currentIsFav = favoritesMap[item.id] ?? item.isFavorite;
         try {
             const nextFav = await detailsService.toggleFavorite(
                 item.id,
-                currentIsFav
+                currentIsFav,
             );
             setFavoritesMap((prev) => ({ ...prev, [item.id]: nextFav }));
         } catch {
@@ -131,7 +131,9 @@ export const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
                     {items.map((it, idx) => (
                         <div
                             key={it.id}
-                            className={`mobile-progression-dot ${idx === currentIndex ? "active" : ""}`}
+                            className={`mobile-progression-dot ${
+                                idx === currentIndex ? "active" : ""
+                            }`}
                             onClick={() => setCurrentIndex(idx)}
                         />
                     ))}
@@ -141,34 +143,33 @@ export const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
             <div className="banner-slider">
                 {items.map((item, idx) => {
                     const isActive = idx === currentIndex;
-                    const isPrev =
-                        idx ===
+                    const isPrev = idx ===
                         (currentIndex - 1 + items.length) % items.length;
 
                     const backdropUrl = item.backdropImageTag
                         ? getImageUrl(serverUrl, item.id, "Backdrop", {
-                              tag: item.backdropImageTag,
-                              maxWidth: 1920,
-                              quality: 90,
-                          })
+                            tag: item.backdropImageTag,
+                            maxWidth: 1920,
+                            quality: 90,
+                        })
                         : item.primaryImageTag
-                          ? getImageUrl(serverUrl, item.id, "Primary", {
-                                tag: item.primaryImageTag,
-                                maxWidth: 1920,
-                                quality: 85,
-                            })
-                          : "";
+                        ? getImageUrl(serverUrl, item.id, "Primary", {
+                            tag: item.primaryImageTag,
+                            maxWidth: 1920,
+                            quality: 85,
+                        })
+                        : "";
 
                     const logoUrl = item.logoImageTag
                         ? getImageUrl(
-                              serverUrl,
-                              item.logoItemId || item.id,
-                              "Logo",
-                              {
-                                  tag: item.logoImageTag,
-                                  maxWidth: 500,
-                              }
-                          )
+                            serverUrl,
+                            item.logoItemId || item.id,
+                            "Logo",
+                            {
+                                tag: item.logoImageTag,
+                                maxWidth: 500,
+                            },
+                        )
                         : "";
 
                     const handlePlay = () => startPlayback(item);
@@ -185,7 +186,9 @@ export const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
                     return (
                         <div
                             key={item.id}
-                            className={`banner-slide ${isActive ? "active" : isPrev ? "prev" : ""}`}
+                            className={`banner-slide ${
+                                isActive ? "active" : isPrev ? "prev" : ""
+                            }`}
                         >
                             {backdropUrl && (
                                 <img
@@ -198,44 +201,53 @@ export const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
                             <div className="banner-gradient-overlay" />
 
                             <div className="banner-content">
-                                {logoUrl ? (
-                                    <img
-                                        src={logoUrl}
-                                        alt={item.name}
-                                        className="banner-logo"
-                                    />
-                                ) : (
-                                    <h1 className="banner-title">
-                                        {item.name}
-                                    </h1>
-                                )}
+                                {logoUrl
+                                    ? (
+                                        <img
+                                            src={logoUrl}
+                                            alt={item.name}
+                                            className="banner-logo"
+                                        />
+                                    )
+                                    : (
+                                        <h1 className="banner-title">
+                                            {item.name}
+                                        </h1>
+                                    )}
 
                                 <div className="banner-meta">
-                                    {item.criticRating ? (
-                                        <>
-                                            <span>
-                                                Rotten Tomatoes{" "}
-                                                {item.criticRating}%
-                                            </span>
-                                            <span className="meta-dot">•</span>
-                                        </>
-                                    ) : null}
+                                    {item.criticRating
+                                        ? (
+                                            <>
+                                                <span>
+                                                    Rotten Tomatoes{" "}
+                                                    {item.criticRating}%
+                                                </span>
+                                                <span className="meta-dot">
+                                                    •
+                                                </span>
+                                            </>
+                                        )
+                                        : null}
 
-                                    {item.communityRating ? (
-                                        <>
-                                            <span className="rating-badge">
-                                                IMDb{" "}
-                                                {formatScore(
-                                                    item.communityRating
-                                                )}
-                                            </span>
-                                            <span className="meta-dot">•</span>
-                                        </>
-                                    ) : null}
+                                    {item.communityRating
+                                        ? (
+                                            <>
+                                                <span className="rating-badge">
+                                                    IMDb {formatScore(
+                                                        item.communityRating,
+                                                    )}
+                                                </span>
+                                                <span className="meta-dot">
+                                                    •
+                                                </span>
+                                            </>
+                                        )
+                                        : null}
 
-                                    {item.productionYear ? (
-                                        <span>{item.productionYear}</span>
-                                    ) : null}
+                                    {item.productionYear
+                                        ? <span>{item.productionYear}</span>
+                                        : null}
                                 </div>
 
                                 {item.overview && (
@@ -292,23 +304,20 @@ export const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
 
                                     <button
                                         type="button"
-                                        className={`mobile-circle-action-btn ${isFav ? "favorited" : ""}`}
+                                        className={`mobile-circle-action-btn ${
+                                            isFav ? "favorited" : ""
+                                        }`}
                                         onClick={(e) =>
-                                            handleToggleFavorite(e, item)
-                                        }
-                                        title={
-                                            isFav
-                                                ? "Remove from favorites"
-                                                : "Add to favorites"
-                                        }
+                                            handleToggleFavorite(e, item)}
+                                        title={isFav
+                                            ? "Remove from favorites"
+                                            : "Add to favorites"}
                                         aria-label="Toggle favorite"
                                     >
                                         <img
-                                            src={
-                                                isFav
-                                                    ? "/assets/images/heart-check.svg"
-                                                    : "/assets/images/heart.svg"
-                                            }
+                                            src={isFav
+                                                ? "/assets/images/heart-check.svg"
+                                                : "/assets/images/heart.svg"}
                                             alt="Favorite"
                                         />
                                     </button>
@@ -345,7 +354,9 @@ export const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
                         {items.map((it, idx) => (
                             <div
                                 key={it.id}
-                                className={`indicator-dot ${idx === currentIndex ? "active" : ""}`}
+                                className={`indicator-dot ${
+                                    idx === currentIndex ? "active" : ""
+                                }`}
                                 onClick={() => setCurrentIndex(idx)}
                             />
                         ))}

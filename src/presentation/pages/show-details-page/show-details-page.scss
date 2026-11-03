@@ -323,26 +323,26 @@
             bottom: 0;
             background:
                 radial-gradient(
-                    circle at center,
-                    transparent 35%,
-                    rgba(0, 0, 0, 0.7) 70%,
-                    #000000 100%
-                ),
+                circle at center,
+                transparent 35%,
+                rgba(0, 0, 0, 0.7) 70%,
+                #000000 100%
+            ),
                 linear-gradient(
-                    to right,
-                    #000000 0%,
-                    rgba(0, 0, 0, 0.95) 25%,
-                    rgba(0, 0, 0, 0.8) 55%,
-                    rgba(0, 0, 0, 0.45) 85%,
-                    rgba(0, 0, 0, 0.8) 100%
-                ),
+                to right,
+                #000000 0%,
+                rgba(0, 0, 0, 0.95) 25%,
+                rgba(0, 0, 0, 0.8) 55%,
+                rgba(0, 0, 0, 0.45) 85%,
+                rgba(0, 0, 0, 0.8) 100%
+            ),
                 linear-gradient(
-                    to top,
-                    #000000 0%,
-                    rgba(0, 0, 0, 0.85) 25%,
-                    rgba(0, 0, 0, 0.2) 60%,
-                    rgba(0, 0, 0, 0.7) 100%
-                );
+                to top,
+                #000000 0%,
+                rgba(0, 0, 0, 0.85) 25%,
+                rgba(0, 0, 0, 0.2) 60%,
+                rgba(0, 0, 0, 0.7) 100%
+            );
             pointer-events: none;
         }
 

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { MediaItem } from "@/common/types/media";
 import { MediaCard } from "../media-card/mediaCard";
 import "./media-row.scss";
@@ -60,10 +60,18 @@ export const MediaRow: React.FC<MediaRowProps> = ({
                     {[1, 2, 3, 4, 5, 6].map((idx) => (
                         <div
                             key={idx}
-                            className={`media-card ${viewMode === "Landscape" ? "landscape" : "portrait"}`}
+                            className={`media-card ${
+                                viewMode === "Landscape"
+                                    ? "landscape"
+                                    : "portrait"
+                            }`}
                         >
                             <div
-                                className={`card-poster-wrapper skeleton-shimmer ${viewMode === "Landscape" ? "landscape" : "portrait"}`}
+                                className={`card-poster-wrapper skeleton-shimmer ${
+                                    viewMode === "Landscape"
+                                        ? "landscape"
+                                        : "portrait"
+                                }`}
                             />
                             <div
                                 style={{
@@ -93,10 +101,14 @@ export const MediaRow: React.FC<MediaRowProps> = ({
 
             <div className={`row-scroll-wrapper ${viewMode.toLowerCase()}`}>
                 <div
-                    className={`row-edge-fade left ${canScrollLeft ? "visible" : ""}`}
+                    className={`row-edge-fade left ${
+                        canScrollLeft ? "visible" : ""
+                    }`}
                 />
                 <div
-                    className={`row-edge-fade right ${canScrollRight ? "visible" : ""}`}
+                    className={`row-edge-fade right ${
+                        canScrollRight ? "visible" : ""
+                    }`}
                 />
 
                 {canScrollLeft && (
@@ -134,11 +146,9 @@ export const MediaRow: React.FC<MediaRowProps> = ({
                             item={item}
                             viewMode={viewMode}
                             directPlay={directPlay}
-                            onClick={
-                                onItemClick
-                                    ? () => onItemClick(item)
-                                    : undefined
-                            }
+                            onClick={onItemClick
+                                ? () => onItemClick(item)
+                                : undefined}
                         />
                     ))}
                 </div>

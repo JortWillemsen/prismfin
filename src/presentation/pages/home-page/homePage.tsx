@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MediaItem, HomeSection } from "@/common/types/media";
+import { HomeSection, MediaItem } from "@/common/types/media";
 import { catalogService } from "@/application/services/catalogService";
 import { FeaturedBanner } from "@/presentation/components/featured-banner/featuredBanner";
 import { MediaRow } from "@/presentation/components/media-row/mediaRow";
@@ -30,8 +30,9 @@ export const HomePage: React.FC = () => {
         catalogService
             .getSectionDescriptors()
             .then(async (descriptors) => {
-                if (!isMounted || !descriptors || descriptors.length === 0)
+                if (!isMounted || !descriptors || descriptors.length === 0) {
                     return;
+                }
 
                 // Load initial batch of 2 rows immediately in parallel
                 const initialBatch = descriptors.slice(0, 2);
@@ -42,11 +43,11 @@ export const HomePage: React.FC = () => {
                 const initialResults = await Promise.all(
                     initialBatch.map((desc) =>
                         catalogService.getSingleSection(desc)
-                    )
+                    ),
                 );
                 if (isMounted) {
                     const loadedInitial = initialResults.filter(
-                        (sec): sec is HomeSection => sec !== null
+                        (sec): sec is HomeSection => sec !== null,
                     );
                     setSections(loadedInitial);
                 }
@@ -60,19 +61,19 @@ export const HomePage: React.FC = () => {
                             setSections((prev) => {
                                 const next = [...prev, sec];
                                 const descIndex = new Map(
-                                    descriptors.map((d, i) => [d.id, i])
+                                    descriptors.map((d, i) => [d.id, i]),
                                 );
                                 return next.sort(
                                     (a, b) =>
                                         (descIndex.get(a.id) ?? 0) -
-                                        (descIndex.get(b.id) ?? 0)
+                                        (descIndex.get(b.id) ?? 0),
                                 );
                             });
                         }
                         setPendingDescriptors((prev) =>
                             prev.filter((d) => d.id !== desc.id)
                         );
-                    })
+                    }),
                 );
             })
             .catch(() => {});
@@ -107,11 +108,9 @@ export const HomePage: React.FC = () => {
                     title={sec.name}
                     items={sec.items}
                     viewMode={sec.viewMode}
-                    directPlay={
-                        sec.key === "Resume" ||
+                    directPlay={sec.key === "Resume" ||
                         sec.name.toLowerCase().includes("continue watching") ||
-                        sec.name.toLowerCase().includes("next up")
-                    }
+                        sec.name.toLowerCase().includes("next up")}
                 />
             ))}
 

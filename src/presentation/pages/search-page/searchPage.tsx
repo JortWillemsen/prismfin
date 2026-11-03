@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MediaItem } from "@/common/types/media";
 import { catalogService } from "@/application/services/catalogService";
 import { MediaCard } from "@/presentation/components/media-card/mediaCard";
@@ -25,7 +25,7 @@ export const SearchPage: React.FC<SearchPageProps> = ({ query }) => {
     const [maxYear, setMaxYear] = useState<number | undefined>(undefined);
     const [selectedSort, setSelectedSort] = useState("Relevance");
     const [sortOrder, setSortOrder] = useState<"Ascending" | "Descending">(
-        "Ascending"
+        "Ascending",
     );
 
     useEffect(() => {
@@ -58,20 +58,23 @@ export const SearchPage: React.FC<SearchPageProps> = ({ query }) => {
             const n = name.toLowerCase().trim();
             const queryNorm = q.toLowerCase().trim();
             if (n === queryNorm) return 0;
-            if (n.startsWith(queryNorm))
+            if (n.startsWith(queryNorm)) {
                 return 10 + Math.min(n.length - queryNorm.length, 100);
+            }
             const wordRegex = new RegExp(
                 `\\b${queryNorm.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}\\b`,
-                "i"
+                "i",
             );
-            if (wordRegex.test(n))
+            if (wordRegex.test(n)) {
                 return 100 + Math.min(n.length - queryNorm.length, 100);
-            if (n.includes(queryNorm))
+            }
+            if (n.includes(queryNorm)) {
                 return (
                     300 +
                     n.indexOf(queryNorm) +
                     Math.min(n.length - queryNorm.length, 100)
                 );
+            }
             return 900;
         };
 
@@ -175,45 +178,48 @@ export const SearchPage: React.FC<SearchPageProps> = ({ query }) => {
                 sortOrder={sortOrder}
                 onToggleSortOrder={() =>
                     setSortOrder(
-                        sortOrder === "Ascending" ? "Descending" : "Ascending"
-                    )
-                }
+                        sortOrder === "Ascending" ? "Descending" : "Ascending",
+                    )}
                 onResetFilters={handleResetFilters}
             />
 
-            {loading ? (
-                <div className="search-grid">
-                    {Array.from({ length: 12 }).map((_, idx) => (
-                        <div key={idx} className="media-card portrait">
-                            <div className="card-poster-wrapper portrait skeleton-shimmer" />
-                            <div
-                                style={{
-                                    height: 16,
-                                    width: "70%",
-                                    margin: "10px auto 0 auto",
-                                    borderRadius: 4,
-                                    background: "rgba(255,255,255,0.06)",
-                                }}
+            {loading
+                ? (
+                    <div className="search-grid">
+                        {Array.from({ length: 12 }).map((_, idx) => (
+                            <div key={idx} className="media-card portrait">
+                                <div className="card-poster-wrapper portrait skeleton-shimmer" />
+                                <div
+                                    style={{
+                                        height: 16,
+                                        width: "70%",
+                                        margin: "10px auto 0 auto",
+                                        borderRadius: 4,
+                                        background: "rgba(255,255,255,0.06)",
+                                    }}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )
+                : filteredResults.length === 0
+                ? (
+                    <div className="search-empty">
+                        No results found for "{query}"
+                    </div>
+                )
+                : (
+                    <div className="search-grid">
+                        {filteredResults.map((item) => (
+                            <MediaCard
+                                key={item.id}
+                                item={item}
+                                viewMode="Portrait"
+                                showSubtitle
                             />
-                        </div>
-                    ))}
-                </div>
-            ) : filteredResults.length === 0 ? (
-                <div className="search-empty">
-                    No results found for "{query}"
-                </div>
-            ) : (
-                <div className="search-grid">
-                    {filteredResults.map((item) => (
-                        <MediaCard
-                            key={item.id}
-                            item={item}
-                            viewMode="Portrait"
-                            showSubtitle
-                        />
-                    ))}
-                </div>
-            )}
+                        ))}
+                    </div>
+                )}
         </div>
     );
 };

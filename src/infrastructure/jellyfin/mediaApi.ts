@@ -19,7 +19,7 @@ export class MediaApi {
             `/Users/${userId}/Views`,
             {
                 token,
-            }
+            },
         );
         return (res.Items || []).map(ItemMapper.toMediaItem);
     }
@@ -27,17 +27,18 @@ export class MediaApi {
     async getItem(
         userId: string,
         itemId: string,
-        token: string
+        token: string,
     ): Promise<MediaItem> {
         const res = await this.client.request<JellyfinBaseItemDto>(
             `/Users/${userId}/Items/${itemId}`,
             {
                 token,
                 params: {
-                    Fields: "Overview,Genres,Studios,People,Chapters,MediaStreams,Width,Height,ParentIndexNumber,IndexNumber,SeriesId,SeriesName,SeasonId,SeasonName,BackdropImageTags,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag",
+                    Fields:
+                        "Overview,Genres,Studios,People,Chapters,MediaStreams,Width,Height,ParentIndexNumber,IndexNumber,SeriesId,SeriesName,SeasonId,SeasonName,BackdropImageTags,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                 },
-            }
+            },
         );
         return ItemMapper.toMediaItem(res);
     }
@@ -45,7 +46,7 @@ export class MediaApi {
     async getItemCollections(
         userId: string,
         itemId: string,
-        token: string
+        token: string,
     ): Promise<MediaItem[]> {
         try {
             const res = await this.client.request<
@@ -54,7 +55,8 @@ export class MediaApi {
                 token,
                 params: {
                     userId,
-                    Fields: "Overview,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                    Fields:
+                        "Overview,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                 },
             });
@@ -67,18 +69,19 @@ export class MediaApi {
     async getItems(
         userId: string,
         token: string,
-        params: Record<string, string | number | boolean | undefined> = {}
+        params: Record<string, string | number | boolean | undefined> = {},
     ): Promise<MediaItem[]> {
         const res = await this.client.request<QueryResult<JellyfinBaseItemDto>>(
             `/Users/${userId}/Items`,
             {
                 token,
                 params: {
-                    Fields: "Overview,Genres,Studios,Width,Height,ParentIndexNumber,IndexNumber,SeriesId,SeriesName,SeasonId,SeasonName,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                    Fields:
+                        "Overview,Genres,Studios,Width,Height,ParentIndexNumber,IndexNumber,SeriesId,SeriesName,SeasonId,SeasonName,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                     ...params,
                 },
-            }
+            },
         );
         return (res.Items || []).map(ItemMapper.toMediaItem);
     }
@@ -87,7 +90,7 @@ export class MediaApi {
         userId: string,
         itemId: string,
         token: string,
-        limit: number = 12
+        limit: number = 12,
     ): Promise<MediaItem[]> {
         const res = await this.client.request<QueryResult<JellyfinBaseItemDto>>(
             `/Items/${itemId}/Similar`,
@@ -96,10 +99,11 @@ export class MediaApi {
                 params: {
                     userId,
                     limit,
-                    Fields: "Overview,Genres,Studios,Width,Height,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                    Fields:
+                        "Overview,Genres,Studios,Width,Height,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                 },
-            }
+            },
         );
         return (res.Items || []).map(ItemMapper.toMediaItem);
     }
@@ -107,7 +111,7 @@ export class MediaApi {
     async getSeasons(
         userId: string,
         seriesId: string,
-        token: string
+        token: string,
     ): Promise<MediaItem[]> {
         const res = await this.client.request<QueryResult<JellyfinBaseItemDto>>(
             `/Shows/${seriesId}/Seasons`,
@@ -115,10 +119,11 @@ export class MediaApi {
                 token,
                 params: {
                     userId,
-                    Fields: "Overview,IndexNumber,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                    Fields:
+                        "Overview,IndexNumber,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                 },
-            }
+            },
         );
         return (res.Items || []).map(ItemMapper.toMediaItem);
     }
@@ -127,7 +132,7 @@ export class MediaApi {
         userId: string,
         seriesId: string,
         seasonId: string,
-        token: string
+        token: string,
     ): Promise<MediaItem[]> {
         const res = await this.client.request<QueryResult<JellyfinBaseItemDto>>(
             `/Shows/${seriesId}/Episodes`,
@@ -136,10 +141,11 @@ export class MediaApi {
                 params: {
                     userId,
                     seasonId,
-                    Fields: "Overview,IndexNumber,ParentIndexNumber,RunTimeTicks,MediaStreams,Width,Height,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                    Fields:
+                        "Overview,IndexNumber,ParentIndexNumber,RunTimeTicks,MediaStreams,Width,Height,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                 },
-            }
+            },
         );
         return (res.Items || []).map(ItemMapper.toMediaItem);
     }
@@ -147,7 +153,7 @@ export class MediaApi {
     async getNextUpEpisode(
         userId: string,
         seriesId: string,
-        token: string
+        token: string,
     ): Promise<MediaItem | null> {
         try {
             const res = await this.client.request<
@@ -158,7 +164,8 @@ export class MediaApi {
                     SeriesId: seriesId,
                     UserId: userId,
                     Limit: 1,
-                    Fields: "Overview,IndexNumber,ParentIndexNumber,RunTimeTicks,MediaStreams,Width,Height,BackdropImageTags,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                    Fields:
+                        "Overview,IndexNumber,ParentIndexNumber,RunTimeTicks,MediaStreams,Width,Height,BackdropImageTags,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                 },
             });
@@ -174,7 +181,7 @@ export class MediaApi {
     async getResumeItems(
         userId: string,
         token: string,
-        limit: number = 16
+        limit: number = 16,
     ): Promise<MediaItem[]> {
         const res = await this.client.request<QueryResult<JellyfinBaseItemDto>>(
             `/Users/${userId}/Items/Resume`,
@@ -182,10 +189,11 @@ export class MediaApi {
                 token,
                 params: {
                     limit,
-                    Fields: "Overview,RunTimeTicks,SeriesId,SeriesName,IndexNumber,ParentIndexNumber,BackdropImageTags,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                    Fields:
+                        "Overview,RunTimeTicks,SeriesId,SeriesName,IndexNumber,ParentIndexNumber,BackdropImageTags,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                 },
-            }
+            },
         );
         return (res.Items || []).map(ItemMapper.toMediaItem);
     }
@@ -200,7 +208,7 @@ export class MediaApi {
     async getPlaylistItems(
         userId: string,
         playlistId: string,
-        token: string
+        token: string,
     ): Promise<MediaItem[]> {
         const res = await this.client.request<QueryResult<JellyfinBaseItemDto>>(
             `/Playlists/${playlistId}/Items`,
@@ -208,10 +216,11 @@ export class MediaApi {
                 token,
                 params: {
                     userId,
-                    Fields: "Overview,Genres,Studios,People,Chapters,MediaStreams,Width,Height,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                    Fields:
+                        "Overview,Genres,Studios,People,Chapters,MediaStreams,Width,Height,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                 },
-            }
+            },
         );
         return (res.Items || []).map(ItemMapper.toMediaItem);
     }
@@ -219,7 +228,7 @@ export class MediaApi {
     async search(
         userId: string,
         term: string,
-        token: string
+        token: string,
     ): Promise<MediaItem[]> {
         const trimmed = term.trim();
         if (!trimmed) {
@@ -250,7 +259,7 @@ export class MediaApi {
 
                 if (personRes?.Items && personRes.Items.length > 0) {
                     const personIds = personRes.Items.map((p) => p.Id).join(
-                        ","
+                        ",",
                     );
                     return await this.getItems(userId, token, {
                         PersonIds: personIds,
@@ -288,17 +297,19 @@ export class MediaApi {
             if (n.startsWith(q)) return 10 + Math.min(n.length - q.length, 100);
             const wordRegex = new RegExp(
                 `\\b${q.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&")}\\b`,
-                "i"
+                "i",
             );
-            if (wordRegex.test(n))
+            if (wordRegex.test(n)) {
                 return 100 + Math.min(n.length - q.length, 100);
-            if (n.includes(q))
+            }
+            if (n.includes(q)) {
                 return 300 + n.indexOf(q) + Math.min(n.length - q.length, 100);
+            }
             return 900;
         };
 
         titleResults.sort(
-            (a, b) => scoreItem(a.name || "") - scoreItem(b.name || "")
+            (a, b) => scoreItem(a.name || "") - scoreItem(b.name || ""),
         );
 
         // Merge and deduplicate by item ID: direct title matches first, cast/crew after
@@ -354,7 +365,7 @@ export class MediaApi {
         userId: string,
         itemId: string,
         isFavorite: boolean,
-        token: string
+        token: string,
     ): Promise<void> {
         const endpoint = `/Users/${userId}/FavoriteItems/${itemId}`;
         await this.client.request(endpoint, {

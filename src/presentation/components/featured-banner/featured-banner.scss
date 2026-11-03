@@ -102,17 +102,17 @@
         bottom: 0;
         background:
             linear-gradient(
-                to right,
-                rgba(0, 0, 0, 0.75) 0%,
-                rgba(0, 0, 0, 0.35) 45%,
-                transparent 75%
-            ),
+            to right,
+            rgba(0, 0, 0, 0.75) 0%,
+            rgba(0, 0, 0, 0.35) 45%,
+            transparent 75%
+        ),
             linear-gradient(
-                to top,
-                rgba(0, 0, 0, 0.85) 0%,
-                rgba(0, 0, 0, 0.3) 30%,
-                transparent 55%
-            );
+            to top,
+            rgba(0, 0, 0, 0.85) 0%,
+            rgba(0, 0, 0, 0.3) 30%,
+            transparent 55%
+        );
         pointer-events: none;
 
         @media (max-width: 768px) {

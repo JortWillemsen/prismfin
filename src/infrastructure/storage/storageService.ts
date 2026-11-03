@@ -1,4 +1,4 @@
-import { STORAGE_KEYS, DEFAULT_SERVER_URL } from "@/common/constants/config";
+import { DEFAULT_SERVER_URL, STORAGE_KEYS } from "@/common/constants/config";
 import { AuthSession } from "@/common/types/user";
 import { SubtitleSettings } from "@/common/types/media";
 
@@ -42,8 +42,8 @@ export class StorageService {
     }
 
     static getServerUrl(): string {
-        const url =
-            localStorage.getItem(STORAGE_KEYS.serverUrl) || DEFAULT_SERVER_URL;
+        const url = localStorage.getItem(STORAGE_KEYS.serverUrl) ||
+            DEFAULT_SERVER_URL;
         if (
             typeof window !== "undefined" &&
             window.location.protocol === "https:" &&
@@ -86,12 +86,11 @@ export class StorageService {
                 } else if (typeof parsed.size === "string") {
                     fontSize = parseInt(parsed.size, 10) || 22;
                 }
-                const alignment =
-                    parsed.alignment === "left" ||
-                    parsed.alignment === "right" ||
-                    parsed.alignment === "center"
-                        ? parsed.alignment
-                        : "center";
+                const alignment = parsed.alignment === "left" ||
+                        parsed.alignment === "right" ||
+                        parsed.alignment === "center"
+                    ? parsed.alignment
+                    : "center";
                 return {
                     ...DEFAULT_SUBTITLE_SETTINGS,
                     ...parsed,
@@ -109,7 +108,7 @@ export class StorageService {
         try {
             localStorage.setItem(
                 STORAGE_KEYS.subtitleSettings,
-                JSON.stringify(settings)
+                JSON.stringify(settings),
             );
         } catch {
             // ignore
@@ -129,7 +128,7 @@ export class StorageService {
             if (lang) {
                 localStorage.setItem(
                     STORAGE_KEYS.preferredSubtitleLanguage,
-                    lang
+                    lang,
                 );
             } else {
                 localStorage.removeItem(STORAGE_KEYS.preferredSubtitleLanguage);
@@ -142,7 +141,7 @@ export class StorageService {
     static getPreferredSubtitleEnabled(): boolean | null {
         try {
             const val = localStorage.getItem(
-                STORAGE_KEYS.preferredSubtitleEnabled
+                STORAGE_KEYS.preferredSubtitleEnabled,
             );
             if (val === null) return null;
             return val === "true";
@@ -155,7 +154,7 @@ export class StorageService {
         try {
             localStorage.setItem(
                 STORAGE_KEYS.preferredSubtitleEnabled,
-                enabled ? "true" : "false"
+                enabled ? "true" : "false",
             );
         } catch {
             // ignore

@@ -32,17 +32,17 @@ const SearchPage = React.lazy(() =>
 );
 const MovieDetailsPage = React.lazy(() =>
     import("./presentation/pages/movie-details-page/movieDetailsPage").then(
-        (m) => ({ default: m.MovieDetailsPage })
+        (m) => ({ default: m.MovieDetailsPage }),
     )
 );
 const ShowDetailsPage = React.lazy(() =>
     import("./presentation/pages/show-details-page/showDetailsPage").then(
-        (m) => ({ default: m.ShowDetailsPage })
+        (m) => ({ default: m.ShowDetailsPage }),
     )
 );
 const SeasonDetailsPage = React.lazy(() =>
     import("./presentation/pages/season-details-page/seasonDetailsPage").then(
-        (m) => ({ default: m.SeasonDetailsPage })
+        (m) => ({ default: m.SeasonDetailsPage }),
     )
 );
 const BoxsetPage = React.lazy(() =>
@@ -109,8 +109,7 @@ const MainContent: React.FC = () => {
         }
     };
 
-    const routeKey =
-        currentRoute.name +
+    const routeKey = currentRoute.name +
         ("id" in currentRoute ? `-${currentRoute.id}` : "") +
         ("seriesId" in currentRoute
             ? `-${currentRoute.seriesId}-${currentRoute.seasonId}`

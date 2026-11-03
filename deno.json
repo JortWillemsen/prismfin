@@ -18,5 +18,12 @@
     "unstable": [
         "sloppy-imports"
     ],
-    "nodeModulesDir": "auto"
+    "nodeModulesDir": "auto",
+    "fmt": {
+        "useTabs": false,
+        "lineWidth": 80,
+        "indentWidth": 4,
+        "semiColons": true,
+        "singleQuote": false
+    }
 }

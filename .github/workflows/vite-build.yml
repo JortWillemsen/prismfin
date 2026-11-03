@@ -1,0 +1,23 @@
+name: Vite Build
+
+on:
+    workflow_call:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Deno
+              uses: denoland/setup-deno@v2
+
+            - name: Run Typescript Type Check
+              run: deno check
+
+            - name: Run Formatting Check
+              run: deno fmt --check
+
+            - name: Run Vite Build
+              run: deno task build

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Hls from "hls.js/light";
 import {
     MediaItem,
@@ -12,7 +12,7 @@ import { playbackService } from "@/application/services/playbackService";
 import { StorageService } from "@/infrastructure/storage/storageService";
 import { formatTimeSeconds } from "@/common/utils/formatters";
 import { getImageUrl } from "@/common/utils/image";
-import { GlassDropdown, DropdownOption } from "../glass-dropdown/glassDropdown";
+import { DropdownOption, GlassDropdown } from "../glass-dropdown/glassDropdown";
 import "./play-screen.scss";
 
 interface PlayScreenProps {
@@ -68,7 +68,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
     const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
 
     const [streamInfo, setStreamInfo] = useState<PlaybackStreamInfo | null>(
-        null
+        null,
     );
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -81,7 +81,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
     const [hoverTime, setHoverTime] = useState<number | null>(null);
     const [hoverPosPercent, setHoverPosPercent] = useState<number>(0);
     const [isFullscreen, setIsFullscreen] = useState(
-        () => !!document.fullscreenElement
+        () => !!document.fullscreenElement,
     );
     const [activePopover, setActivePopover] = useState<
         "audio" | "subtitles" | "video" | null
@@ -121,8 +121,8 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
     }, []);
 
     const handleBack = async () => {
-        const finalPos =
-            videoRef.current?.currentTime ?? currentTimeRef.current;
+        const finalPos = videoRef.current?.currentTime ??
+            currentTimeRef.current;
         try {
             playbackService.reportProgress(finalPos, true);
             await playbackService.stopPlayback(finalPos);
@@ -154,7 +154,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
         if (newIndex >= 0) {
             StorageService.savePreferredSubtitleEnabled(true);
             const track = streamInfo?.availableSubtitles.find(
-                (s) => s.index === newIndex
+                (s) => s.index === newIndex,
             );
             if (track?.language) {
                 StorageService.savePreferredSubtitleLanguage(track.language);
@@ -214,7 +214,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                     totalFrames >= lastFrames
                 ) {
                     currentFps = Math.round(
-                        (totalFrames - lastFrames) / deltaSec
+                        (totalFrames - lastFrames) / deltaSec,
                     );
                 }
                 lastFrames = totalFrames;
@@ -237,12 +237,10 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                 bitrateMbps: liveBitrate
                     ? Number((liveBitrate / 1000000).toFixed(2))
                     : 0,
-                width:
-                    video.videoWidth ||
+                width: video.videoWidth ||
                     streamInfo?.playbackDetails?.videoWidth ||
                     0,
-                height:
-                    video.videoHeight ||
+                height: video.videoHeight ||
                     streamInfo?.playbackDetails?.videoHeight ||
                     0,
             });
@@ -269,8 +267,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
 
         try {
             if (!audioContextRef.current) {
-                const AudioCtx =
-                    window.AudioContext ||
+                const AudioCtx = window.AudioContext ||
                     (
                         window as unknown as {
                             webkitAudioContext: typeof AudioContext;
@@ -337,7 +334,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                 video.play().catch(() => {});
             }
         },
-        [volume, isMuted]
+        [volume, isMuted],
     );
 
     // Initial stream preparation
@@ -349,10 +346,10 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                 if (!isMounted) return;
                 setStreamInfo(info);
 
-                const preferredEnabled =
-                    StorageService.getPreferredSubtitleEnabled();
-                const preferredLang =
-                    StorageService.getPreferredSubtitleLanguage();
+                const preferredEnabled = StorageService
+                    .getPreferredSubtitleEnabled();
+                const preferredLang = StorageService
+                    .getPreferredSubtitleLanguage();
 
                 let subIdx = info.selectedSubtitleIndex ?? -1;
                 if (preferredEnabled === false) {
@@ -364,7 +361,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                     const match = info.availableSubtitles.find(
                         (s) =>
                             s.language?.toLowerCase() ===
-                            preferredLang.toLowerCase()
+                                preferredLang.toLowerCase(),
                     );
                     if (match) {
                         subIdx = match.index;
@@ -390,8 +387,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
             ) {
                 audioContextRef.current.close().catch(() => {});
             }
-            const finalPos =
-                currentTimeRef.current ||
+            const finalPos = currentTimeRef.current ||
                 (videoRef.current ? videoRef.current.currentTime : 0);
             playbackService.stopPlayback(finalPos);
         };
@@ -401,19 +397,15 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
     useEffect(() => {
         if (!videoRef.current) return;
         const tracks = videoRef.current.textTracks;
-        const shouldParse =
-            !streamInfo?.hasEmbeddedSubtitles && selectedSubIndex >= 0;
-        const isMobileDevice =
-            typeof navigator !== "undefined" &&
+        const shouldParse = !streamInfo?.hasEmbeddedSubtitles &&
+            selectedSubIndex >= 0;
+        const isMobileDevice = typeof navigator !== "undefined" &&
             (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
                 (typeof window !== "undefined" && window.innerWidth <= 768));
-        const useNativeSubtitles =
-            isMobileDevice ||
+        const useNativeSubtitles = isMobileDevice ||
             !!(videoRef.current as any)?.webkitDisplayingFullscreen;
         const targetMode = shouldParse
-            ? useNativeSubtitles
-                ? "showing"
-                : "hidden"
+            ? useNativeSubtitles ? "showing" : "hidden"
             : "disabled";
 
         for (let i = 0; i < tracks.length; i++) {
@@ -461,50 +453,50 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
         document.addEventListener("fullscreenchange", handleFullscreenChange);
         document.addEventListener(
             "webkitfullscreenchange",
-            handleFullscreenChange
+            handleFullscreenChange,
         );
         document.addEventListener(
             "mozfullscreenchange",
-            handleFullscreenChange
+            handleFullscreenChange,
         );
         document.addEventListener("MSFullscreenChange", handleFullscreenChange);
 
         if (video) {
             video.addEventListener(
                 "webkitbeginfullscreen",
-                handleFullscreenChange
+                handleFullscreenChange,
             );
             video.addEventListener(
                 "webkitendfullscreen",
-                handleFullscreenChange
+                handleFullscreenChange,
             );
         }
 
         return () => {
             document.removeEventListener(
                 "fullscreenchange",
-                handleFullscreenChange
+                handleFullscreenChange,
             );
             document.removeEventListener(
                 "webkitfullscreenchange",
-                handleFullscreenChange
+                handleFullscreenChange,
             );
             document.removeEventListener(
                 "mozfullscreenchange",
-                handleFullscreenChange
+                handleFullscreenChange,
             );
             document.removeEventListener(
                 "MSFullscreenChange",
-                handleFullscreenChange
+                handleFullscreenChange,
             );
             if (video) {
                 video.removeEventListener(
                     "webkitbeginfullscreen",
-                    handleFullscreenChange
+                    handleFullscreenChange,
                 );
                 video.removeEventListener(
                     "webkitendfullscreen",
-                    handleFullscreenChange
+                    handleFullscreenChange,
                 );
             }
         };
@@ -580,7 +572,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
         if (!videoRef.current) return;
         const target = Math.min(
             duration,
-            Math.max(0, videoRef.current.currentTime + deltaSeconds)
+            Math.max(0, videoRef.current.currentTime + deltaSeconds),
         );
         videoRef.current.currentTime = target;
         setCurrentTime(target);
@@ -677,7 +669,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
     // Calculate bitrate in bps
     const calculateBitrateBps = (
         preset: string,
-        customMbps: number
+        customMbps: number,
     ): number => {
         switch (preset) {
             case "100m":
@@ -704,7 +696,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
     // Switch bitrate or quality preset seamlessly without losing position
     const handleQualityChange = async (
         newPreset: string,
-        newCustomMbps?: number
+        newCustomMbps?: number,
     ) => {
         setQualityPreset(newPreset);
         const customVal = newCustomMbps ?? customBitrateMbps;
@@ -722,7 +714,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                 item,
                 bitrateBps,
                 selectedAudioIndex,
-                selectedSubIndex
+                selectedSubIndex,
             );
             setStreamInfo(nextInfo);
             loadStream(nextInfo, currentPos);
@@ -736,7 +728,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
         setSelectedAudioIndex(newAudioIndex);
         const bitrateBps = calculateBitrateBps(
             qualityPreset,
-            customBitrateMbps
+            customBitrateMbps,
         );
         const currentPos = videoRef.current
             ? videoRef.current.currentTime
@@ -747,7 +739,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                 item,
                 bitrateBps,
                 newAudioIndex,
-                selectedSubIndex
+                selectedSubIndex,
             );
             setStreamInfo(nextInfo);
             loadStream(nextInfo, currentPos);
@@ -760,17 +752,16 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
     const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
     // Fallback backdrop thumbnail
-    const thumbnailPreviewUrl =
-        item.backdropImageTag && session?.serverUrl
-            ? getImageUrl(session.serverUrl, item.id, "Backdrop", {
-                  tag: item.backdropImageTag,
-                  maxWidth: 640,
-              })
-            : "";
+    const thumbnailPreviewUrl = item.backdropImageTag && session?.serverUrl
+        ? getImageUrl(session.serverUrl, item.id, "Backdrop", {
+            tag: item.backdropImageTag,
+            maxWidth: 640,
+        })
+        : "";
 
     // Trickplay calculations
-    const trickplay =
-        trickplayData || item.trickplayInfo || streamInfo?.trickplayInfo;
+    const trickplay = trickplayData || item.trickplayInfo ||
+        streamInfo?.trickplayInfo;
     let trickplayPreviewNode: React.ReactNode = null;
 
     const displayWidth = 320;
@@ -779,20 +770,19 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
     const displayHeight = Math.round(displayWidth * (rawHeight / rawWidth));
     const previewHalfWidth = Math.round(displayWidth / 2) + 12;
 
-    const activeScene =
-        hoverTime !== null
-            ? item.scenes?.reduce<SceneItem | null>((acc, s) => {
-                  if (s.startPositionSeconds <= hoverTime) {
-                      if (
-                          !acc ||
-                          s.startPositionSeconds > acc.startPositionSeconds
-                      ) {
-                          return s;
-                      }
-                  }
-                  return acc;
-              }, null)
-            : null;
+    const activeScene = hoverTime !== null
+        ? item.scenes?.reduce<SceneItem | null>((acc, s) => {
+            if (s.startPositionSeconds <= hoverTime) {
+                if (
+                    !acc ||
+                    s.startPositionSeconds > acc.startPositionSeconds
+                ) {
+                    return s;
+                }
+            }
+            return acc;
+        }, null)
+        : null;
 
     if (hoverTime !== null) {
         if (session?.serverUrl && trickplay) {
@@ -815,9 +805,16 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
 
             const resolutionWidth = trickplay.width || 320;
             const mediaSourceParam = streamInfo?.mediaSourceId
-                ? `&mediaSourceId=${encodeURIComponent(streamInfo.mediaSourceId)}`
+                ? `&mediaSourceId=${
+                    encodeURIComponent(streamInfo.mediaSourceId)
+                }`
                 : "";
-            const sheetUrl = `${session.serverUrl}/Videos/${item.id}/Trickplay/${resolutionWidth}/${sheetIndex}.jpg?api_key=${encodeURIComponent(session.accessToken)}&ApiKey=${encodeURIComponent(session.accessToken)}${mediaSourceParam}`;
+            const sheetUrl =
+                `${session.serverUrl}/Videos/${item.id}/Trickplay/${resolutionWidth}/${sheetIndex}.jpg?api_key=${
+                    encodeURIComponent(session.accessToken)
+                }&ApiKey=${
+                    encodeURIComponent(session.accessToken)
+                }${mediaSourceParam}`;
 
             trickplayPreviewNode = (
                 <div
@@ -829,7 +826,9 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                             ? `url("${sheetUrl}"), url("${thumbnailPreviewUrl}")`
                             : `url("${sheetUrl}")`,
                         backgroundSize: thumbnailPreviewUrl
-                            ? `${tilesPerRow * 100}% ${tilesPerCol * 100}%, cover`
+                            ? `${tilesPerRow * 100}% ${
+                                tilesPerCol * 100
+                            }%, cover`
                             : `${tilesPerRow * 100}% ${tilesPerCol * 100}%`,
                         backgroundPosition: thumbnailPreviewUrl
                             ? `${bgPosX}% ${bgPosY}%, center`
@@ -871,13 +870,12 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
     }));
 
     // Subtitle track URL (only if external subtitles are allowed and not embedded)
-    const activeSubtitleUrl =
-        !streamInfo?.hasEmbeddedSubtitles &&
-        selectedSubIndex >= 0 &&
-        session?.serverUrl &&
-        streamInfo
-            ? `${session.serverUrl}/Videos/${item.id}/${streamInfo.mediaSourceId}/Subtitles/${selectedSubIndex}/Stream.vtt?ApiKey=${session.accessToken}`
-            : "";
+    const activeSubtitleUrl = !streamInfo?.hasEmbeddedSubtitles &&
+            selectedSubIndex >= 0 &&
+            session?.serverUrl &&
+            streamInfo
+        ? `${session.serverUrl}/Videos/${item.id}/${streamInfo.mediaSourceId}/Subtitles/${selectedSubIndex}/Stream.vtt?ApiKey=${session.accessToken}`
+        : "";
 
     useEffect(() => {
         const video = videoRef.current;
@@ -891,13 +889,11 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
         const updateCues = () => {
             const track = video.textTracks[0];
             if (track) {
-                const isMobileDevice =
-                    typeof navigator !== "undefined" &&
+                const isMobileDevice = typeof navigator !== "undefined" &&
                     (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
                         (typeof window !== "undefined" &&
                             window.innerWidth <= 768));
-                const useNativeSubtitles =
-                    isMobileDevice ||
+                const useNativeSubtitles = isMobileDevice ||
                     !!(video as any)?.webkitDisplayingFullscreen;
                 track.mode = useNativeSubtitles ? "showing" : "hidden";
                 track.oncuechange = () => {
@@ -920,17 +916,16 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
         return () => clearTimeout(timer);
     }, [activeSubtitleUrl, selectedSubIndex, streamInfo?.hasEmbeddedSubtitles]);
 
-    const isPreviewingSubs =
-        activePopover === "subtitles" && !streamInfo?.hasEmbeddedSubtitles;
-    const cueToShow =
-        !streamInfo?.hasEmbeddedSubtitles &&
+    const isPreviewingSubs = activePopover === "subtitles" &&
+        !streamInfo?.hasEmbeddedSubtitles;
+    const cueToShow = !streamInfo?.hasEmbeddedSubtitles &&
         (activeCueText ||
             (isPreviewingSubs
                 ? "The quick brown fox jumps over the lazy dog."
                 : ""));
 
-    const isTransparentBg =
-        subSettings.bgColor === "transparent" || subSettings.bgOpacity === 0;
+    const isTransparentBg = subSettings.bgColor === "transparent" ||
+        subSettings.bgOpacity === 0;
 
     return (
         <div
@@ -964,16 +959,12 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                     <track
                         key={selectedSubIndex}
                         kind="subtitles"
-                        label={
-                            streamInfo?.availableSubtitles.find(
-                                (s) => s.index === selectedSubIndex
-                            )?.displayTitle || "Subtitles"
-                        }
-                        srcLang={
-                            streamInfo?.availableSubtitles.find(
-                                (s) => s.index === selectedSubIndex
-                            )?.language || "en"
-                        }
+                        label={streamInfo?.availableSubtitles.find(
+                            (s) => s.index === selectedSubIndex,
+                        )?.displayTitle || "Subtitles"}
+                        srcLang={streamInfo?.availableSubtitles.find(
+                            (s) => s.index === selectedSubIndex,
+                        )?.language || "en"}
                         src={activeSubtitleUrl}
                         default
                     />
@@ -983,44 +974,49 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
             {cueToShow &&
                 !streamInfo?.hasEmbeddedSubtitles &&
                 (selectedSubIndex >= 0 || isPreviewingSubs) && (
-                    <div
-                        className="custom-subtitle-overlay"
+                <div
+                    className="custom-subtitle-overlay"
+                    style={{
+                        bottom: `${
+                            subSettings.margin + (showControls ? 120 : 0)
+                        }px`,
+                        justifyContent: subSettings.alignment === "left"
+                            ? "flex-start"
+                            : subSettings.alignment === "right"
+                            ? "flex-end"
+                            : "center",
+                    }}
+                >
+                    <span
+                        className={`custom-subtitle-text ${
+                            isTransparentBg ? "is-transparent" : ""
+                        }`}
                         style={{
-                            bottom: `${subSettings.margin + (showControls ? 120 : 0)}px`,
-                            justifyContent:
-                                subSettings.alignment === "left"
-                                    ? "flex-start"
-                                    : subSettings.alignment === "right"
-                                      ? "flex-end"
-                                      : "center",
+                            color: subSettings.color,
+                            backgroundColor: isTransparentBg
+                                ? "transparent"
+                                : `rgba(${subSettings.bgColor}, ${subSettings.bgOpacity})`,
+                            fontSize: `${subSettings.fontSize}px`,
+                            textAlign: subSettings.alignment,
+                            boxShadow: isTransparentBg
+                                ? "none"
+                                : "0 4px 16px rgba(0, 0, 0, 0.6)",
+                            border: "none",
+                            outline: "none",
+                            textShadow: isTransparentBg
+                                ? "0 2px 4px rgba(0, 0, 0, 0.95), 0 0 2px #000000, 0 1px 2px #000000"
+                                : "none",
                         }}
                     >
-                        <span
-                            className={`custom-subtitle-text ${isTransparentBg ? "is-transparent" : ""}`}
-                            style={{
-                                color: subSettings.color,
-                                backgroundColor: isTransparentBg
-                                    ? "transparent"
-                                    : `rgba(${subSettings.bgColor}, ${subSettings.bgOpacity})`,
-                                fontSize: `${subSettings.fontSize}px`,
-                                textAlign: subSettings.alignment,
-                                boxShadow: isTransparentBg
-                                    ? "none"
-                                    : "0 4px 16px rgba(0, 0, 0, 0.6)",
-                                border: "none",
-                                outline: "none",
-                                textShadow: isTransparentBg
-                                    ? "0 2px 4px rgba(0, 0, 0, 0.95), 0 0 2px #000000, 0 1px 2px #000000"
-                                    : "none",
-                            }}
-                        >
-                            {cueToShow}
-                        </span>
-                    </div>
-                )}
+                        {cueToShow}
+                    </span>
+                </div>
+            )}
 
             <div
-                className={`player-controls-overlay ${!showControls ? "hidden" : ""}`}
+                className={`player-controls-overlay ${
+                    !showControls ? "hidden" : ""
+                }`}
                 onClick={handlePlayerClick}
             >
                 <div
@@ -1074,12 +1070,12 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                             {hoverTime !== null && (
                                 <div
                                     className="scrubber-preview-thumbnail"
-                                    style={
-                                        {
-                                            "--hover-percent": `${hoverPosPercent}%`,
-                                            left: `clamp(${previewHalfWidth}px, ${hoverPosPercent}%, calc(100% - ${previewHalfWidth}px))`,
-                                        } as React.CSSProperties
-                                    }
+                                    style={{
+                                        "--hover-percent":
+                                            `${hoverPosPercent}%`,
+                                        left:
+                                            `clamp(${previewHalfWidth}px, ${hoverPosPercent}%, calc(100% - ${previewHalfWidth}px))`,
+                                    } as React.CSSProperties}
                                 >
                                     {trickplayPreviewNode}
                                     <div className="preview-meta">
@@ -1124,11 +1120,9 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                 aria-label={isPlaying ? "Pause" : "Play"}
                             >
                                 <img
-                                    src={
-                                        isPlaying
-                                            ? "/assets/images/pause.svg"
-                                            : "/assets/images/play.svg"
-                                    }
+                                    src={isPlaying
+                                        ? "/assets/images/pause.svg"
+                                        : "/assets/images/play.svg"}
                                     alt={isPlaying ? "Pause" : "Play"}
                                 />
                             </button>
@@ -1150,14 +1144,17 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                         <div className="action-group-right">
                             <button
                                 type="button"
-                                className={`player-btn-circle ${activePopover === "subtitles" ? "active" : ""}`}
+                                className={`player-btn-circle ${
+                                    activePopover === "subtitles"
+                                        ? "active"
+                                        : ""
+                                }`}
                                 onClick={() =>
                                     setActivePopover(
                                         activePopover === "subtitles"
                                             ? null
-                                            : "subtitles"
-                                    )
-                                }
+                                            : "subtitles",
+                                    )}
                                 title="Subtitles"
                                 aria-label="Subtitle settings"
                             >
@@ -1169,37 +1166,31 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
 
                             <button
                                 type="button"
-                                className={`player-btn-circle ${activePopover === "audio" ? "active" : ""}`}
-                                onClick={() =>
-                                    setActivePopover(
-                                        activePopover === "audio"
-                                            ? null
-                                            : "audio"
-                                    )
-                                }
+                                className={`player-btn-circle ${
+                                    activePopover === "audio" ? "active" : ""
+                                }`}
+                                onClick={() => setActivePopover(
+                                    activePopover === "audio" ? null : "audio",
+                                )}
                                 title="Audio"
                                 aria-label="Audio settings"
                             >
                                 <img
-                                    src={
-                                        isMuted
-                                            ? "/assets/images/volume-off.svg"
-                                            : "/assets/images/volume.svg"
-                                    }
+                                    src={isMuted
+                                        ? "/assets/images/volume-off.svg"
+                                        : "/assets/images/volume.svg"}
                                     alt="Audio"
                                 />
                             </button>
 
                             <button
                                 type="button"
-                                className={`player-btn-circle ${activePopover === "video" ? "active" : ""}`}
-                                onClick={() =>
-                                    setActivePopover(
-                                        activePopover === "video"
-                                            ? null
-                                            : "video"
-                                    )
-                                }
+                                className={`player-btn-circle ${
+                                    activePopover === "video" ? "active" : ""
+                                }`}
+                                onClick={() => setActivePopover(
+                                    activePopover === "video" ? null : "video",
+                                )}
                                 title="Video Settings"
                                 aria-label="Video settings"
                             >
@@ -1213,28 +1204,20 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                 type="button"
                                 className="player-btn-circle"
                                 onClick={toggleFullscreen}
-                                title={
-                                    isFullscreen
-                                        ? "Exit Fullscreen"
-                                        : "Fullscreen"
-                                }
-                                aria-label={
-                                    isFullscreen
-                                        ? "Exit Fullscreen"
-                                        : "Fullscreen"
-                                }
+                                title={isFullscreen
+                                    ? "Exit Fullscreen"
+                                    : "Fullscreen"}
+                                aria-label={isFullscreen
+                                    ? "Exit Fullscreen"
+                                    : "Fullscreen"}
                             >
                                 <img
-                                    src={
-                                        isFullscreen
-                                            ? "/assets/images/exit-fullscreen.svg"
-                                            : "/assets/images/fullscreen.svg"
-                                    }
-                                    alt={
-                                        isFullscreen
-                                            ? "Exit Fullscreen"
-                                            : "Fullscreen"
-                                    }
+                                    src={isFullscreen
+                                        ? "/assets/images/exit-fullscreen.svg"
+                                        : "/assets/images/fullscreen.svg"}
+                                    alt={isFullscreen
+                                        ? "Exit Fullscreen"
+                                        : "Fullscreen"}
                                 />
                             </button>
                         </div>
@@ -1254,11 +1237,9 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                 aria-label="Mute toggle"
                             >
                                 <img
-                                    src={
-                                        isMuted
-                                            ? "/assets/images/volume-off.svg"
-                                            : "/assets/images/volume.svg"
-                                    }
+                                    src={isMuted
+                                        ? "/assets/images/volume-off.svg"
+                                        : "/assets/images/volume.svg"}
                                     alt="Mute"
                                     style={{ width: 18 }}
                                 />
@@ -1271,9 +1252,8 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                 value={isMuted ? 0 : volume}
                                 onChange={(e) =>
                                     handleVolumeChange(
-                                        parseFloat(e.target.value)
-                                    )
-                                }
+                                        parseFloat(e.target.value),
+                                    )}
                             />
                         </div>
 
@@ -1291,7 +1271,9 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                     <button
                                         key={b}
                                         type="button"
-                                        className={`boost-pill ${audioBoost === b ? "active" : ""}`}
+                                        className={`boost-pill ${
+                                            audioBoost === b ? "active" : ""
+                                        }`}
                                         onClick={() => applyAudioBoost(b)}
                                     >
                                         {b === 1
@@ -1310,8 +1292,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                     options={audioOptions}
                                     value={selectedAudioIndex}
                                     onChange={(val) =>
-                                        handleAudioTrackChange(Number(val))
-                                    }
+                                        handleAudioTrackChange(Number(val))}
                                     ariaLabel="Select audio track"
                                 />
                             </div>
@@ -1346,8 +1327,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                 options={subtitleOptions}
                                 value={selectedSubIndex}
                                 onChange={(val) =>
-                                    handleSubtitleTrackChange(Number(val))
-                                }
+                                    handleSubtitleTrackChange(Number(val))}
                                 ariaLabel="Select subtitle track"
                                 showChevron
                                 disabled={streamInfo?.hasEmbeddedSubtitles}
@@ -1356,202 +1336,194 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
 
                         {!streamInfo?.hasEmbeddedSubtitles &&
                             selectedSubIndex >= 0 && (
-                                <>
-                                    <div className="settings-item">
-                                        <label>Alignment</label>
-                                        <div className="alignment-button-row">
-                                            {(
-                                                [
-                                                    "left",
-                                                    "center",
-                                                    "right",
-                                                ] as const
-                                            ).map((align) => (
-                                                <button
-                                                    key={align}
-                                                    type="button"
-                                                    className={`alignment-choice-btn ${
-                                                        subSettings.alignment ===
-                                                        align
-                                                            ? "active"
-                                                            : ""
-                                                    }`}
-                                                    onClick={() =>
-                                                        updateSubSettings({
-                                                            alignment: align,
-                                                        })
-                                                    }
-                                                    title={
-                                                        align
-                                                            .charAt(0)
-                                                            .toUpperCase() +
-                                                        align.slice(1)
-                                                    }
-                                                    aria-label={`Subtitle alignment ${align}`}
-                                                >
-                                                    {align
-                                                        .charAt(0)
-                                                        .toUpperCase() +
-                                                        align.slice(1)}
-                                                </button>
-                                            ))}
-                                        </div>
+                            <>
+                                <div className="settings-item">
+                                    <label>Alignment</label>
+                                    <div className="alignment-button-row">
+                                        {(
+                                            [
+                                                "left",
+                                                "center",
+                                                "right",
+                                            ] as const
+                                        ).map((align) => (
+                                            <button
+                                                key={align}
+                                                type="button"
+                                                className={`alignment-choice-btn ${
+                                                    subSettings.alignment ===
+                                                            align
+                                                        ? "active"
+                                                        : ""
+                                                }`}
+                                                onClick={() =>
+                                                    updateSubSettings({
+                                                        alignment: align,
+                                                    })}
+                                                title={align
+                                                    .charAt(0)
+                                                    .toUpperCase() +
+                                                    align.slice(1)}
+                                                aria-label={`Subtitle alignment ${align}`}
+                                            >
+                                                {align
+                                                    .charAt(0)
+                                                    .toUpperCase() +
+                                                    align.slice(1)}
+                                            </button>
+                                        ))}
                                     </div>
-                                    <div className="settings-item">
-                                        <label>Text Color</label>
-                                        <div className="color-button-row">
-                                            {TEXT_COLORS.map((c) => (
-                                                <button
-                                                    key={c.value}
-                                                    type="button"
-                                                    className={`color-choice-btn ${
-                                                        subSettings.color.toLowerCase() ===
-                                                        c.value.toLowerCase()
-                                                            ? "active"
+                                </div>
+                                <div className="settings-item">
+                                    <label>Text Color</label>
+                                    <div className="color-button-row">
+                                        {TEXT_COLORS.map((c) => (
+                                            <button
+                                                key={c.value}
+                                                type="button"
+                                                className={`color-choice-btn ${
+                                                    subSettings.color
+                                                            .toLowerCase() ===
+                                                            c.value
+                                                                .toLowerCase()
+                                                        ? "active"
+                                                        : ""
+                                                }`}
+                                                onClick={() =>
+                                                    updateSubSettings({
+                                                        color: c.value,
+                                                    })}
+                                                title={c.label}
+                                                aria-label={`Text color ${c.label}`}
+                                            >
+                                                <span
+                                                    className="swatch-circle"
+                                                    style={{
+                                                        backgroundColor:
+                                                            c.value,
+                                                    }}
+                                                />
+                                                <span className="choice-name">
+                                                    {c.label}
+                                                </span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="settings-item">
+                                    <label>Background Color</label>
+                                    <div className="color-button-row">
+                                        {BG_COLORS.map((c) => (
+                                            <button
+                                                key={c.value}
+                                                type="button"
+                                                className={`color-choice-btn ${
+                                                    subSettings.bgColor ===
+                                                            c.value
+                                                        ? "active"
+                                                        : ""
+                                                }`}
+                                                onClick={() =>
+                                                    updateSubSettings({
+                                                        bgColor: c.value,
+                                                    })}
+                                                title={c.label}
+                                                aria-label={`Background color ${c.label}`}
+                                            >
+                                                <span
+                                                    className={`swatch-circle ${
+                                                        c.isTransparent
+                                                            ? "transparent-swatch"
                                                             : ""
                                                     }`}
-                                                    onClick={() =>
-                                                        updateSubSettings({
-                                                            color: c.value,
-                                                        })
-                                                    }
-                                                    title={c.label}
-                                                    aria-label={`Text color ${c.label}`}
-                                                >
-                                                    <span
-                                                        className="swatch-circle"
-                                                        style={{
+                                                    style={!c.isTransparent
+                                                        ? {
                                                             backgroundColor:
-                                                                c.value,
-                                                        }}
-                                                    />
-                                                    <span className="choice-name">
-                                                        {c.label}
-                                                    </span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div className="settings-item">
-                                        <label>Background Color</label>
-                                        <div className="color-button-row">
-                                            {BG_COLORS.map((c) => (
-                                                <button
-                                                    key={c.value}
-                                                    type="button"
-                                                    className={`color-choice-btn ${
-                                                        subSettings.bgColor ===
-                                                        c.value
-                                                            ? "active"
-                                                            : ""
-                                                    }`}
-                                                    onClick={() =>
-                                                        updateSubSettings({
-                                                            bgColor: c.value,
-                                                        })
-                                                    }
-                                                    title={c.label}
-                                                    aria-label={`Background color ${c.label}`}
-                                                >
-                                                    <span
-                                                        className={`swatch-circle ${
-                                                            c.isTransparent
-                                                                ? "transparent-swatch"
-                                                                : ""
-                                                        }`}
-                                                        style={
-                                                            !c.isTransparent
-                                                                ? {
-                                                                      backgroundColor:
-                                                                          c.swatchColor,
-                                                                  }
-                                                                : undefined
+                                                                c.swatchColor,
                                                         }
-                                                    />
-                                                    <span className="choice-name">
-                                                        {c.label}
-                                                    </span>
-                                                </button>
-                                            ))}
-                                        </div>
+                                                        : undefined}
+                                                />
+                                                <span className="choice-name">
+                                                    {c.label}
+                                                </span>
+                                            </button>
+                                        ))}
                                     </div>
+                                </div>
 
-                                    <div className="settings-item">
-                                        <label>
-                                            Background Opacity
-                                            <span className="value-badge">
-                                                {Math.round(
-                                                    subSettings.bgOpacity * 100
-                                                )}
-                                                %
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="range"
-                                            min={0}
-                                            max={1}
-                                            step={0.05}
-                                            value={subSettings.bgOpacity}
-                                            onChange={(e) =>
-                                                updateSubSettings({
-                                                    bgOpacity: parseFloat(
-                                                        e.target.value
-                                                    ),
-                                                })
-                                            }
-                                        />
-                                    </div>
+                                <div className="settings-item">
+                                    <label>
+                                        Background Opacity
+                                        <span className="value-badge">
+                                            {Math.round(
+                                                subSettings.bgOpacity * 100,
+                                            )}
+                                            %
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min={0}
+                                        max={1}
+                                        step={0.05}
+                                        value={subSettings.bgOpacity}
+                                        onChange={(e) =>
+                                            updateSubSettings({
+                                                bgOpacity: parseFloat(
+                                                    e.target.value,
+                                                ),
+                                            })}
+                                    />
+                                </div>
 
-                                    <div className="settings-item">
-                                        <label>
-                                            Font Size
-                                            <span className="value-badge">
-                                                {subSettings.fontSize}px
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="range"
-                                            min={14}
-                                            max={48}
-                                            step={1}
-                                            value={subSettings.fontSize}
-                                            onChange={(e) =>
-                                                updateSubSettings({
-                                                    fontSize: parseInt(
-                                                        e.target.value,
-                                                        10
-                                                    ),
-                                                })
-                                            }
-                                        />
-                                    </div>
+                                <div className="settings-item">
+                                    <label>
+                                        Font Size
+                                        <span className="value-badge">
+                                            {subSettings.fontSize}px
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min={14}
+                                        max={48}
+                                        step={1}
+                                        value={subSettings.fontSize}
+                                        onChange={(e) =>
+                                            updateSubSettings({
+                                                fontSize: parseInt(
+                                                    e.target.value,
+                                                    10,
+                                                ),
+                                            })}
+                                    />
+                                </div>
 
-                                    <div className="settings-item">
-                                        <label>
-                                            Margin from Bottom
-                                            <span className="value-badge">
-                                                {subSettings.margin}px
-                                            </span>
-                                        </label>
-                                        <input
-                                            type="range"
-                                            min={10}
-                                            max={140}
-                                            step={2}
-                                            value={subSettings.margin}
-                                            onChange={(e) =>
-                                                updateSubSettings({
-                                                    margin: parseInt(
-                                                        e.target.value,
-                                                        10
-                                                    ),
-                                                })
-                                            }
-                                        />
-                                    </div>
-                                </>
-                            )}
+                                <div className="settings-item">
+                                    <label>
+                                        Margin from Bottom
+                                        <span className="value-badge">
+                                            {subSettings.margin}px
+                                        </span>
+                                    </label>
+                                    <input
+                                        type="range"
+                                        min={10}
+                                        max={140}
+                                        step={2}
+                                        value={subSettings.margin}
+                                        onChange={(e) =>
+                                            updateSubSettings({
+                                                margin: parseInt(
+                                                    e.target.value,
+                                                    10,
+                                                ),
+                                            })}
+                                    />
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
 
@@ -1585,8 +1557,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                 options={SPEED_OPTIONS}
                                 value={playbackRate}
                                 onChange={(val) =>
-                                    handleRateChange(Number(val))
-                                }
+                                    handleRateChange(Number(val))}
                                 ariaLabel="Playback speed"
                             />
                         </div>
@@ -1598,8 +1569,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                 options={QUALITY_PRESETS}
                                 value={qualityPreset}
                                 onChange={(val) =>
-                                    handleQualityChange(String(val))
-                                }
+                                    handleQualityChange(String(val))}
                                 ariaLabel="Quality & Bitrate"
                             />
                         </div>
@@ -1621,9 +1591,8 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                     onChange={(e) =>
                                         handleQualityChange(
                                             "custom",
-                                            parseInt(e.target.value, 10)
-                                        )
-                                    }
+                                            parseInt(e.target.value, 10),
+                                        )}
                                 />
                             </div>
                         )}
@@ -1686,8 +1655,8 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                         <span
                                             className={`stream-type-badge ${
                                                 streamInfo?.playbackDetails
-                                                    ?.streamType ===
-                                                "Direct Play"
+                                                        ?.streamType ===
+                                                        "Direct Play"
                                                     ? "direct"
                                                     : "transcode"
                                             }`}
@@ -1731,14 +1700,15 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                         </span>
                                         <span className="info-value">
                                             {realTimeStats.width &&
-                                            realTimeStats.height
+                                                    realTimeStats.height
                                                 ? `${realTimeStats.width} × ${realTimeStats.height}`
                                                 : streamInfo?.playbackDetails
                                                         ?.videoWidth &&
-                                                    streamInfo?.playbackDetails
-                                                        ?.videoHeight
-                                                  ? `${streamInfo.playbackDetails.videoWidth} × ${streamInfo.playbackDetails.videoHeight}`
-                                                  : "Unknown"}
+                                                        streamInfo
+                                                            ?.playbackDetails
+                                                            ?.videoHeight
+                                                ? `${streamInfo.playbackDetails.videoWidth} × ${streamInfo.playbackDetails.videoHeight}`
+                                                : "Unknown"}
                                         </span>
                                     </div>
 
@@ -1751,13 +1721,15 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                                 ? `${realTimeStats.bitrateMbps} Mbps`
                                                 : streamInfo?.playbackDetails
                                                         ?.videoBitrate
-                                                  ? `${(
+                                                ? `${
+                                                    (
                                                         streamInfo
                                                             .playbackDetails
                                                             .videoBitrate /
                                                         1000000
-                                                    ).toFixed(2)} Mbps`
-                                                  : "Direct"}
+                                                    ).toFixed(2)
+                                                } Mbps`
+                                                : "Direct"}
                                         </span>
                                     </div>
 
@@ -1770,8 +1742,8 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                                 ? `${realTimeStats.fps} fps`
                                                 : streamInfo?.playbackDetails
                                                         ?.videoFps
-                                                  ? `${streamInfo.playbackDetails.videoFps} fps`
-                                                  : "24 fps"}
+                                                ? `${streamInfo.playbackDetails.videoFps} fps`
+                                                : "24 fps"}
                                         </span>
                                     </div>
 
@@ -1808,14 +1780,14 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                         </span>
                                         <span className="info-value">
                                             {streamInfo?.playbackDetails
-                                                ?.soundChannels
+                                                    ?.soundChannels
                                                 ? streamInfo.playbackDetails
-                                                      .soundChannels === 6
+                                                        .soundChannels === 6
                                                     ? "6 channels (5.1 Surround)"
                                                     : streamInfo.playbackDetails
                                                             .soundChannels === 8
-                                                      ? "8 channels (7.1 Surround)"
-                                                      : `${streamInfo.playbackDetails.soundChannels} channels`
+                                                    ? "8 channels (7.1 Surround)"
+                                                    : `${streamInfo.playbackDetails.soundChannels} channels`
                                                 : "2 channels (Stereo)"}
                                         </span>
                                     </div>
@@ -1826,11 +1798,15 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                         </span>
                                         <span className="info-value">
                                             {streamInfo?.playbackDetails
-                                                ?.soundBitrate
-                                                ? `${Math.round(
-                                                      streamInfo.playbackDetails
-                                                          .soundBitrate / 1000
-                                                  )} kbps`
+                                                    ?.soundBitrate
+                                                ? `${
+                                                    Math.round(
+                                                        streamInfo
+                                                            .playbackDetails
+                                                            .soundBitrate /
+                                                            1000,
+                                                    )
+                                                } kbps`
                                                 : "Auto"}
                                         </span>
                                     </div>
@@ -1841,7 +1817,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ item, onClose }) => {
                                         </span>
                                         <span className="info-value">
                                             {streamInfo?.playbackDetails
-                                                ?.soundSampleRate
+                                                    ?.soundSampleRate
                                                 ? `${streamInfo.playbackDetails.soundSampleRate.toLocaleString()} Hz`
                                                 : "48,000 Hz"}
                                         </span>
