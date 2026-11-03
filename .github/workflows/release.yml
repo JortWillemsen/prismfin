@@ -6,7 +6,6 @@ on:
 
 jobs:
     verify-docker:
-        needs: verify-vite
         uses: ./.github/workflows/docker-build.yml
         with:
             save-artifact: true
