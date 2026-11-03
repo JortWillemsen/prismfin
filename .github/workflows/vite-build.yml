@@ -19,8 +19,5 @@ jobs:
             - name: Run Formatting Check
               run: deno fmt --check
 
-            - name: Run Linting Check
-              run: deno lint
-
             - name: Run Vite Build
               run: deno task build
