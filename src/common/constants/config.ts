@@ -15,7 +15,7 @@ declare global {
     }
 }
 
-export const CLIENT_VERSION = "0.7.1";
+export const CLIENT_VERSION = "0.7.2";
 export const DEVICE_NAME = "Web Client";
 
 export function getAppName(): string {
