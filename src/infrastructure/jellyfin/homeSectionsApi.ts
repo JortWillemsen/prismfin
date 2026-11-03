@@ -35,16 +35,17 @@ export class HomeSectionsApi {
     }
 
     async getSectionDescriptors(
-        token: string
+        token: string,
     ): Promise<HomeScreenSectionDescriptor[]> {
         try {
-            const sectionsMeta =
-                await this.client.request<HomeScreenSectionsResponse>(
-                    "/HomeScreen/Sections",
-                    {
-                        token,
-                    }
-                );
+            const sectionsMeta = await this.client.request<
+                HomeScreenSectionsResponse
+            >(
+                "/HomeScreen/Sections",
+                {
+                    token,
+                },
+            );
 
             if (sectionsMeta?.Items && sectionsMeta.Items.length > 0) {
                 return sectionsMeta.Items.map((item, idx) => ({
@@ -52,8 +53,9 @@ export class HomeSectionsApi {
                     sectionKey: item.Section,
                     displayText: item.DisplayText || item.Section,
                     additionalData: item.AdditionalData,
-                    viewMode:
-                        item.ViewMode === "Portrait" ? "Portrait" : "Landscape",
+                    viewMode: item.ViewMode === "Portrait"
+                        ? "Portrait"
+                        : "Landscape",
                 }));
             }
         } catch {
@@ -85,7 +87,7 @@ export class HomeSectionsApi {
     private async enrichLogos(
         dtos: JellyfinBaseItemDto[],
         userId: string,
-        token: string
+        token: string,
     ): Promise<JellyfinBaseItemDto[]> {
         if (!dtos || dtos.length === 0) {
             return dtos;
@@ -95,7 +97,7 @@ export class HomeSectionsApi {
             (d) =>
                 !d.ImageTags?.Logo &&
                 !d.ParentLogoImageTag &&
-                !d.SeriesLogoImageTag
+                !d.SeriesLogoImageTag,
         );
 
         if (missing.length === 0) {
@@ -109,7 +111,7 @@ export class HomeSectionsApi {
                 .filter((id): id is string => !!id);
 
             const allIdsToFetch = Array.from(
-                new Set([...itemIds, ...seriesIds])
+                new Set([...itemIds, ...seriesIds]),
             );
 
             const enrichedRes = await this.client.request<
@@ -118,13 +120,14 @@ export class HomeSectionsApi {
                 token,
                 params: {
                     Ids: allIdsToFetch.join(","),
-                    Fields: "ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag,SeriesId",
+                    Fields:
+                        "ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag,SeriesId",
                     EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                 },
             });
 
             const enrichedMap = new Map(
-                (enrichedRes.Items || []).map((item) => [item.Id, item])
+                (enrichedRes.Items || []).map((item) => [item.Id, item]),
             );
 
             for (const item of dtos) {
@@ -176,10 +179,10 @@ export class HomeSectionsApi {
                                 !d.ParentLogoImageTag &&
                                 !d.SeriesLogoImageTag &&
                                 d.SeriesId &&
-                                !enrichedMap.has(d.SeriesId)
+                                !enrichedMap.has(d.SeriesId),
                         )
-                        .map((d) => d.SeriesId!)
-                )
+                        .map((d) => d.SeriesId!),
+                ),
             );
 
             if (unresolvedSeriesIds.length > 0) {
@@ -189,7 +192,8 @@ export class HomeSectionsApi {
                     token,
                     params: {
                         Ids: unresolvedSeriesIds.join(","),
-                        Fields: "ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag",
+                        Fields:
+                            "ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag",
                         EnableImageTypes: "Logo",
                     },
                 });
@@ -224,7 +228,7 @@ export class HomeSectionsApi {
     async getSingleSection(
         descriptor: HomeScreenSectionDescriptor,
         userId: string,
-        token: string
+        token: string,
     ): Promise<HomeSection | null> {
         if (descriptor.sectionKey === "Resume") {
             try {
@@ -234,7 +238,8 @@ export class HomeSectionsApi {
                     token,
                     params: {
                         Limit: 14,
-                        Fields: "Overview,RunTimeTicks,SeriesId,SeriesName,BackdropImageTags,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                        Fields:
+                            "Overview,RunTimeTicks,SeriesId,SeriesName,BackdropImageTags,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                         EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                     },
                 });
@@ -242,7 +247,7 @@ export class HomeSectionsApi {
                     const enriched = await this.enrichLogos(
                         resume.Items,
                         userId,
-                        token
+                        token,
                     );
                     return {
                         id: descriptor.id,
@@ -264,7 +269,8 @@ export class HomeSectionsApi {
             > = {
                 userId,
                 EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
-                Fields: "Overview,Genres,Studios,Width,Height,ParentIndexNumber,IndexNumber,SeriesId,SeriesName,SeasonId,SeasonName,BackdropImageTags,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                Fields:
+                    "Overview,Genres,Studios,Width,Height,ParentIndexNumber,IndexNumber,SeriesId,SeriesName,SeasonId,SeasonName,BackdropImageTags,Chapters,Trickplay,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
             };
             if (descriptor.additionalData) {
                 queryParams.additionalData = descriptor.additionalData;
@@ -303,7 +309,8 @@ export class HomeSectionsApi {
                             SortBy: "DateCreated",
                             SortOrder: "Descending",
                             Limit: 14,
-                            Fields: "Overview,Genres,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                            Fields:
+                                "Overview,Genres,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                             EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                         },
                     });
@@ -311,7 +318,7 @@ export class HomeSectionsApi {
                         const enriched = await this.enrichLogos(
                             latest.Items,
                             userId,
-                            token
+                            token,
                         );
                         return {
                             id: descriptor.id,
@@ -338,7 +345,8 @@ export class HomeSectionsApi {
                             SortBy: "DateCreated",
                             SortOrder: "Descending",
                             Limit: 14,
-                            Fields: "Overview,Genres,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
+                            Fields:
+                                "Overview,Genres,BackdropImageTags,ParentLogoItemId,ParentLogoImageTag,SeriesLogoImageTag,SeriesThumbImageTag,SeriesPrimaryImageTag",
                             EnableImageTypes: "Primary,Backdrop,Logo,Thumb",
                         },
                     });
@@ -346,7 +354,7 @@ export class HomeSectionsApi {
                         const enriched = await this.enrichLogos(
                             latest.Items,
                             userId,
-                            token
+                            token,
                         );
                         return {
                             id: descriptor.id,

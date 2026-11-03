@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useApp } from "@/application/state/appContext";
 import {
-    getAppLogoUrl,
     getAppIconUrl,
+    getAppLogoUrl,
     getAppName,
 } from "@/common/constants/config";
 import { AccountPopup } from "../account-popup/accountPopup";
@@ -19,7 +19,7 @@ export const TopBar: React.FC = () => {
     } = useApp();
 
     const [isMobileSearchActive, setIsMobileSearchActive] = useState(
-        currentRoute.name === "search"
+        currentRoute.name === "search",
     );
     const [dragOffset, setDragOffset] = useState<number | null>(null);
     const [keyboardOffset, setKeyboardOffset] = useState<number>(0);
@@ -32,14 +32,16 @@ export const TopBar: React.FC = () => {
             currentRoute.name === "movies" ||
             currentRoute.name === "movie-details" ||
             currentRoute.name === "boxset"
-        )
+        ) {
             return "movies";
+        }
         if (
             currentRoute.name === "shows" ||
             currentRoute.name === "show-details" ||
             currentRoute.name === "season-details"
-        )
+        ) {
             return "shows";
+        }
         return "home";
     });
 
@@ -69,7 +71,7 @@ export const TopBar: React.FC = () => {
             // vv.offsetTop is any scroll offset of the visual viewport.
             const offset = Math.max(
                 0,
-                window.innerHeight - (vv.height + vv.offsetTop)
+                window.innerHeight - (vv.height + vv.offsetTop),
             );
 
             // Keyboards are >= 200px (standard is ~280-400px).
@@ -171,8 +173,11 @@ export const TopBar: React.FC = () => {
         }
     };
 
-    const activeNavIndex =
-        selectedNavTab === "movies" ? 1 : selectedNavTab === "shows" ? 2 : 0;
+    const activeNavIndex = selectedNavTab === "movies"
+        ? 1
+        : selectedNavTab === "shows"
+        ? 2
+        : 0;
 
     // Pointer events for dragging navigation pill on mobile
     const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -203,7 +208,7 @@ export const TopBar: React.FC = () => {
             const maxOffset = (2 - startIndexRef.current) * tabWidth;
             const clampedDelta = Math.max(
                 minOffset,
-                Math.min(maxOffset, deltaX)
+                Math.min(maxOffset, deltaX),
             );
             setDragOffset(clampedDelta);
         }
@@ -231,7 +236,7 @@ export const TopBar: React.FC = () => {
             const steps = Math.round(delta / tabWidth);
             const targetIndex = Math.max(
                 0,
-                Math.min(2, startIndexRef.current + steps)
+                Math.min(2, startIndexRef.current + steps),
             );
             if (targetIndex !== activeNavIndex) {
                 if (targetIndex === 0) handleHomeClick();
@@ -250,13 +255,11 @@ export const TopBar: React.FC = () => {
     return (
         <header
             className={`top-bar ${keyboardOffset > 0 ? "keyboard-open" : ""}`}
-            style={
-                keyboardOffset > 0
-                    ? {
-                          bottom: `${keyboardOffset + 12}px`,
-                      }
-                    : undefined
-            }
+            style={keyboardOffset > 0
+                ? {
+                    bottom: `${keyboardOffset + 12}px`,
+                }
+                : undefined}
         >
             {/* Desktop Top Bar (strictly visible on >= 769px) */}
             <div className="top-bar-inner top-bar-desktop">
@@ -270,14 +273,18 @@ export const TopBar: React.FC = () => {
                     <nav className="top-bar-nav">
                         <button
                             type="button"
-                            className={`nav-link ${selectedNavTab === "movies" ? "active" : ""}`}
+                            className={`nav-link ${
+                                selectedNavTab === "movies" ? "active" : ""
+                            }`}
                             onClick={handleMoviesClick}
                         >
                             Movies
                         </button>
                         <button
                             type="button"
-                            className={`nav-link ${selectedNavTab === "shows" ? "active" : ""}`}
+                            className={`nav-link ${
+                                selectedNavTab === "shows" ? "active" : ""
+                            }`}
                             onClick={handleShowsClick}
                         >
                             Shows
@@ -306,7 +313,9 @@ export const TopBar: React.FC = () => {
                         </form>
                         <button
                             type="button"
-                            className={`search-clear-btn ${searchQuery.length > 0 ? "visible" : ""}`}
+                            className={`search-clear-btn ${
+                                searchQuery.length > 0 ? "visible" : ""
+                            }`}
                             onClick={handleClearSearch}
                             title="Clear search"
                             aria-label="Clear search"
@@ -318,10 +327,11 @@ export const TopBar: React.FC = () => {
                     <div className="profile-container">
                         <button
                             type="button"
-                            className={`profile-button ${isAccountPopupOpen ? "active" : ""}`}
+                            className={`profile-button ${
+                                isAccountPopupOpen ? "active" : ""
+                            }`}
                             onClick={() =>
-                                setIsAccountPopupOpen(!isAccountPopupOpen)
-                            }
+                                setIsAccountPopupOpen(!isAccountPopupOpen)}
                             aria-label="Account options"
                         >
                             <img
@@ -336,147 +346,169 @@ export const TopBar: React.FC = () => {
 
             {/* Mobile Bottom Navigation Bar (strictly visible on <= 768px) */}
             <div className="top-bar-mobile">
-                {isMobileSearchActive ? (
-                    <div className="mobile-search-active-bar">
-                        <form
-                            className="mobile-search-expanded"
-                            onSubmit={handleSearchSubmit}
-                        >
-                            <input
-                                ref={mobileSearchInputRef}
-                                type="text"
-                                placeholder="Search..."
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                                onFocus={() => {
-                                    requestAnimationFrame(() => {
-                                        if (window.visualViewport) {
-                                            const vv = window.visualViewport;
-                                            const offset = Math.max(
-                                                0,
-                                                window.innerHeight -
-                                                    (vv.height + vv.offsetTop)
-                                            );
-                                            if (offset > 100)
-                                                setKeyboardOffset(
-                                                    Math.round(offset)
+                {isMobileSearchActive
+                    ? (
+                        <div className="mobile-search-active-bar">
+                            <form
+                                className="mobile-search-expanded"
+                                onSubmit={handleSearchSubmit}
+                            >
+                                <input
+                                    ref={mobileSearchInputRef}
+                                    type="text"
+                                    placeholder="Search..."
+                                    value={searchQuery}
+                                    onChange={handleSearchChange}
+                                    onFocus={() => {
+                                        requestAnimationFrame(() => {
+                                            if (window.visualViewport) {
+                                                const vv =
+                                                    window.visualViewport;
+                                                const offset = Math.max(
+                                                    0,
+                                                    window.innerHeight -
+                                                        (vv.height +
+                                                            vv.offsetTop),
                                                 );
-                                        }
-                                    });
-                                }}
-                                aria-label="Search movies or shows"
-                            />
-                            <img
-                                src="/assets/images/search.svg"
-                                alt="Search"
-                                className="search-icon"
-                            />
-                        </form>
-                        <button
-                            type="button"
-                            className="mobile-circle-btn close-search-btn"
-                            onClick={handleCloseMobileSearch}
-                            title="Close search"
-                            aria-label="Close search"
-                        >
-                            <img src="/assets/images/cross.svg" alt="Close" />
-                        </button>
-                    </div>
-                ) : (
-                    <div className="mobile-nav-bar-container">
-                        {/* Main Navigation Island */}
-                        <div
-                            className="mobile-nav-island"
-                            ref={islandRef}
-                            onPointerDown={handlePointerDown}
-                            onPointerMove={handlePointerMove}
-                            onPointerUp={handlePointerUp}
-                            onPointerCancel={handlePointerCancel}
-                        >
-                            {/* Sliding / Draggable Glass Pill Indicator */}
+                                                if (offset > 100) {
+                                                    setKeyboardOffset(
+                                                        Math.round(offset),
+                                                    );
+                                                }
+                                            }
+                                        });
+                                    }}
+                                    aria-label="Search movies or shows"
+                                />
+                                <img
+                                    src="/assets/images/search.svg"
+                                    alt="Search"
+                                    className="search-icon"
+                                />
+                            </form>
+                            <button
+                                type="button"
+                                className="mobile-circle-btn close-search-btn"
+                                onClick={handleCloseMobileSearch}
+                                title="Close search"
+                                aria-label="Close search"
+                            >
+                                <img
+                                    src="/assets/images/cross.svg"
+                                    alt="Close"
+                                />
+                            </button>
+                        </div>
+                    )
+                    : (
+                        <div className="mobile-nav-bar-container">
+                            {/* Main Navigation Island */}
                             <div
-                                className="mobile-active-pill"
-                                style={{
-                                    transform:
-                                        dragOffset !== null
-                                            ? `translateX(calc(${startIndexRef.current * 100}% + ${dragOffset}px))`
-                                            : `translateX(${activeNavIndex * 100}%)`,
-                                    transition:
-                                        dragOffset !== null
+                                className="mobile-nav-island"
+                                ref={islandRef}
+                                onPointerDown={handlePointerDown}
+                                onPointerMove={handlePointerMove}
+                                onPointerUp={handlePointerUp}
+                                onPointerCancel={handlePointerCancel}
+                            >
+                                {/* Sliding / Draggable Glass Pill Indicator */}
+                                <div
+                                    className="mobile-active-pill"
+                                    style={{
+                                        transform: dragOffset !== null
+                                            ? `translateX(calc(${
+                                                startIndexRef.current * 100
+                                            }% + ${dragOffset}px))`
+                                            : `translateX(${
+                                                activeNavIndex * 100
+                                            }%)`,
+                                        transition: dragOffset !== null
                                             ? "none"
                                             : "transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1)",
-                                }}
-                            />
+                                    }}
+                                />
 
+                                <button
+                                    type="button"
+                                    className={`mobile-nav-item ${
+                                        activeNavIndex === 0 ? "active" : ""
+                                    }`}
+                                    onClick={handleHomeClick}
+                                    aria-label="Home"
+                                >
+                                    <img
+                                        src={getAppIconUrl()}
+                                        alt="Home"
+                                        className="tab-icon tab-app-icon"
+                                    />
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className={`mobile-nav-item ${
+                                        activeNavIndex === 1 ? "active" : ""
+                                    }`}
+                                    onClick={handleMoviesClick}
+                                    aria-label="Movies"
+                                >
+                                    <img
+                                        src="/assets/images/movie.svg"
+                                        alt="Movies"
+                                        className="tab-icon"
+                                    />
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className={`mobile-nav-item ${
+                                        activeNavIndex === 2 ? "active" : ""
+                                    }`}
+                                    onClick={handleShowsClick}
+                                    aria-label="Shows"
+                                >
+                                    <img
+                                        src="/assets/images/tv.svg"
+                                        alt="Shows"
+                                        className="tab-icon"
+                                    />
+                                </button>
+                            </div>
+
+                            {/* Search Button */}
                             <button
                                 type="button"
-                                className={`mobile-nav-item ${activeNavIndex === 0 ? "active" : ""}`}
-                                onClick={handleHomeClick}
-                                aria-label="Home"
+                                className="mobile-circle-btn mobile-search-btn"
+                                onClick={() => setIsMobileSearchActive(true)}
+                                aria-label="Search"
                             >
                                 <img
-                                    src={getAppIconUrl()}
-                                    alt="Home"
-                                    className="tab-icon tab-app-icon"
+                                    src="/assets/images/search.svg"
+                                    alt="Search"
                                 />
                             </button>
 
-                            <button
-                                type="button"
-                                className={`mobile-nav-item ${activeNavIndex === 1 ? "active" : ""}`}
-                                onClick={handleMoviesClick}
-                                aria-label="Movies"
-                            >
-                                <img
-                                    src="/assets/images/movie.svg"
-                                    alt="Movies"
-                                    className="tab-icon"
-                                />
-                            </button>
-
-                            <button
-                                type="button"
-                                className={`mobile-nav-item ${activeNavIndex === 2 ? "active" : ""}`}
-                                onClick={handleShowsClick}
-                                aria-label="Shows"
-                            >
-                                <img
-                                    src="/assets/images/tv.svg"
-                                    alt="Shows"
-                                    className="tab-icon"
-                                />
-                            </button>
+                            {/* Profile Button & Upward Account Popup */}
+                            <div className="profile-container mobile-profile-wrapper">
+                                <button
+                                    type="button"
+                                    className={`profile-button mobile-circle-btn ${
+                                        isAccountPopupOpen ? "active" : ""
+                                    }`}
+                                    onClick={() =>
+                                        setIsAccountPopupOpen(
+                                            !isAccountPopupOpen,
+                                        )}
+                                    aria-label="Account options"
+                                >
+                                    <img
+                                        src="/assets/images/person.svg"
+                                        alt="Profile"
+                                    />
+                                </button>
+                                <AccountPopup />
+                            </div>
                         </div>
-
-                        {/* Search Button */}
-                        <button
-                            type="button"
-                            className="mobile-circle-btn mobile-search-btn"
-                            onClick={() => setIsMobileSearchActive(true)}
-                            aria-label="Search"
-                        >
-                            <img src="/assets/images/search.svg" alt="Search" />
-                        </button>
-
-                        {/* Profile Button & Upward Account Popup */}
-                        <div className="profile-container mobile-profile-wrapper">
-                            <button
-                                type="button"
-                                className={`profile-button mobile-circle-btn ${isAccountPopupOpen ? "active" : ""}`}
-                                onClick={() =>
-                                    setIsAccountPopupOpen(!isAccountPopupOpen)
-                                }
-                                aria-label="Account options"
-                            >
-                                <img
-                                    src="/assets/images/person.svg"
-                                    alt="Profile"
-                                />
-                            </button>
-                            <AccountPopup />
-                        </div>
-                    </div>
-                )}
+                    )}
             </div>
         </header>
     );

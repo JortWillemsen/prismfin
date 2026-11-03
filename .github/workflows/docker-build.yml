@@ -1,37 +1,37 @@
 name: Build Docker Image
 
 on:
-  workflow_call:
-    inputs:
-      save-artifact:
-        description: 'Save image as artifact for publishing'
-        required: false
-        type: boolean
-        default: false
+    workflow_call:
+        inputs:
+            save-artifact:
+                description: "Save image as artifact for publishing"
+                required: false
+                type: boolean
+                default: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          tags: app:built
-          outputs: ${{ inputs.save-artifact && 'type=docker,dest=/tmp/image.tar' || 'type=docker' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            - name: Build Docker image
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  tags: app:built
+                  outputs: ${{ inputs.save-artifact && 'type=docker,dest=/tmp/image.tar' || 'type=docker' }}
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
 
-      - name: Upload Docker image artifact
-        if: inputs.save-artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-image
-          path: /tmp/image.tar
-          retention-days: 1
+            - name: Upload Docker image artifact
+              if: inputs.save-artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: docker-image
+                  path: /tmp/image.tar
+                  retention-days: 1

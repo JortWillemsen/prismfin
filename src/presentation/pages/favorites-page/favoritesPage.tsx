@@ -36,39 +36,43 @@ export const FavoritesPage: React.FC = () => {
                 <span>Favorites</span>
             </h1>
 
-            {loading ? (
-                <div className="favorites-grid">
-                    {Array.from({ length: 12 }).map((_, idx) => (
-                        <div key={idx} className="media-card portrait">
-                            <div className="card-poster-wrapper portrait skeleton-shimmer" />
-                            <div
-                                style={{
-                                    height: 16,
-                                    width: "70%",
-                                    margin: "10px auto 0 auto",
-                                    borderRadius: 4,
-                                    background: "rgba(255,255,255,0.06)",
-                                }}
+            {loading
+                ? (
+                    <div className="favorites-grid">
+                        {Array.from({ length: 12 }).map((_, idx) => (
+                            <div key={idx} className="media-card portrait">
+                                <div className="card-poster-wrapper portrait skeleton-shimmer" />
+                                <div
+                                    style={{
+                                        height: 16,
+                                        width: "70%",
+                                        margin: "10px auto 0 auto",
+                                        borderRadius: 4,
+                                        background: "rgba(255,255,255,0.06)",
+                                    }}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )
+                : favorites.length === 0
+                ? (
+                    <div className="favorites-empty">
+                        You haven't added any favorites yet
+                    </div>
+                )
+                : (
+                    <div className="favorites-grid">
+                        {favorites.map((item) => (
+                            <MediaCard
+                                key={item.id}
+                                item={item}
+                                viewMode="Portrait"
+                                showSubtitle
                             />
-                        </div>
-                    ))}
-                </div>
-            ) : favorites.length === 0 ? (
-                <div className="favorites-empty">
-                    You haven't added any favorites yet
-                </div>
-            ) : (
-                <div className="favorites-grid">
-                    {favorites.map((item) => (
-                        <MediaCard
-                            key={item.id}
-                            item={item}
-                            viewMode="Portrait"
-                            showSubtitle
-                        />
-                    ))}
-                </div>
-            )}
+                        ))}
+                    </div>
+                )}
         </div>
     );
 };

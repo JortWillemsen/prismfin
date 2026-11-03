@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./glass-dropdown.scss";
 
 export interface DropdownOption {
@@ -111,7 +111,7 @@ export const GlassDropdown: React.FC<GlassDropdownProps> = ({
             displayLabel = placeholder;
         } else if (selectedList.length === 1) {
             const matched = normalizedOptions.find(
-                (o) => o.value === selectedList[0]
+                (o) => o.value === selectedList[0],
             );
             displayLabel = matched ? matched.label : String(selectedList[0]);
         } else {
@@ -126,7 +126,9 @@ export const GlassDropdown: React.FC<GlassDropdownProps> = ({
 
     return (
         <div
-            className={`glass-dropdown ${direction === "up" ? "direction-up" : ""} ${disabled ? "disabled" : ""} ${className}`}
+            className={`glass-dropdown ${
+                direction === "up" ? "direction-up" : ""
+            } ${disabled ? "disabled" : ""} ${className}`}
             ref={containerRef}
         >
             <button
@@ -162,7 +164,9 @@ export const GlassDropdown: React.FC<GlassDropdownProps> = ({
                         return (
                             <div
                                 key={String(opt.value)}
-                                className={`dropdown-item ${isSelected ? "selected" : ""}`}
+                                className={`dropdown-item ${
+                                    isSelected ? "selected" : ""
+                                }`}
                                 onClick={() => handleSelect(opt.value)}
                             >
                                 <span>{opt.label}</span>

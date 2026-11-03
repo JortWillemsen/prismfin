@@ -32,14 +32,14 @@ export class PlaybackService {
     }
 
     async fetchTrickplay(
-        itemId: string
+        itemId: string,
     ): Promise<TrickplayManifest | undefined> {
         try {
             const { user, accessToken } = this.getSession();
             const full = await this.mediaApi.getItem(
                 user.id,
                 itemId,
-                accessToken
+                accessToken,
             );
             return full.trickplayInfo;
         } catch {
@@ -51,7 +51,7 @@ export class PlaybackService {
         item: MediaItem,
         maxBitrate?: number,
         audioIndex?: number,
-        subtitleIndex?: number
+        subtitleIndex?: number,
     ): Promise<PlaybackStreamInfo> {
         const { user, accessToken } = this.getSession();
         const streamInfo = await this.playbackApi.getPlaybackInfo(
@@ -61,7 +61,7 @@ export class PlaybackService {
             item.name,
             maxBitrate,
             audioIndex,
-            subtitleIndex
+            subtitleIndex,
         );
 
         if (item.trickplayInfo) {
@@ -71,7 +71,7 @@ export class PlaybackService {
                 const fullItem = await this.mediaApi.getItem(
                     user.id,
                     item.id,
-                    accessToken
+                    accessToken,
                 );
                 if (fullItem.trickplayInfo) {
                     item.trickplayInfo = fullItem.trickplayInfo;
@@ -87,7 +87,7 @@ export class PlaybackService {
 
         if (item.playbackPositionTicks && item.playbackPositionTicks > 0) {
             streamInfo.startPositionSeconds = Math.floor(
-                item.playbackPositionTicks / 10000000
+                item.playbackPositionTicks / 10000000,
             );
         }
 
@@ -113,7 +113,7 @@ export class PlaybackService {
             this.currentStreamInfo.itemId,
             this.currentStreamInfo.playSessionId,
             positionTicks,
-            session.accessToken
+            session.accessToken,
         );
 
         this.stopReporting();
@@ -123,14 +123,14 @@ export class PlaybackService {
                 return;
             }
             const currentTicks = Math.floor(
-                this.lastReportedSeconds * 10000000
+                this.lastReportedSeconds * 10000000,
             );
             this.playbackApi.reportPlaybackProgress(
                 this.currentStreamInfo.itemId,
                 this.currentStreamInfo.playSessionId,
                 currentTicks,
                 false,
-                session.accessToken
+                session.accessToken,
             );
         }, 10000);
     }
@@ -147,7 +147,7 @@ export class PlaybackService {
             this.currentStreamInfo.playSessionId,
             currentTicks,
             isPaused,
-            session.accessToken
+            session.accessToken,
         );
     }
 
@@ -167,7 +167,7 @@ export class PlaybackService {
                 this.currentStreamInfo.itemId,
                 this.currentStreamInfo.playSessionId,
                 finalTicks,
-                session.accessToken
+                session.accessToken,
             );
         }
         this.currentStreamInfo = null;

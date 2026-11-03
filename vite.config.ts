@@ -11,30 +11,24 @@ function getResolvedConfig(mode: string) {
     const env = loadEnv(mode, process.cwd(), "");
     return {
         appName: env.APP_NAME || env.VITE_APP_NAME || "PrismFin",
-        appLogoUrl:
-            env.APP_LOGO_URL ||
+        appLogoUrl: env.APP_LOGO_URL ||
             env.VITE_APP_LOGO_URL ||
             "/assets/branding/logo.png",
-        appIconUrl:
-            env.APP_ICON_URL ||
+        appIconUrl: env.APP_ICON_URL ||
             env.VITE_APP_ICON_URL ||
             "/assets/branding/icon.png",
-        appFaviconUrl:
-            env.APP_FAVICON_URL ||
+        appFaviconUrl: env.APP_FAVICON_URL ||
             env.VITE_APP_FAVICON_URL ||
             "/assets/branding/favicon.png",
-        appPwaIconUrl:
-            env.APP_PWA_ICON_URL ||
+        appPwaIconUrl: env.APP_PWA_ICON_URL ||
             env.VITE_APP_PWA_ICON_URL ||
             "/assets/branding/pwa-icon-maskable-512.png",
-        accentColor:
-            env.APP_ACCENT_COLOR || env.VITE_APP_ACCENT_COLOR || "#06A1DB",
-        featuredPlaylist:
-            env.FEATURED_PLAYLIST_NAME ||
+        accentColor: env.APP_ACCENT_COLOR || env.VITE_APP_ACCENT_COLOR ||
+            "#06A1DB",
+        featuredPlaylist: env.FEATURED_PLAYLIST_NAME ||
             env.VITE_FEATURED_PLAYLIST_NAME ||
             "Featured",
-        defaultServerUrl:
-            env.DEFAULT_SERVER_URL ||
+        defaultServerUrl: env.DEFAULT_SERVER_URL ||
             env.VITE_JELLYFIN_SERVER_URL ||
             "http://jellyfin.local:8096",
     };
@@ -54,18 +48,20 @@ export default defineConfig(({ mode }) => {
                     const currentConfig = getResolvedConfig(mode);
                     res.setHeader(
                         "Content-Type",
-                        "application/javascript; charset=utf-8"
+                        "application/javascript; charset=utf-8",
                     );
                     res.setHeader(
                         "Cache-Control",
-                        "no-cache, no-store, must-revalidate"
+                        "no-cache, no-store, must-revalidate",
                     );
                     res.end(
-                        `window.__PRISMFIN_CONFIG__ = ${JSON.stringify(
-                            currentConfig,
-                            null,
-                            4
-                        )};`
+                        `window.__PRISMFIN_CONFIG__ = ${
+                            JSON.stringify(
+                                currentConfig,
+                                null,
+                                4,
+                            )
+                        };`,
                     );
                     return;
                 }
@@ -76,18 +72,19 @@ export default defineConfig(({ mode }) => {
                     const currentConfig = getResolvedConfig(mode);
                     res.setHeader(
                         "Content-Type",
-                        "application/manifest+json; charset=utf-8"
+                        "application/manifest+json; charset=utf-8",
                     );
                     res.setHeader(
                         "Cache-Control",
-                        "no-cache, no-store, must-revalidate"
+                        "no-cache, no-store, must-revalidate",
                     );
                     res.end(
                         JSON.stringify(
                             {
                                 name: currentConfig.appName,
                                 short_name: currentConfig.appName,
-                                description: `${currentConfig.appName} - Apple Liquid Glass Jellyfin Client`,
+                                description:
+                                    `${currentConfig.appName} - Apple Liquid Glass Jellyfin Client`,
                                 start_url: "/",
                                 display: "standalone",
                                 background_color: "#000000",
@@ -114,8 +111,8 @@ export default defineConfig(({ mode }) => {
                                 ],
                             },
                             null,
-                            4
-                        )
+                            4,
+                        ),
                     );
                     return;
                 }
@@ -127,26 +124,26 @@ export default defineConfig(({ mode }) => {
                 .replace(/<title>[^<]*<\/title>/, `<title>${appName}</title>`)
                 .replace(
                     /<meta name="apple-mobile-web-app-title" content="[^"]*"/,
-                    `<meta name="apple-mobile-web-app-title" content="${appName}"`
+                    `<meta name="apple-mobile-web-app-title" content="${appName}"`,
                 )
                 .replace(
                     /<meta name="application-name" content="[^"]*"/,
-                    `<meta name="application-name" content="${appName}"`
+                    `<meta name="application-name" content="${appName}"`,
                 )
                 .replace(
                     /<meta name="theme-color" content="[^"]*"/,
-                    `<meta name="theme-color" content="${accentColor}"`
+                    `<meta name="theme-color" content="${accentColor}"`,
                 );
             if (appIconUrl !== "/assets/branding/icon.png") {
                 transformed = transformed.replace(
                     /<link rel="apple-touch-icon"[^>]*href="[^"]*"/g,
-                    `<link rel="apple-touch-icon" href="${appIconUrl}"`
+                    `<link rel="apple-touch-icon" href="${appIconUrl}"`,
                 );
             }
             if (appFaviconUrl !== "/assets/branding/favicon.png") {
                 transformed = transformed.replace(
                     /<link rel="icon"[^>]*href="[^"]*"/g,
-                    `<link rel="icon" href="${appFaviconUrl}"`
+                    `<link rel="icon" href="${appFaviconUrl}"`,
                 );
             }
             return transformed;
@@ -171,16 +168,16 @@ export default defineConfig(({ mode }) => {
                 if (req.url === "/sw.js") {
                     const swPath = path.resolve(
                         rootDir,
-                        "./public/sw.js"
+                        "./public/sw.js",
                     );
                     const content = fs.readFileSync(swPath, "utf-8");
                     res.setHeader("Content-Type", "application/javascript");
                     res.setHeader(
                         "Cache-Control",
-                        "no-cache, no-store, must-revalidate"
+                        "no-cache, no-store, must-revalidate",
                     );
                     res.end(
-                        content.replace("__APP_VERSION__", appVersion)
+                        content.replace("__APP_VERSION__", appVersion),
                     );
                     return;
                 }
@@ -190,20 +187,25 @@ export default defineConfig(({ mode }) => {
         writeBundle() {
             const swPath = path.resolve(
                 rootDir,
-                "./dist/sw.js"
+                "./dist/sw.js",
             );
             if (fs.existsSync(swPath)) {
                 const content = fs.readFileSync(swPath, "utf-8");
                 fs.writeFileSync(
                     swPath,
-                    content.replace("__APP_VERSION__", appVersion)
+                    content.replace("__APP_VERSION__", appVersion),
                 );
             }
         },
     };
 
     return {
-        plugins: [deno(), react(), runtimeBrandingPlugin, serviceWorkerVersionPlugin],
+        plugins: [
+            deno(),
+            react(),
+            runtimeBrandingPlugin,
+            serviceWorkerVersionPlugin,
+        ],
         resolve: {
             alias: {
                 "@": path.resolve(rootDir, "./src"),
@@ -225,9 +227,9 @@ export default defineConfig(({ mode }) => {
             host: true,
             https: hasCert
                 ? {
-                      key: fs.readFileSync(keyPath),
-                      cert: fs.readFileSync(certPath),
-                  }
+                    key: fs.readFileSync(keyPath),
+                    cert: fs.readFileSync(certPath),
+                }
                 : undefined,
             proxy: {
                 "/jellyfin-proxy": {
@@ -257,7 +259,10 @@ export default defineConfig(({ mode }) => {
                     target: jellyfinServer,
                     changeOrigin: false,
                     rewrite: (p) =>
-                        p.replace(/^\/api\/sso-validate\//, "/sso/OID/redirect/"),
+                        p.replace(
+                            /^\/api\/sso-validate\//,
+                            "/sso/OID/redirect/",
+                        ),
                     configure: (proxy) => {
                         proxy.on("proxyReq", (proxyReq, req) => {
                             const host = req.headers.host || "localhost:5173";

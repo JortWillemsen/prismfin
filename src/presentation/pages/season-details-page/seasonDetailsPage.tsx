@@ -51,7 +51,7 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
         try {
             const next = await detailsService.toggleFavorite(
                 details.series.id,
-                isFavorite
+                isFavorite,
             );
             setIsFavorite(next);
         } catch {
@@ -72,38 +72,38 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
 
     const backdropUrl = series.backdropImageTag
         ? getImageUrl(serverUrl, series.id, "Backdrop", {
-              tag: series.backdropImageTag,
-              maxWidth: 1920,
-              quality: 90,
-          })
+            tag: series.backdropImageTag,
+            maxWidth: 1920,
+            quality: 90,
+        })
         : "";
 
     const logoUrl = series.logoImageTag
         ? getImageUrl(serverUrl, series.id, "Logo", {
-              tag: series.logoImageTag,
-              maxWidth: 500,
-          })
+            tag: series.logoImageTag,
+            maxWidth: 500,
+        })
         : "";
 
     const posterUrl = season.primaryImageTag
         ? getImageUrl(serverUrl, season.id, "Primary", {
-              tag: season.primaryImageTag,
-              maxWidth: 600,
-              quality: 90,
-          })
+            tag: season.primaryImageTag,
+            maxWidth: 600,
+            quality: 90,
+        })
         : series.primaryImageTag
-          ? getImageUrl(serverUrl, series.id, "Primary", {
-                tag: series.primaryImageTag,
-                maxWidth: 600,
-            })
-          : "";
+        ? getImageUrl(serverUrl, series.id, "Primary", {
+            tag: series.primaryImageTag,
+            maxWidth: 600,
+        })
+        : "";
 
     // Determine target episode based on playback progress
     const inProgressEp = episodes.find(
-        (e) => (e.playbackPositionTicks || 0) > 0 && !e.played
+        (e) => (e.playbackPositionTicks || 0) > 0 && !e.played,
     );
-    const targetEpisode =
-        inProgressEp || episodes.find((e) => !e.played) || episodes[0];
+    const targetEpisode = inProgressEp || episodes.find((e) => !e.played) ||
+        episodes[0];
     const seasonNum = targetEpisode?.seasonNumber ?? season.seasonNumber ?? 1;
     const epNum = targetEpisode?.episodeNumber ?? 1;
     const playButtonLabel = `Play S${seasonNum}, E${epNum}`;
@@ -144,45 +144,54 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
                 <div className="hero-gradient-overlay" />
 
                 <div className="hero-content-left">
-                    {logoUrl ? (
-                        <img
-                            src={logoUrl}
-                            alt={series.name}
-                            className="details-logo"
-                        />
-                    ) : null}
+                    {logoUrl
+                        ? (
+                            <img
+                                src={logoUrl}
+                                alt={series.name}
+                                className="details-logo"
+                            />
+                        )
+                        : null}
 
                     <h1 className="details-title-heading">
                         {series.name}, {season.name}
                     </h1>
 
                     <div className="details-metadata-line">
-                        {series.criticRating ? (
-                            <>
-                                <span>
-                                    Rotten Tomatoes {series.criticRating}%
-                                </span>
-                                <span className="meta-separator">•</span>
-                            </>
-                        ) : null}
-                        {series.communityRating ? (
-                            <>
-                                <span className="badge-accent">
-                                    IMDb {formatScore(series.communityRating)}
-                                </span>
-                                <span className="meta-separator">•</span>
-                            </>
-                        ) : null}
-                        {series.productionYear ? (
-                            <span>{series.productionYear}</span>
-                        ) : null}
+                        {series.criticRating
+                            ? (
+                                <>
+                                    <span>
+                                        Rotten Tomatoes {series.criticRating}%
+                                    </span>
+                                    <span className="meta-separator">•</span>
+                                </>
+                            )
+                            : null}
+                        {series.communityRating
+                            ? (
+                                <>
+                                    <span className="badge-accent">
+                                        IMDb{" "}
+                                        {formatScore(series.communityRating)}
+                                    </span>
+                                    <span className="meta-separator">•</span>
+                                </>
+                            )
+                            : null}
+                        {series.productionYear
+                            ? <span>{series.productionYear}</span>
+                            : null}
                     </div>
 
-                    {season.overview || series.overview ? (
-                        <p className="details-overview">
-                            {season.overview || series.overview}
-                        </p>
-                    ) : null}
+                    {season.overview || series.overview
+                        ? (
+                            <p className="details-overview">
+                                {season.overview || series.overview}
+                            </p>
+                        )
+                        : null}
 
                     <div
                         style={{ marginTop: 8 }}
@@ -214,7 +223,9 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
 
                         <button
                             type="button"
-                            className={`mobile-circle-hero-btn ${!series.collectionId ? "disabled" : ""}`}
+                            className={`mobile-circle-hero-btn ${
+                                !series.collectionId ? "disabled" : ""
+                            }`}
                             onClick={() => {
                                 if (series.collectionId) {
                                     navigate({
@@ -234,21 +245,19 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
 
                         <button
                             type="button"
-                            className={`mobile-circle-hero-btn ${isFavorite ? "favorited" : ""}`}
+                            className={`mobile-circle-hero-btn ${
+                                isFavorite ? "favorited" : ""
+                            }`}
                             onClick={handleToggleFavorite}
-                            title={
-                                isFavorite
-                                    ? "Remove from favorites"
-                                    : "Add to favorites"
-                            }
+                            title={isFavorite
+                                ? "Remove from favorites"
+                                : "Add to favorites"}
                             aria-label="Toggle favorite"
                         >
                             <img
-                                src={
-                                    isFavorite
-                                        ? "/assets/images/heart-check.svg"
-                                        : "/assets/images/heart.svg"
-                                }
+                                src={isFavorite
+                                    ? "/assets/images/heart-check.svg"
+                                    : "/assets/images/heart.svg"}
                                 alt="Favorite"
                             />
                         </button>
@@ -266,7 +275,9 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
             {(() => {
                 const techItems = [
                     episodes.length > 0
-                        ? `${episodes.length} Episode${episodes.length > 1 ? "s" : ""}`
+                        ? `${episodes.length} Episode${
+                            episodes.length > 1 ? "s" : ""
+                        }`
                         : null,
                     series.videoResolution,
                     series.videoCodec,
@@ -305,24 +316,23 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
                     {episodes.map((ep) => {
                         const epThumb = ep.primaryImageTag
                             ? getImageUrl(serverUrl, ep.id, "Primary", {
-                                  tag: ep.primaryImageTag,
-                                  maxWidth: 500,
-                              })
+                                tag: ep.primaryImageTag,
+                                maxWidth: 500,
+                            })
                             : "";
 
-                        const epProgress =
-                            ep.playbackPositionTicks &&
-                            ep.runTimeTicks &&
-                            ep.runTimeTicks > 0
-                                ? Math.min(
-                                      100,
-                                      (ep.playbackPositionTicks /
-                                          ep.runTimeTicks) *
-                                          100
-                                  )
-                                : ep.played
-                                  ? 100
-                                  : 0;
+                        const epProgress = ep.playbackPositionTicks &&
+                                ep.runTimeTicks &&
+                                ep.runTimeTicks > 0
+                            ? Math.min(
+                                100,
+                                (ep.playbackPositionTicks /
+                                    ep.runTimeTicks) *
+                                    100,
+                            )
+                            : ep.played
+                            ? 100
+                            : 0;
 
                         return (
                             <div
@@ -331,17 +341,17 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
                                 onClick={() => startPlayback(ep)}
                             >
                                 <div className="episode-thumb-wrapper">
-                                    {epThumb ? (
-                                        <img src={epThumb} alt={ep.name} />
-                                    ) : (
-                                        <div
-                                            style={{
-                                                width: "100%",
-                                                height: "100%",
-                                                background: "#1a1a1a",
-                                            }}
-                                        />
-                                    )}
+                                    {epThumb
+                                        ? <img src={epThumb} alt={ep.name} />
+                                        : (
+                                            <div
+                                                style={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    background: "#1a1a1a",
+                                                }}
+                                            />
+                                        )}
                                     <div className="thumb-play-overlay">
                                         <img
                                             src="/assets/images/play_circle.svg"
@@ -369,39 +379,44 @@ export const SeasonDetailsPage: React.FC<SeasonDetailsPageProps> = ({
                                     </div>
 
                                     <div className="episode-meta-line">
-                                        {ep.criticRating ? (
-                                            <>
-                                                <span>
-                                                    Rotten Tomatoes{" "}
-                                                    {ep.criticRating}%
-                                                </span>
-                                                <span className="meta-dot">
-                                                    •
-                                                </span>
-                                            </>
-                                        ) : null}
+                                        {ep.criticRating
+                                            ? (
+                                                <>
+                                                    <span>
+                                                        Rotten Tomatoes{" "}
+                                                        {ep.criticRating}%
+                                                    </span>
+                                                    <span className="meta-dot">
+                                                        •
+                                                    </span>
+                                                </>
+                                            )
+                                            : null}
 
-                                        {ep.communityRating ? (
-                                            <>
-                                                <span className="score-accent">
-                                                    IMDb{" "}
-                                                    {formatScore(
-                                                        ep.communityRating
+                                        {ep.communityRating
+                                            ? (
+                                                <>
+                                                    <span className="score-accent">
+                                                        IMDb {formatScore(
+                                                            ep.communityRating,
+                                                        )}
+                                                    </span>
+                                                    <span className="meta-dot">
+                                                        •
+                                                    </span>
+                                                </>
+                                            )
+                                            : null}
+
+                                        {ep.runTimeTicks
+                                            ? (
+                                                <span>
+                                                    {formatDurationTicks(
+                                                        ep.runTimeTicks,
                                                     )}
                                                 </span>
-                                                <span className="meta-dot">
-                                                    •
-                                                </span>
-                                            </>
-                                        ) : null}
-
-                                        {ep.runTimeTicks ? (
-                                            <span>
-                                                {formatDurationTicks(
-                                                    ep.runTimeTicks
-                                                )}
-                                            </span>
-                                        ) : null}
+                                            )
+                                            : null}
                                     </div>
 
                                     {ep.overview && (

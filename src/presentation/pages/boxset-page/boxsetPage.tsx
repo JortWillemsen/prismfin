@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-    detailsService,
     BoxsetDetailsData,
+    detailsService,
 } from "@/application/services/detailsService";
 import { MediaItem } from "@/common/types/media";
 import { useApp } from "@/application/state/appContext";
@@ -116,23 +116,23 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
 
     const backdropUrl = activeMovie?.backdropImageTag
         ? getImageUrl(serverUrl, activeMovie.id, "Backdrop", {
-              tag: activeMovie.backdropImageTag,
-              maxWidth: 1920,
-              quality: 90,
-          })
+            tag: activeMovie.backdropImageTag,
+            maxWidth: 1920,
+            quality: 90,
+        })
         : activeMovie?.primaryImageTag
-          ? getImageUrl(serverUrl, activeMovie.id, "Primary", {
-                tag: activeMovie.primaryImageTag,
-                maxWidth: 1920,
-                quality: 85,
-            })
-          : boxset.backdropImageTag
-            ? getImageUrl(serverUrl, boxset.id, "Backdrop", {
-                  tag: boxset.backdropImageTag,
-                  maxWidth: 1920,
-                  quality: 90,
-              })
-            : "";
+        ? getImageUrl(serverUrl, activeMovie.id, "Primary", {
+            tag: activeMovie.primaryImageTag,
+            maxWidth: 1920,
+            quality: 85,
+        })
+        : boxset.backdropImageTag
+        ? getImageUrl(serverUrl, boxset.id, "Backdrop", {
+            tag: boxset.backdropImageTag,
+            maxWidth: 1920,
+            quality: 90,
+        })
+        : "";
 
     return (
         <div className="boxset-page">
@@ -174,18 +174,21 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
                                 navigate({
                                     name: "movie-details",
                                     id: movie.id,
-                                })
-                            }
+                                })}
                         />
                     ))}
                 </div>
 
                 <div className="boxset-row-wrapper">
                     <div
-                        className={`row-edge-fade left ${canScrollLeft ? "visible" : ""}`}
+                        className={`row-edge-fade left ${
+                            canScrollLeft ? "visible" : ""
+                        }`}
                     />
                     <div
-                        className={`row-edge-fade right ${canScrollRight ? "visible" : ""}`}
+                        className={`row-edge-fade right ${
+                            canScrollRight ? "visible" : ""
+                        }`}
                     />
 
                     {canScrollLeft && (
@@ -217,16 +220,18 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
                     )}
 
                     <div
-                        className={`boxset-movies-row ${isOverflowing ? "is-overflowing" : "is-centered"}`}
+                        className={`boxset-movies-row ${
+                            isOverflowing ? "is-overflowing" : "is-centered"
+                        }`}
                         ref={scrollRef}
                     >
                         {items.map((movie) => {
                             const posterUrl = movie.primaryImageTag
                                 ? getImageUrl(serverUrl, movie.id, "Primary", {
-                                      tag: movie.primaryImageTag,
-                                      maxWidth: 500,
-                                      quality: 90,
-                                  })
+                                    tag: movie.primaryImageTag,
+                                    maxWidth: 500,
+                                    quality: 90,
+                                })
                                 : "";
 
                             return (
@@ -238,42 +243,46 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
                                         navigate({
                                             name: "movie-details",
                                             id: movie.id,
-                                        })
-                                    }
+                                        })}
                                 >
                                     <div className="card-poster-inner">
-                                        {posterUrl ? (
-                                            <img
-                                                src={posterUrl}
-                                                alt={movie.name}
-                                                loading="eager"
-                                            />
-                                        ) : (
-                                            <div className="poster-placeholder">
-                                                {movie.name}
-                                            </div>
-                                        )}
+                                        {posterUrl
+                                            ? (
+                                                <img
+                                                    src={posterUrl}
+                                                    alt={movie.name}
+                                                    loading="eager"
+                                                />
+                                            )
+                                            : (
+                                                <div className="poster-placeholder">
+                                                    {movie.name}
+                                                </div>
+                                            )}
 
                                         <div className="card-hover-blur-overlay">
-                                            {movie.logoImageTag ? (
-                                                <img
-                                                    src={getImageUrl(
-                                                        serverUrl,
-                                                        movie.id,
-                                                        "Logo",
-                                                        {
-                                                            tag: movie.logoImageTag,
-                                                            maxWidth: 280,
-                                                        }
-                                                    )}
-                                                    alt={movie.name}
-                                                    className="hover-card-logo"
-                                                />
-                                            ) : (
-                                                <span className="hover-card-title">
-                                                    {movie.name}
-                                                </span>
-                                            )}
+                                            {movie.logoImageTag
+                                                ? (
+                                                    <img
+                                                        src={getImageUrl(
+                                                            serverUrl,
+                                                            movie.id,
+                                                            "Logo",
+                                                            {
+                                                                tag: movie
+                                                                    .logoImageTag,
+                                                                maxWidth: 280,
+                                                            },
+                                                        )}
+                                                        alt={movie.name}
+                                                        className="hover-card-logo"
+                                                    />
+                                                )
+                                                : (
+                                                    <span className="hover-card-title">
+                                                        {movie.name}
+                                                    </span>
+                                                )}
                                         </div>
                                     </div>
 
@@ -281,11 +290,13 @@ export const BoxsetPage: React.FC<BoxsetPageProps> = ({ boxsetId }) => {
                                         <div className="label-name">
                                             {movie.name}
                                         </div>
-                                        {movie.productionYear ? (
-                                            <div className="label-year">
-                                                {movie.productionYear}
-                                            </div>
-                                        ) : null}
+                                        {movie.productionYear
+                                            ? (
+                                                <div className="label-year">
+                                                    {movie.productionYear}
+                                                </div>
+                                            )
+                                            : null}
                                     </div>
                                 </div>
                             );

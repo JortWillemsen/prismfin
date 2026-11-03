@@ -1,8 +1,8 @@
 import {
     MediaItem,
+    MediaType,
     PersonItem,
     SceneItem,
-    MediaType,
 } from "@/common/types/media";
 import { formatResolution } from "@/common/utils/formatters";
 
@@ -149,8 +149,7 @@ export class ItemMapper {
 
             if (raw) {
                 const width = Number(raw.Width ?? raw.width ?? 320) || 320;
-                const height =
-                    Number(raw.Height ?? raw.height) ||
+                const height = Number(raw.Height ?? raw.height) ||
                     Math.round(width * (9 / 16)) ||
                     180;
                 const tileWidth =
@@ -164,8 +163,8 @@ export class ItemMapper {
                 const bandwidth = raw.Bandwidth
                     ? Number(raw.Bandwidth)
                     : raw.bandwidth
-                      ? Number(raw.bandwidth)
-                      : undefined;
+                    ? Number(raw.bandwidth)
+                    : undefined;
 
                 trickplayInfo = {
                     width,
@@ -215,8 +214,8 @@ export class ItemMapper {
             runTimeMinutes: dto.RunTimeTicks
                 ? Math.round(dto.RunTimeTicks / (10000000 * 60))
                 : undefined,
-            primaryImageTag:
-                dto.ImageTags?.Primary || dto.SeriesPrimaryImageTag,
+            primaryImageTag: dto.ImageTags?.Primary ||
+                dto.SeriesPrimaryImageTag,
             backdropImageTag: dto.BackdropImageTags?.[0],
             logoImageTag,
             thumbImageTag,

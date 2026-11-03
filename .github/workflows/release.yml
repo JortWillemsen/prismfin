@@ -1,28 +1,28 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+    release:
+        types: [published]
 
 jobs:
-  verify-version:
-    uses: ./.github/workflows/release-version-verification.yml
-    with:
-      release-tag: ${{ github.event.release.tag_name }}
+    verify-version:
+        uses: ./.github/workflows/release-version-verification.yml
+        with:
+            release-tag: ${{ github.event.release.tag_name }}
 
-  verify-vite:
-    needs: verify-version
-    uses: ./.github/workflows/vite-build.yml
+    verify-vite:
+        needs: verify-version
+        uses: ./.github/workflows/vite-build.yml
 
-  verify-docker:
-    needs: verify-vite
-    uses: ./.github/workflows/docker-build.yml
-    with:
-      save-artifact: true
+    verify-docker:
+        needs: verify-vite
+        uses: ./.github/workflows/docker-build.yml
+        with:
+            save-artifact: true
 
-  publish-docker:
-    needs: verify-docker
-    permissions:
-      contents: read
-      packages: write
-    uses: ./.github/workflows/docker-publish.yml
+    publish-docker:
+        needs: verify-docker
+        permissions:
+            contents: read
+            packages: write
+        uses: ./.github/workflows/docker-publish.yml

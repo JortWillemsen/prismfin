@@ -1,15 +1,15 @@
 name: PR Verification
 
 on:
-  pull_request:
-    branches:
-      - develop
-      - 'release/**'
+    pull_request:
+        branches:
+            - develop
+            - "release/**"
 
 jobs:
-  verify-vite:
-    uses: ./.github/workflows/vite-build.yml
+    verify-vite:
+        uses: ./.github/workflows/vite-build.yml
 
-  verify-docker:
-    needs: verify-vite
-    uses: ./.github/workflows/docker-build.yml
+    verify-docker:
+        needs: verify-vite
+        uses: ./.github/workflows/docker-build.yml

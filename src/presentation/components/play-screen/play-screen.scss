@@ -969,14 +969,14 @@
                                     color: $color-accent;
                                     border: 1px solid
                                         rgba(
-                                            var(
-                                                --color-accent-rgb,
-                                                6,
-                                                161,
-                                                219
-                                            ),
-                                            0.4
-                                        );
+                                        var(
+                                            --color-accent-rgb,
+                                            6,
+                                            161,
+                                            219
+                                        ),
+                                        0.4
+                                    );
                                 }
                             }
                         }

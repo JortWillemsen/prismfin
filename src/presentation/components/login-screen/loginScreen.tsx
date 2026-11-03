@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useApp } from "@/application/state/appContext";
 import { authService } from "@/application/services/authService";
 import { getAppLogoUrl, getAppName } from "@/common/constants/config";
@@ -21,8 +21,7 @@ export const LoginScreen: React.FC = () => {
         const search = window.location.search;
         const params = new URLSearchParams(search);
 
-        const isSsoCallback =
-            pathname.includes("/sso/OID/redirect") ||
+        const isSsoCallback = pathname.includes("/sso/OID/redirect") ||
             (params.has("code") && params.has("state"));
 
         if (isSsoCallback) {
@@ -44,7 +43,7 @@ export const LoginScreen: React.FC = () => {
                     window.history.replaceState(
                         {},
                         document.title,
-                        window.location.origin + "/#/"
+                        window.location.origin + "/#/",
                     );
                     window.location.reload();
                 })
@@ -52,12 +51,12 @@ export const LoginScreen: React.FC = () => {
                     window.history.replaceState(
                         {},
                         document.title,
-                        window.location.origin + "/#/"
+                        window.location.origin + "/#/",
                     );
                     setErrorMessage(
                         err instanceof Error
                             ? err.message
-                            : "SSO authentication failed"
+                            : "SSO authentication failed",
                     );
                 })
                 .finally(() => {
@@ -75,7 +74,7 @@ export const LoginScreen: React.FC = () => {
             await loginWithCredentials(username, password);
         } catch (err: unknown) {
             setErrorMessage(
-                err instanceof Error ? err.message : "Failed to sign in"
+                err instanceof Error ? err.message : "Failed to sign in",
             );
         } finally {
             setIsSubmitting(false);
@@ -91,7 +90,7 @@ export const LoginScreen: React.FC = () => {
             setErrorMessage(
                 err instanceof Error
                     ? err.message
-                    : "Failed to initiate SSO login"
+                    : "Failed to initiate SSO login",
             );
             setIsSubmitting(false);
         }
@@ -106,114 +105,127 @@ export const LoginScreen: React.FC = () => {
                     className="login-logo"
                 />
 
-                {!showForm ? (
-                    <>
-                        <button
-                            type="button"
-                            className="login-btn-primary"
-                            onClick={handleSsoClick}
-                            disabled={isSubmitting}
+                {!showForm
+                    ? (
+                        <>
+                            <button
+                                type="button"
+                                className="login-btn-primary"
+                                onClick={handleSsoClick}
+                                disabled={isSubmitting}
+                            >
+                                {isSsoProcessing
+                                    ? "Signing in with SSO..."
+                                    : isSubmitting
+                                    ? "Redirecting to SSO..."
+                                    : `Login with ${appName}`}
+                            </button>
+
+                            {errorMessage && (
+                                <div className="login-error">
+                                    {errorMessage}
+                                </div>
+                            )}
+
+                            <div className="login-secondary-links">
+                                <button
+                                    type="button"
+                                    className="login-text-link"
+                                    onClick={() => {
+                                        setErrorMessage("");
+                                        setShowForm(true);
+                                    }}
+                                >
+                                    Standard Jellyfin login
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="login-quick-connect-link"
+                                    onClick={() =>
+                                        setIsQuickConnectModalOpen(true)}
+                                >
+                                    <img
+                                        src="/assets/images/key.svg"
+                                        alt=""
+                                        aria-hidden="true"
+                                    />
+                                    <span>QuickConnect</span>
+                                </button>
+                            </div>
+                        </>
+                    )
+                    : (
+                        <form
+                            className="login-form-glass"
+                            onSubmit={handleSubmit}
                         >
-                            {isSsoProcessing
-                                ? "Signing in with SSO..."
-                                : isSubmitting
-                                  ? "Redirecting to SSO..."
-                                  : `Login with ${appName}`}
-                        </button>
-
-                        {errorMessage && (
-                            <div className="login-error">{errorMessage}</div>
-                        )}
-
-                        <div className="login-secondary-links">
-                            <button
-                                type="button"
-                                className="login-text-link"
-                                onClick={() => {
-                                    setErrorMessage("");
-                                    setShowForm(true);
-                                }}
-                            >
-                                Standard Jellyfin login
-                            </button>
-
-                            <button
-                                type="button"
-                                className="login-quick-connect-link"
-                                onClick={() => setIsQuickConnectModalOpen(true)}
-                            >
-                                <img
-                                    src="/assets/images/key.svg"
-                                    alt=""
-                                    aria-hidden="true"
+                            <div className="login-input-group">
+                                <label htmlFor="username">Username</label>
+                                <input
+                                    id="username"
+                                    type="text"
+                                    autoFocus
+                                    required
+                                    value={username}
+                                    onChange={(e) =>
+                                        setUsername(e.target.value)}
                                 />
-                                <span>QuickConnect</span>
-                            </button>
-                        </div>
-                    </>
-                ) : (
-                    <form className="login-form-glass" onSubmit={handleSubmit}>
-                        <div className="login-input-group">
-                            <label htmlFor="username">Username</label>
-                            <input
-                                id="username"
-                                type="text"
-                                autoFocus
-                                required
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                        </div>
+                            </div>
 
-                        <div className="login-input-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                id="password"
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
-
-                        {errorMessage && (
-                            <div className="login-error">{errorMessage}</div>
-                        )}
-
-                        <button
-                            type="submit"
-                            className="login-btn-submit"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? "Signing in..." : "Sign In"}
-                        </button>
-
-                        <div className="login-form-secondary-actions">
-                            <button
-                                type="button"
-                                className="login-text-link"
-                                onClick={() => {
-                                    setErrorMessage("");
-                                    setShowForm(false);
-                                }}
-                            >
-                                Login with {appName}
-                            </button>
-                            <button
-                                type="button"
-                                className="login-quick-connect-link"
-                                onClick={() => setIsQuickConnectModalOpen(true)}
-                            >
-                                <img
-                                    src="/assets/images/key.svg"
-                                    alt=""
-                                    aria-hidden="true"
+                            <div className="login-input-group">
+                                <label htmlFor="password">Password</label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)}
                                 />
-                                <span>QuickConnect</span>
+                            </div>
+
+                            {errorMessage && (
+                                <div className="login-error">
+                                    {errorMessage}
+                                </div>
+                            )}
+
+                            <button
+                                type="submit"
+                                className="login-btn-submit"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? "Signing in..." : "Sign In"}
                             </button>
-                        </div>
-                    </form>
-                )}
+
+                            <div className="login-form-secondary-actions">
+                                <button
+                                    type="button"
+                                    className="login-text-link"
+                                    onClick={() => {
+                                        setErrorMessage("");
+                                        setShowForm(false);
+                                    }}
+                                >
+                                    Login with {appName}
+                                </button>
+                                <button
+                                    type="button"
+                                    className="login-quick-connect-link"
+                                    onClick={() =>
+                                        setIsQuickConnectModalOpen(true)}
+                                >
+                                    <img
+                                        src="/assets/images/key.svg"
+                                        alt=""
+                                        aria-hidden="true"
+                                    />
+                                    <span>QuickConnect</span>
+                                </button>
+                            </div>
+                        </form>
+                    )}
             </div>
         </div>
     );

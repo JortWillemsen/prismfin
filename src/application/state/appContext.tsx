@@ -1,9 +1,9 @@
 import React, {
     createContext,
-    useContext,
-    useState,
-    useEffect,
     useCallback,
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 import { AuthSession } from "@/common/types/user";
 import { MediaItem } from "@/common/types/media";
@@ -12,11 +12,11 @@ import { authService } from "../services/authService";
 export type AppRoute =
     | { name: "home" }
     | {
-          name: "movies";
-          genre?: string;
-          sortBy?: string;
-          isCollection?: boolean;
-      }
+        name: "movies";
+        genre?: string;
+        sortBy?: string;
+        isCollection?: boolean;
+    }
     | { name: "shows"; genre?: string; sortBy?: string }
     | { name: "search"; query?: string }
     | { name: "movie-details"; id: string }
@@ -152,18 +152,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     const [session, setSession] = useState<AuthSession | null>(initialSession);
     const [isLoading, setIsLoading] = useState<boolean>(!!initialSession);
     const [loadingProgress, setLoadingProgress] = useState<number>(
-        initialSession ? 30 : 0
+        initialSession ? 30 : 0,
     );
     const [currentRoute, setCurrentRoute] = useState<AppRoute>(() =>
         hashToRoute(window.location.hash)
     );
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const [isAccountPopupOpen, setIsAccountPopupOpen] =
-        useState<boolean>(false);
-    const [isQuickConnectModalOpen, setIsQuickConnectModalOpen] =
-        useState<boolean>(false);
-    const [activePlaybackItem, setActivePlaybackItem] =
-        useState<MediaItem | null>(null);
+    const [isAccountPopupOpen, setIsAccountPopupOpen] = useState<boolean>(
+        false,
+    );
+    const [isQuickConnectModalOpen, setIsQuickConnectModalOpen] = useState<
+        boolean
+    >(false);
+    const [activePlaybackItem, setActivePlaybackItem] = useState<
+        MediaItem | null
+    >(null);
 
     useEffect(() => {
         const handleUnauthorized = () => {
@@ -176,7 +179,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         return () =>
             window.removeEventListener(
                 "prismfin:unauthorized",
-                handleUnauthorized
+                handleUnauthorized,
             );
     }, []);
 
