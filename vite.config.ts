@@ -150,7 +150,10 @@ export default defineConfig(({ mode }) => {
         },
         writeBundle() {
             const currentConfig = getResolvedConfig(mode);
-            const manifestPath = path.resolve(rootDir, "./dist/manifest.webmanifest");
+            const manifestPath = path.resolve(
+                rootDir,
+                "./dist/manifest.webmanifest",
+            );
             if (fs.existsSync(manifestPath)) {
                 fs.writeFileSync(
                     manifestPath,
