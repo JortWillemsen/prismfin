@@ -134,7 +134,7 @@ export default defineConfig(({ mode }) => {
                     /<meta name="theme-color" content="[^"]*"/,
                     `<meta name="theme-color" content="${accentColor}"`,
                 );
-            if (appIconUrl !== "/assets/branding/icon.png") {
+            if (appIconUrl !== "/assets/branding/pwa-icon-maskable-512.png") {
                 transformed = transformed.replace(
                     /<link rel="apple-touch-icon"[^>]*href="[^"]*"/g,
                     `<link rel="apple-touch-icon" href="${appIconUrl}"`,
@@ -147,6 +147,51 @@ export default defineConfig(({ mode }) => {
                 );
             }
             return transformed;
+        },
+        writeBundle() {
+            const currentConfig = getResolvedConfig(mode);
+            const manifestPath = path.resolve(rootDir, "./dist/manifest.webmanifest");
+            if (fs.existsSync(manifestPath)) {
+                fs.writeFileSync(
+                    manifestPath,
+                    JSON.stringify(
+                        {
+                            name: currentConfig.appName,
+                            short_name: currentConfig.appName,
+                            description:
+                                `${currentConfig.appName} - Apple Liquid Glass Jellyfin Client`,
+                            start_url: "/",
+                            display: "standalone",
+                            background_color: "#000000",
+                            theme_color: "#000000",
+                            icons: [
+                                {
+                                    src: currentConfig.appPwaIconUrl,
+                                    sizes: "512x512",
+                                    type: "image/png",
+                                    purpose: "any",
+                                },
+                                {
+                                    src: currentConfig.appPwaIconUrl,
+                                    sizes: "512x512",
+                                    type: "image/png",
+                                    purpose: "maskable",
+                                },
+                            ],
+                        },
+                        null,
+                        4,
+                    ),
+                );
+            }
+
+            const configJsPath = path.resolve(rootDir, "./dist/config.js");
+            fs.writeFileSync(
+                configJsPath,
+                `window.__PRISMFIN_CONFIG__ = ${
+                    JSON.stringify(currentConfig, null, 4)
+                };`,
+            );
         },
     };
 
