@@ -25,6 +25,8 @@ function getResolvedConfig(mode: string) {
             "/assets/branding/pwa-icon-maskable-512.png",
         accentColor: env.APP_ACCENT_COLOR || env.VITE_APP_ACCENT_COLOR ||
             "#06A1DB",
+        themeColor: env.APP_THEME_COLOR || env.VITE_APP_THEME_COLOR ||
+            "#000000",
         featuredPlaylist: env.FEATURED_PLAYLIST_NAME ||
             env.VITE_FEATURED_PLAYLIST_NAME ||
             "Featured",
@@ -37,7 +39,8 @@ function getResolvedConfig(mode: string) {
 export default defineConfig(({ mode }) => {
     const initialConfig = getResolvedConfig(mode);
     const jellyfinServer = initialConfig.defaultServerUrl;
-    const { appName, accentColor, appIconUrl, appFaviconUrl } = initialConfig;
+    const { appName, accentColor, themeColor, appIconUrl, appFaviconUrl } =
+        initialConfig;
 
     const runtimeBrandingPlugin: Plugin = {
         name: "runtime-branding",
@@ -88,7 +91,7 @@ export default defineConfig(({ mode }) => {
                                 start_url: "/",
                                 display: "standalone",
                                 background_color: "#000000",
-                                theme_color: currentConfig.accentColor,
+                                theme_color: currentConfig.themeColor,
                                 icons: [
                                     {
                                         src: currentConfig.appFaviconUrl,
@@ -132,7 +135,7 @@ export default defineConfig(({ mode }) => {
                 )
                 .replace(
                     /<meta name="theme-color" content="[^"]*"/,
-                    `<meta name="theme-color" content="${accentColor}"`,
+                    `<meta name="theme-color" content="${themeColor}"`,
                 );
             if (appIconUrl !== "/assets/branding/pwa-icon-maskable-512.png") {
                 transformed = transformed.replace(
@@ -166,7 +169,7 @@ export default defineConfig(({ mode }) => {
                             start_url: "/",
                             display: "standalone",
                             background_color: "#000000",
-                            theme_color: "#000000",
+                            theme_color: currentConfig.themeColor,
                             icons: [
                                 {
                                     src: currentConfig.appPwaIconUrl,

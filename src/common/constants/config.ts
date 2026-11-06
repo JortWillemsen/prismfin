@@ -5,6 +5,7 @@ export interface PrismFinRuntimeConfig {
     appFaviconUrl?: string;
     appPwaIconUrl?: string;
     accentColor?: string;
+    themeColor?: string;
     featuredPlaylist?: string;
     defaultServerUrl?: string;
 }
@@ -15,7 +16,7 @@ declare global {
     }
 }
 
-export const CLIENT_VERSION = "0.7.3";
+export const CLIENT_VERSION = "0.7.4";
 export const DEVICE_NAME = "Web Client";
 
 export function getAppName(): string {
@@ -63,6 +64,14 @@ export function getAppAccentColor(): string {
         window.__PRISMFIN_CONFIG__?.accentColor ||
         import.meta.env?.VITE_APP_ACCENT_COLOR ||
         "#06A1DB"
+    );
+}
+
+export function getAppThemeColor(): string {
+    return (
+        window.__PRISMFIN_CONFIG__?.themeColor ||
+        import.meta.env?.VITE_APP_THEME_COLOR ||
+        "#000000"
     );
 }
 
@@ -144,8 +153,8 @@ export function applyAppBranding(): void {
     }
 
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-    if (themeColorMeta && accent) {
-        themeColorMeta.setAttribute("content", accent);
+    if (themeColorMeta) {
+        themeColorMeta.setAttribute("content", getAppThemeColor());
     }
 
     const favicon = getAppFaviconUrl();
